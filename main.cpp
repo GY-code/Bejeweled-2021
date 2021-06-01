@@ -1,11 +1,12 @@
 #include "startpage.h"
+#include "gamewidget.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    StartPage w;
+    //StartPage w;
+    GameWidget w;
     w.show();
-//test msg by guyi
     return a.exec();
 }

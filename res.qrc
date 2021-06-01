@@ -6,5 +6,11 @@
         <file>music/button/button_press.wav</file>
         <file>music/button/button_release.wav</file>
         <file>picture/button/ball.png</file>
+        <file>picture/backdrop00.jpg</file>
+        <file>picture/frame.png</file>
+        <file>picture/mouse1.png</file>
+        <file>picture/mouse2.png</file>
+        <file>picture/mouse3.png</file>
+        <file>picture/scorepod.png</file>
     </qresource>
 </RCC>

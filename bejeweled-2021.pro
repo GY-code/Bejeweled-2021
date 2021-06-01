@@ -26,14 +26,17 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     hoverbutton.cpp \
-    startpage.cpp
+    startpage.cpp \
+    gamewidget.cpp
 
 HEADERS += \
     hoverbutton.h \
-    startpage.h
+    startpage.h \
+    gamewidget.h
 
 FORMS += \
-    startpage.ui
+    startpage.ui \
+    gamewidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
