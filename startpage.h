@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QDebug>
+#include <QImage>
+#include <QFile>
+#include "hoverbutton.h"
 namespace Ui {
 class StartPage;
 }
@@ -19,7 +22,10 @@ public:
 
 private:
     Ui::StartPage *ui;
+    HoverButton *exitButton,*startButton, *recordButton, *settingButton;
+
     void ShowBackground();
+    void SetButton();
     void setBkImg(QString path,QLabel *label);
 };
 
