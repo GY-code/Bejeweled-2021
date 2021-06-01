@@ -31,16 +31,42 @@ void HoverButton::setSound(QString pathHover, QString pathLeave, QString pathPre
     soundLeave = (pathLeave != QString("") ? new QSound(pathLeave, this) : nullptr);
 }
 
-void HoverButton::setLabel(QString text){
+void HoverButton::setLabel(QString text,int size){
     //设置label
+    textSize=size;
     label = new QLabel(text, this);
     label->setAttribute(Qt::WA_TransparentForMouseEvents);
     label->setGeometry(0,0, w, h);
     label->setAlignment(Qt::AlignCenter);
-    label->setFont(QFont("Microsoft YaHei", 8, 600));
+    label->setFont(QFont("Microsoft YaHei", size, QFont::Normal));
     label->setStyleSheet("QLabel{color:white;}");
     label->setVisible(true);
 }
+void HoverButton::setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent)
+{
+    setParent(parent);
+    setGeometry(x - r, y - r, 2*r, 2*r);
+    setImage(path, path2, 2*r, 2*r);
+//    setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+    animation->setParent(parent);
+    animation->setTargetObject(this);
+    animation->setDuration(2000);
+    animation->setPropertyName("geometry");
+    animation->setStartValue(QRect(x - r, height, 2*r, 2*r));
+    animation->setEndValue(QRect(x - r, y - r, 2*r, 2*r));
+    animation->setEasingCurve(QEasingCurve::InOutCubic);
+    setVisible(false);
+
+}
+
+void HoverButton::showContent(QString text,int size){
+    setVisible(true);
+    animation->start();
+    QTimer::singleShot(2000, this, [=](){
+        setLabel(text,size);
+    });
+}
+
 
 bool HoverButton::event(QEvent *e) {
     if(!isEnabled())
@@ -52,26 +78,26 @@ bool HoverButton::event(QEvent *e) {
         if(soundHover)
             soundHover->play();
         if(label)
-            label->setFont(QFont("Microsoft YaHei", 10, 600));
+            label->setFont(QFont("Microsoft YaHei", textSize*1.5, QFont::Bold));
         break;
     case QEvent::Leave:
         setIcon(*iconNormal);
         if(soundLeave)
             soundLeave->play();
         if(label)
-            label->setFont(QFont("Microsoft YaHei", 8, 600));
+            label->setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
         break;
     case QEvent::MouseButtonPress:
         if(soundPress)
             soundPress->play();
         if(label)
-            label->setFont(QFont("Microsoft YaHei", 10, 600));
+            label->setFont(QFont("Microsoft YaHei", textSize*1.5, QFont::Bold));
         break;
     case QEvent::MouseButtonRelease:
         if(soundRelease)
             soundRelease->play();
         if(label)
-            label->setFont(QFont("Microsoft YaHei", 8, 600));
+            label->setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
         break;
     default:
         break;
