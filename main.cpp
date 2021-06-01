@@ -7,5 +7,7 @@ int main(int argc, char *argv[])
     StartPage w;
     w.show();
 
+
+//ksk
     return a.exec();
 }
