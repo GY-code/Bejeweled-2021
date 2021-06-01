@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
+QT       += core gui multimedia widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = bejeweled_2021
@@ -25,16 +24,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp
+    main.cpp \
+    hoverbutton.cpp \
+    startpage.cpp
 
 HEADERS += \
-        mainwindow.h
+    hoverbutton.h \
+    startpage.h
 
 FORMS += \
-        mainwindow.ui
+    startpage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    picture.qrc
