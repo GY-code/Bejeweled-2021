@@ -8,5 +8,6 @@ int main(int argc, char *argv[])
     //StartPage w;
     GameWidget w;
     w.show();
+
     return a.exec();
 }
