@@ -29,12 +29,16 @@ SOURCES += \
     startpage.cpp \
     gamewidget.cpp \
     myprobar.cpp
+    gamewidget.cpp \
+    gem.cpp
 
 HEADERS += \
     hoverbutton.h \
     startpage.h \
     gamewidget.h \
     myprobar.h
+    gamewidget.h \
+    gem.h
 
 FORMS += \
     startpage.ui \

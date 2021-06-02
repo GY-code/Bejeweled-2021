@@ -69,7 +69,6 @@ void HoverButton::showContent(QString text,int size){
 bool HoverButton::event(QEvent *e) {
     if(!isEnabled())
         return QPushButton::event(e);
-
     switch(e->type()){
     case QEvent::Enter:
         //设置鼠标-手指
