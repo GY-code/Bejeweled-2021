@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameWidget</class>
+ <widget class="QWidget" name="GameWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1080</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QLabel" name="oriBkLbl">
+   <property name="geometry">
+    <rect>
+     <x>243</x>
+     <y>0</y>
+     <width>1434</width>
+     <height>1080</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>BK</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="borderLbl">
+   <property name="geometry">
+    <rect>
+     <x>1665</x>
+     <y>2</y>
+     <width>1055</width>
+     <height>1073</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="scoreLbl">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>60</y>
+     <width>327</width>
+     <height>178</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

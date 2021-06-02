@@ -8,6 +8,7 @@
 #include <QParallelAnimationGroup>
 #include <QIcon>
 #include <QTimer>
+#include <myprobar.h>
 
 namespace Ui {
 class GameWidget;
