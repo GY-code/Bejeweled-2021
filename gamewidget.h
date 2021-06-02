@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QIcon>
+#include <QTimer>
 
 namespace Ui {
 class GameWidget;

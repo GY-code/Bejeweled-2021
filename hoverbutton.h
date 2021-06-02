@@ -20,8 +20,6 @@ public:
     void showContent(QString text,int size);
     QPropertyAnimation* animation = new QPropertyAnimation;
 
-
-
 protected:
     bool event(QEvent *e) override;
 
@@ -30,7 +28,6 @@ private:
     QSound *soundHover = nullptr, *soundPress = nullptr, *soundRelease = nullptr, *soundLeave = nullptr;
     QIcon *iconNormal=nullptr, *iconHover=nullptr;
     QLabel* label=nullptr;
-
 
 };
 

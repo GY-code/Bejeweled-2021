@@ -6,6 +6,12 @@ StartPage::StartPage(QWidget *parent) :
     ui(new Ui::StartPage)
 {
     ui->setupUi(this);
+    //禁用最大化按钮、设置窗口大小固定
+    this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    this->setFixedSize(this->width(),this->height());
+    //全屏
+    QWidget::showFullScreen();
+
     ShowBackground();
     SetButton();
 
@@ -23,7 +29,7 @@ void StartPage::ShowBackground(){
     QPixmap pix;
     QLabel *background = new QLabel(this);
     QPropertyAnimation *animation = new QPropertyAnimation(background, "geometry",this);
-    setBkImg(":/picture/StartPage/BackgroundHQ.png",background);
+    setBkImg("://picture/StartPage/background.png",background);
     background->show();
     animation->setDuration(3000);
     animation->setStartValue(QRect(background->x(), background->y(), background->width(), background->height()));
@@ -81,4 +87,21 @@ void StartPage::setBkImg(QString path,QLabel *label)
     QImage image2=image.scaled(this->width(),ratio*this->width(),Qt::IgnoreAspectRatio);//重新调整图像大小以适应label
     label->setPixmap(QPixmap::fromImage(image2));//显示
     label->setGeometry(0,0,this->width(),ratio*this->width());
+}
+
+void StartPage::keyPressEvent(QKeyEvent *ev)
+{
+    //Esc退出全屏
+    if(ev->key() == Qt::Key_Escape)
+    {
+        QWidget::showNormal();
+        return;
+    }
+    //F11全屏
+    if(ev->key() == Qt::Key_F11)
+    {
+        QWidget::showFullScreen();
+        return;
+    }
+    QWidget::keyPressEvent(ev);
 }

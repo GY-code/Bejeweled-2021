@@ -13,6 +13,10 @@ GameWidget::GameWidget(QWidget *parent) :
     QWidget::showFullScreen();
 
 
+    //窗口基本设置
+    setWindowFlag(Qt::Window);  //设置为独立窗口
+    setWindowTitle("Bejeweled");
+    setWindowIcon(QIcon("://picture/app_icon.ico"));
 
     //设置窗口背景黑色
     QPalette palette(this->palette());
@@ -27,6 +31,23 @@ GameWidget::GameWidget(QWidget *parent) :
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
 
+    ui->progressBar->setGeometry(660,1010,960,45);
+    ui->progressBar->setRange(0,4000);
+    ui->progressBar->setValue(4000);
+    ui->progressBar->setTextVisible(false);
+    ui->progressBar->setAlignment(Qt::AlignCenter);
+    ui->progressBar->setStyleSheet("QProgressBar::chunk{background-color:rgb(74, 149, 223)}");
+
+    QTimer *progressTimer = new QTimer(this);
+    progressTimer->setInterval(10);
+    progressTimer->start();
+    connect(progressTimer, &QTimer::timeout, [=](){
+        if(ui->progressBar->value() == 0){
+        }
+            //end();
+        else
+            ui->progressBar->setValue(ui->progressBar->value()-1);
+    });
 
     //动画
     QPropertyAnimation* anim1 = new QPropertyAnimation(ui->borderLbl, "geometry");

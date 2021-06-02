@@ -67,7 +67,6 @@ void HoverButton::showContent(QString text,int size){
     });
 }
 
-
 bool HoverButton::event(QEvent *e) {
     if(!isEnabled())
         return QPushButton::event(e);
@@ -78,7 +77,7 @@ bool HoverButton::event(QEvent *e) {
         if(soundHover)
             soundHover->play();
         if(label)
-            label->setFont(QFont("Microsoft YaHei", textSize*1.5, QFont::Bold));
+            label->setFont(QFont("Microsoft YaHei", (textSize*1.5), QFont::Bold));
         break;
     case QEvent::Leave:
         setIcon(*iconNormal);

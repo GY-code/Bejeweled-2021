@@ -22,7 +22,8 @@ public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
     GameWidget* gameWidget;
-
+protected:
+    virtual void keyPressEvent(QKeyEvent *ev);
 private:
     Ui::StartPage *ui;
     HoverButton *exitButton,*startButton, *recordButton, *settingButton;

@@ -12,5 +12,7 @@
         <file>picture/mouse2.png</file>
         <file>picture/mouse3.png</file>
         <file>picture/scorepod.png</file>
+        <file>picture/StartPage/background.png</file>
+        <file>picture/app_icon.ico</file>
     </qresource>
 </RCC>
