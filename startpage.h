@@ -26,7 +26,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
     Ui::StartPage *ui;
-    HoverButton *exitButton,*startButton, *recordButton, *settingButton;
+    HoverButton *startButton, *recordButton, *settingButton;
 
     void ShowBackground();
     void SetButton();

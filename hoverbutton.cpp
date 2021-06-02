@@ -33,6 +33,9 @@ void HoverButton::setSound(QString pathHover, QString pathLeave, QString pathPre
 
 void HoverButton::setLabel(QString text,int size){
     //设置label
+    setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+    if(soundHover)
+        soundHover->play();
     textSize=size;
     label = new QLabel(text, this);
     label->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -46,8 +49,7 @@ void HoverButton::setCircle(int r, int x, int y, int width, int height, QString 
 {
     setParent(parent);
     setGeometry(x - r, y - r, 2*r, 2*r);
-    setImage(path, path2, 2*r, 2*r);
-//    setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+    setImage(path, path2, 2*r, 2*r);    
     animation->setParent(parent);
     animation->setTargetObject(this);
     animation->setDuration(2000);

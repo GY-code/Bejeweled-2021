@@ -7,16 +7,26 @@ StartPage::StartPage(QWidget *parent) :
 {
     ui->setupUi(this);
     //禁用最大化按钮、设置窗口大小固定
+    startButton=new HoverButton();
+    recordButton=new HoverButton();
+    settingButton=new HoverButton();
     this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     this->setFixedSize(this->width(),this->height());
     //全屏
     QWidget::showFullScreen();
+    //设置窗口背景黑色
+    QPalette palette(this->palette());
+    palette.setColor(QPalette::Background, Qt::black);
+    this->setPalette(palette);
+
 
     ShowBackground();
-    SetButton();
-
     QTimer::singleShot(1000, this, [=](){
+        SetButton();
         startButton->showContent("Start",40);
+        recordButton->showContent("Record",20);
+        settingButton->showContent("Setting",20);
+
     });
 }
 
@@ -40,40 +50,39 @@ void StartPage::ShowBackground(){
 }
 
 void StartPage::SetButton(){
-      startButton=new HoverButton(this);
-      startButton->setCircle(this->width()/10, this->width()/2, this->height()/2, this->width(), this->height(),\
-                              ":/picture/button/ball.png", "", this);
+    startButton->setCircle(this->width()/10, this->width()/2, this->height()/2, this->width(), this->height(),\
+                           ":/picture/button/ball.png", "", this);
+
+    recordButton->setCircle(this->width()/100*5, this->width()/6, this->height()/2, this->width(), this->height(),\
+                            ":/picture/button/ball.png", "", this);
+    settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2, this->width(), this->height(),\
+                             ":/picture/button/ball.png", "", this);
+
+    connect(startButton, &HoverButton::clicked, [=](){
+
+        this->hide();
+        gameWidget = new GameWidget;
+        gameWidget->show();
+
+    }) ;
 
 
-      connect(startButton, &HoverButton::clicked, [=](){
 
-          this->hide();
-          gameWidget = new GameWidget;
-          gameWidget->show();
-
-      }) ;
-
-//    recordButton = new MenuButton(this->width()/100*7, this->width()/6, this->height()/2, this->width(), this->height(),\
-//                                  ":/pic/Menu/record.png", ":/pic/Menu/record_hover.png", this);
-//    settingButton = new MenuButton(this->width()/100*7, this->width()/6*5, this->height()/2, this->width(), this->height(),\
-//                                   ":/pic/Menu/settings.png", ":/pic/Menu/setting_hover.png", this);
+    //    exitButton = new HoverButton(this);
+    //    exitButton->setGeometry(this->width()-70, this->height()-35, 60, 30);
+    //    exitButton->setFlat(true);
+    //    exitButton->setImage(":/pic/Menu/exit.png", ":/pic/Menu/exit_hover.png", 60, 30);
+    //    exitButton->setSound(":/sound/button_mouseover.wav", ":/sound/button_mouseleave.wav", ":/sound/button_press.wav", ":/sound/button_release.wav");
 
 
-//    exitButton = new HoverButton(this);
-//    exitButton->setGeometry(this->width()-70, this->height()-35, 60, 30);
-//    exitButton->setFlat(true);
-//    exitButton->setImage(":/pic/Menu/exit.png", ":/pic/Menu/exit_hover.png", 60, 30);
-//    exitButton->setSound(":/sound/button_mouseover.wav", ":/sound/button_mouseleave.wav", ":/sound/button_press.wav", ":/sound/button_release.wav");
+    //    //显示按钮
 
-
-//    //显示按钮
-
-//    recordButton->show();
-//    settingButton->show();
-//    QTimer::singleShot(2000, this, [=](){
-//        exitButton->setVisible(true);
-//    });
-//    //链接按钮功能
+    //    recordButton->show();
+    //    settingButton->show();
+    //    QTimer::singleShot(2000, this, [=](){
+    //        exitButton->setVisible(true);
+    //    });
+    //    //链接按钮功能
 }
 
 //将path的图片放置到label上，自适应label大小
