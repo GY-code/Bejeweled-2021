@@ -6,10 +6,17 @@ StartPage::StartPage(QWidget *parent) :
     ui(new Ui::StartPage)
 {
     ui->setupUi(this);
-    //禁用最大化按钮、设置窗口大小固定
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
+    startButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+    recordButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+    settingButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
+
+    QTime dieTime = QTime::currentTime().addMSecs(2000);
+    while( QTime::currentTime() < dieTime ){QCoreApplication::processEvents(QEventLoop::AllEvents, 100);}
+
+    //禁用最大化按钮、设置窗口大小固定
     this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     this->setFixedSize(this->width(),this->height());
     //全屏
@@ -18,14 +25,22 @@ StartPage::StartPage(QWidget *parent) :
     QPalette palette(this->palette());
     palette.setColor(QPalette::Background, Qt::black);
     this->setPalette(palette);
-    ShowBackground();
-    SetButton();
-    QTimer::singleShot(1000, this, [=](){
+    //设置鼠标-普通
+    setCursor(QCursor(QPixmap("://picture/mouse1.png")));
+
+    QTimer::singleShot(1500, this, [=](){
+        SetButton();
         startButton->showContent("Start",40);
         recordButton->showContent("Record",20);
         settingButton->showContent("Setting",20);
-        ShowTitle();
+        QParallelAnimationGroup *group = new QParallelAnimationGroup;
+        group->addAnimation(startButton->textAnim);
+        group->addAnimation(recordButton->textAnim);
+        group->addAnimation(settingButton->textAnim);
+        group->start();
     });
+
+    ShowBackground();
 }
 
 StartPage::~StartPage()
@@ -49,16 +64,15 @@ void StartPage::ShowTitle(){
 }
 void StartPage::ShowBackground(){
     QPixmap pix;
-    background = new QLabel(this);
-    QPropertyAnimation *animation = new QPropertyAnimation(background, "geometry",this);
+    QLabel *background = new QLabel(this);
+    bkAnim = new QPropertyAnimation(background, "geometry",this);
     setBkImg("://picture/StartPage/background.png",background);
     background->show();
-    animation->setDuration(3000);
-    animation->setStartValue(QRect(background->x(), background->y(), background->width(), background->height()));
-    animation->setEndValue(QRect(background->x(), this->height() - background->height(), background->width(), background->height()));
-    animation->setEasingCurve(QEasingCurve::InOutCubic);
-    animation->start();
-
+    bkAnim->setDuration(3000);
+    bkAnim->setStartValue(QRect(background->x(), background->y(), background->width(), background->height()));
+    bkAnim->setEndValue(QRect(background->x(), this->height() - background->height(), background->width(), background->height()));
+    bkAnim->setEasingCurve(QEasingCurve::InOutCubic);
+    bkAnim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void StartPage::SetButton(){
@@ -71,30 +85,11 @@ void StartPage::SetButton(){
                              ":/picture/button/ball.png", "", this);
 
     connect(startButton, &HoverButton::clicked, [=](){
-
         this->hide();
         gameWidget = new GameWidget;
         gameWidget->show();
-
     }) ;
 
-
-
-    //    exitButton = new HoverButton(this);
-    //    exitButton->setGeometry(this->width()-70, this->height()-35, 60, 30);
-    //    exitButton->setFlat(true);
-    //    exitButton->setImage(":/pic/Menu/exit.png", ":/pic/Menu/exit_hover.png", 60, 30);
-    //    exitButton->setSound(":/sound/button_mouseover.wav", ":/sound/button_mouseleave.wav", ":/sound/button_press.wav", ":/sound/button_release.wav");
-
-
-    //    //显示按钮
-
-    //    recordButton->show();
-    //    settingButton->show();
-    //    QTimer::singleShot(2000, this, [=](){
-    //        exitButton->setVisible(true);
-    //    });
-    //    //链接按钮功能
 }
 //将path的图片放置到label上，自适应label大小
 void StartPage::setAdaptedImg(QString path,QLabel *label)

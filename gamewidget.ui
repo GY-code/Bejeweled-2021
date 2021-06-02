@@ -55,17 +55,52 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QProgressBar" name="progressBar">
+  <widget class="QLabel" name="menuLbl">
    <property name="geometry">
     <rect>
-     <x>1180</x>
-     <y>880</y>
-     <width>118</width>
-     <height>23</height>
+     <x>354</x>
+     <y>491</y>
+     <width>158</width>
+     <height>122</height>
     </rect>
    </property>
-   <property name="value">
-    <number>24</number>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>menu</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="hintLbl">
+   <property name="geometry">
+    <rect>
+     <x>279</x>
+     <y>613</y>
+     <width>308</width>
+     <height>272</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>hint</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="pauseLbl">
+   <property name="geometry">
+    <rect>
+     <x>354</x>
+     <y>885</y>
+     <width>158</width>
+     <height>116</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>pause</string>
    </property>
   </widget>
  </widget>

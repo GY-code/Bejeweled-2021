@@ -9,6 +9,7 @@
 #include <QFile>
 #include "hoverbutton.h"
 #include "gamewidget.h"
+#include <QTime>
 
 namespace Ui {
 class StartPage;
@@ -22,6 +23,7 @@ public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
     GameWidget* gameWidget;
+    QPropertyAnimation *bkAnim;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:

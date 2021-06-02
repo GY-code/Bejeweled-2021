@@ -13,12 +13,13 @@ class HoverButton : public QPushButton
     Q_OBJECT
 public:
     explicit HoverButton(QWidget *parent = nullptr);
-    void setImage(QString pathNormal, QString pathHover, int width, int height);
+    //void setNomalBtn(QImage image,QRect rec);
+    void setImage(QString pathNormal, QString pathHover, int width, int height,QLabel* label = nullptr);
     void setSound(QString pathHover="", QString pathLeave="", QString pathPress="", QString pathRelease="");
     void setLabel(QString text,int size);
     void setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent);
     void showContent(QString text,int size);
-    QPropertyAnimation* animation = new QPropertyAnimation;
+    QPropertyAnimation* textAnim = new QPropertyAnimation;
 
 protected:
     bool event(QEvent *e) override;
@@ -26,7 +27,7 @@ protected:
 private:
     int w=0, h=0,textSize;
     QSound *soundHover = nullptr, *soundPress = nullptr, *soundRelease = nullptr, *soundLeave = nullptr;
-    QIcon *iconNormal=nullptr, *iconHover=nullptr;
+    QIcon iconNormal, iconHover;
     QLabel* label=nullptr;
 
 };
