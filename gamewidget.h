@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QRandomGenerator>
 #include "gem.h"
+#include<QTime>
 namespace Ui {
 class GameWidget;
 }
@@ -36,9 +37,10 @@ private:
     int randomGem(bool allowMagic);
     void initScene();
     int DIFFICULITY=5;
-    void initfall();
+    void fall();
     void test();
     void fallAnimation(Gem *gem, int h);
+    void Sleep(int msec);
 
 
     Ui::GameWidget *ui;

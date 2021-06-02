@@ -18,3 +18,7 @@ bin-release/
 # information for Eclipse / Flash Builder.
 
 bejeweled-2021.pro.user
+
+gamewidget.cpp.autosave
+
+*.autosave

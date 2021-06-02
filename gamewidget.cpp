@@ -44,7 +44,7 @@ GameWidget::GameWidget(QWidget *parent) :
     connect(progressTimer, &QTimer::timeout, [=](){
         if(ui->progressBar->value() == 0){
         }
-            //end();
+        //end();
         else
             ui->progressBar->setValue(ui->progressBar->value()-1);
     });
@@ -67,9 +67,10 @@ GameWidget::GameWidget(QWidget *parent) :
     QParallelAnimationGroup *group = new QParallelAnimationGroup;
     group->addAnimation(anim1);
     group->addAnimation(anim2);
-
     group->start();
-    test();
+    Sleep(500);
+    initScene();
+
 }
 
 //将path的图片放置到label上，自适应label大小
@@ -113,32 +114,32 @@ int GameWidget::randomGem(bool allowMagic){
 void GameWidget::test(){
     QPushButton *test=new QPushButton(this);
     this->setStyleSheet("QPushButton{background-color:rgb(200,101,102,100);}");
-//        anim1->setEndValue(QRect(610, 2, 1055, 1073));
+    //        anim1->setEndValue(QRect(610, 2, 1055, 1073));
     test->setGeometry(665, 45, 952, 952);
     test->show();
 }
 void GameWidget::initScene(){
     boardWidget = new QWidget(this);
     boardWidget->show();
-    boardWidget->setGeometry(1665, 2, 1055, 1073);
+    boardWidget->setGeometry(665, 45, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
-    for(int i = 0; i < 7; ++i)
-        for(int j = 0; j <7 ; ++j){
+    for(int i = 0; i < 8; ++i)
+        for(int j = 0; j <8 ; ++j){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
-            gems[i][j] = new Gem(gemBoard[i][j], 130, i, j, boardWidget);
+            gems[i][j] = new Gem(gemBoard[i][j], 119, i, j, boardWidget);
             gems[i][j]->installEventFilter(this);
-//            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
+            //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
     for(int i = 0; i < 7; ++i)
         for(int j = 7; j >= 0; --j){
-                fallboard[i][j]=j;
+            fallboard[i][j]=j;
         }
 }
-void GameWidget::initfall(){
+void GameWidget::fall(){
 
     for(int i = 0; i < 7; ++i)
         for(int j = 7; j >= 0; --j){
-                fallAnimation(gems[i][j], fallboard[i][j]);
+            fallAnimation(gems[i][j], fallboard[i][j]);
         }
 }
 
@@ -147,7 +148,7 @@ void GameWidget::fallAnimation(Gem *gem, int h){
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", this);
     animation->setDuration(500);
     animation->setStartValue(gem->geometry());
-    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y() + 130*h+2, gem->width(), gem->height()));
+    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y() + 119*h+2, gem->width(), gem->height()));
     animation->setEasingCurve(QEasingCurve::InQuad);
     animation->start();
     QTimer::singleShot(1000, this, [=](){
@@ -162,3 +163,9 @@ bool GameWidget::eventFilter(QObject *watched, QEvent *event){              //�
     return QWidget::eventFilter(watched, event);
 }
 
+void GameWidget::Sleep(int msec)
+{
+    QTime dieTime = QTime::currentTime().addMSecs(msec);
+    while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
