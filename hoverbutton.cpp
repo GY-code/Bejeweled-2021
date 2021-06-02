@@ -72,7 +72,6 @@ void HoverButton::showContent(QString text,int size){
 bool HoverButton::event(QEvent *e) {
     if(!isEnabled())
         return QPushButton::event(e);
-
     switch(e->type()){
     case QEvent::Enter:
         setIcon(*iconHover);

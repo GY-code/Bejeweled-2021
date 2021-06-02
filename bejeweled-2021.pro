@@ -27,12 +27,14 @@ SOURCES += \
     main.cpp \
     hoverbutton.cpp \
     startpage.cpp \
-    gamewidget.cpp
+    gamewidget.cpp \
+    gem.cpp
 
 HEADERS += \
     hoverbutton.h \
     startpage.h \
-    gamewidget.h
+    gamewidget.h \
+    gem.h
 
 FORMS += \
     startpage.ui \

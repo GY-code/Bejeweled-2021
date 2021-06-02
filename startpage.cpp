@@ -87,7 +87,7 @@ void StartPage::SetButton(){
     //    exitButton->setSound(":/sound/button_mouseover.wav", ":/sound/button_mouseleave.wav", ":/sound/button_press.wav", ":/sound/button_release.wav");
 
 
-    //    //显示按钮
+    //显示按钮
 
     //    recordButton->show();
     //    settingButton->show();

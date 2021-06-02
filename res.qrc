@@ -15,5 +15,21 @@
         <file>picture/StartPage/background.png</file>
         <file>picture/app_icon.ico</file>
         <file>picture/StartPage/title.png</file>
+        <file>picture/GameWidget/Gem/Blue.gif</file>
+        <file>picture/GameWidget/Gem/Blue.png</file>
+        <file>picture/GameWidget/Gem/Gold.gif</file>
+        <file>picture/GameWidget/Gem/Gold.png</file>
+        <file>picture/GameWidget/Gem/Green.gif</file>
+        <file>picture/GameWidget/Gem/Green.png</file>
+        <file>picture/GameWidget/Gem/Magic.gif</file>
+        <file>picture/GameWidget/Gem/Magic.png</file>
+        <file>picture/GameWidget/Gem/orange.gif</file>
+        <file>picture/GameWidget/Gem/orange.png</file>
+        <file>picture/GameWidget/Gem/Red.gif</file>
+        <file>picture/GameWidget/Gem/Red.png</file>
+        <file>picture/GameWidget/Gem/Silver.gif</file>
+        <file>picture/GameWidget/Gem/Silver.png</file>
+        <file>picture/GameWidget/Gem/violet.gif</file>
+        <file>picture/GameWidget/Gem/violet.png</file>
     </qresource>
 </RCC>

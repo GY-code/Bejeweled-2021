@@ -69,7 +69,6 @@ GameWidget::GameWidget(QWidget *parent) :
     group->addAnimation(anim2);
 
     group->start();
-    test();
 }
 
 //将path的图片放置到label上，自适应label大小
@@ -120,12 +119,12 @@ void GameWidget::test(){
 void GameWidget::initScene(){
     boardWidget = new QWidget(this);
     boardWidget->show();
-    boardWidget->setGeometry(1665, 2, 1055, 1073);
+    boardWidget->setGeometry(665, 45, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
     for(int i = 0; i < 7; ++i)
         for(int j = 0; j <7 ; ++j){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
-            gems[i][j] = new Gem(gemBoard[i][j], 130, i, j, boardWidget);
+            gems[i][j] = new Gem(gemBoard[i][j], 119, i, j, boardWidget);
             gems[i][j]->installEventFilter(this);
 //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }

@@ -8,7 +8,8 @@
 #include <QParallelAnimationGroup>
 #include <QIcon>
 #include <QTimer>
-
+#include <QRandomGenerator>
+#include "gem.h"
 namespace Ui {
 class GameWidget;
 }
@@ -23,10 +24,23 @@ public:
     ~GameWidget();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *ev);
+    bool eventFilter(QObject *watched, QEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *ev)override;
     //virtual void keyReleaseEvent(QKeyEvent *ev);
 
 private:
+    unsigned int gemBoard[8][8];
+    Gem* gems[8][8];
+    int fallboard[8][8];
+    QWidget* boardWidget;
+    int randomGem(bool allowMagic);
+    void initScene();
+    int DIFFICULITY=5;
+    void initfall();
+    void test();
+    void fallAnimation(Gem *gem, int h);
+
+
     Ui::GameWidget *ui;
 };
 
