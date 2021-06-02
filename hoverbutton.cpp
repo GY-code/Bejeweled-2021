@@ -5,7 +5,6 @@ HoverButton::HoverButton(QWidget *parent) : QPushButton(parent)
 {
     //设置无边框
     setStyleSheet("QPushButton{border:0px;}");
-    setSound();
 }
 
 void HoverButton::setImage(QString pathNormal, QString pathHover, int width, int height){
@@ -32,7 +31,7 @@ void HoverButton::setSound(QString pathHover, QString pathLeave, QString pathPre
 }
 
 void HoverButton::setLabel(QString text,int size){
-    //设置label
+//    设置label
     setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     if(soundHover)
         soundHover->play();
@@ -44,6 +43,7 @@ void HoverButton::setLabel(QString text,int size){
     label->setFont(QFont("Microsoft YaHei", size, QFont::Normal));
     label->setStyleSheet("QLabel{color:white;}");
     label->setVisible(true);
+
 }
 void HoverButton::setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent)
 {

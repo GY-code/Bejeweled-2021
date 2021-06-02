@@ -18,15 +18,13 @@ StartPage::StartPage(QWidget *parent) :
     QPalette palette(this->palette());
     palette.setColor(QPalette::Background, Qt::black);
     this->setPalette(palette);
-
-
     ShowBackground();
+    SetButton();
     QTimer::singleShot(1000, this, [=](){
-        SetButton();
         startButton->showContent("Start",40);
         recordButton->showContent("Record",20);
         settingButton->showContent("Setting",20);
-
+        ShowTitle();
     });
 }
 
@@ -34,10 +32,24 @@ StartPage::~StartPage()
 {
     delete ui;
 }
+void StartPage::ShowTitle(){
+    QPixmap pix;
+    QLabel *title = new QLabel(this);
+    title->setGeometry(this->width()/2-903/2,-title->height(),903,200);
+    setAdaptedImg(":/picture/StartPage/title.png",title);
+    title->show();
+    QPropertyAnimation *animation = new QPropertyAnimation(title, "geometry",this);
+    animation->setDuration(2000);
+    animation->setStartValue(QRect(title->x(), title->y(), title->width(), title->height()));
+    animation->setEndValue(QRect(title->x(), 100, title->width(), title->height()));
+    animation->setEasingCurve(QEasingCurve::OutExpo);
+    animation->start();
 
+
+}
 void StartPage::ShowBackground(){
     QPixmap pix;
-    QLabel *background = new QLabel(this);
+    background = new QLabel(this);
     QPropertyAnimation *animation = new QPropertyAnimation(background, "geometry",this);
     setBkImg("://picture/StartPage/background.png",background);
     background->show();
@@ -50,12 +62,12 @@ void StartPage::ShowBackground(){
 }
 
 void StartPage::SetButton(){
-    startButton->setCircle(this->width()/10, this->width()/2, this->height()/2, this->width(), this->height(),\
+    startButton->setCircle(this->width()/10, this->width()/2, this->height()/2+100, this->width(), this->height(),\
                            ":/picture/button/ball.png", "", this);
 
-    recordButton->setCircle(this->width()/100*5, this->width()/6, this->height()/2, this->width(), this->height(),\
+    recordButton->setCircle(this->width()/100*5, this->width()/6, this->height()/2+100, this->width(), this->height(),\
                             ":/picture/button/ball.png", "", this);
-    settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2, this->width(), this->height(),\
+    settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
 
     connect(startButton, &HoverButton::clicked, [=](){
@@ -84,7 +96,14 @@ void StartPage::SetButton(){
     //    });
     //    //链接按钮功能
 }
-
+//将path的图片放置到label上，自适应label大小
+void StartPage::setAdaptedImg(QString path,QLabel *label)
+{
+    QImage image(path);
+    QSize size=label->size();
+    QImage image2=image.scaled(size,Qt::IgnoreAspectRatio);//重新调整图像大小以适应label
+    label->setPixmap(QPixmap::fromImage(image2));//显示
+}
 //将path的图片放置到label上，自适应label大小
 void StartPage::setBkImg(QString path,QLabel *label)
 {
