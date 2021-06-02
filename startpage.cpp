@@ -38,6 +38,7 @@ StartPage::StartPage(QWidget *parent) :
         group->addAnimation(recordButton->textAnim);
         group->addAnimation(settingButton->textAnim);
         group->start();
+        ShowTitle();
     });
 
     ShowBackground();

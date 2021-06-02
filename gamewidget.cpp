@@ -120,7 +120,6 @@ GameWidget::GameWidget(QWidget *parent) :
         else
             progressBar->setValue(progressBar->value()-1);
     });
-    test();
 }
 
 
@@ -134,10 +133,10 @@ void GameWidget::setAdaptedImg(QString path,QLabel *label)
     label->setPixmap(QPixmap::fromImage(image2));//显示
 }
 
-GameWidget::~GameWidget()
-{
-    delete ui;
-}
+//GameWidget::~GameWidget()
+//{
+//    delete ui;
+//}
 
 void GameWidget::keyPressEvent(QKeyEvent *ev)
 {
@@ -163,13 +162,7 @@ int GameWidget::randomGem(bool allowMagic){
         return 0;
     return QRandomGenerator::global()->bounded(1, DIFFICULITY+1);
 }
-void GameWidget::test(){
-    QPushButton *test=new QPushButton(this);
-    this->setStyleSheet("QPushButton{background-color:rgb(200,101,102,100);}");
-    //        anim1->setEndValue(QRect(610, 2, 1055, 1073));
-    test->setGeometry(665, 45, 952, 952);
-    test->show();
-}
+
 void GameWidget::initScene(){
     boardWidget = new QWidget(this);
     boardWidget->show();

@@ -25,7 +25,7 @@ class GameWidget : public QWidget
 public:
     explicit GameWidget(QWidget *parent = nullptr);
     void setAdaptedImg(QString path,QLabel *label);
-    ~GameWidget();
+//    ~GameWidget();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
