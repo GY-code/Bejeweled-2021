@@ -14,5 +14,6 @@
         <file>picture/scorepod.png</file>
         <file>picture/StartPage/background.png</file>
         <file>picture/app_icon.ico</file>
+        <file>picture/StartPage/title.png</file>
     </qresource>
 </RCC>
