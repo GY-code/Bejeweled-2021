@@ -8,10 +8,10 @@ StartPage::StartPage(QWidget *parent) :
     ui->setupUi(this);
     ShowBackground();
     SetButton();
+
     QTimer::singleShot(1000, this, [=](){
         startButton->showContent("Start",40);
     });
-
 }
 
 StartPage::~StartPage()
@@ -38,6 +38,14 @@ void StartPage::SetButton(){
       startButton->setCircle(this->width()/10, this->width()/2, this->height()/2, this->width(), this->height(),\
                               ":/picture/button/ball.png", "", this);
 
+
+      connect(startButton, &HoverButton::clicked, [=](){
+
+          this->hide();
+          gameWidget = new GameWidget;
+          gameWidget->show();
+
+      }) ;
 
 //    recordButton = new MenuButton(this->width()/100*7, this->width()/6, this->height()/2, this->width(), this->height(),\
 //                                  ":/pic/Menu/record.png", ":/pic/Menu/record_hover.png", this);

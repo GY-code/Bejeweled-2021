@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //StartPage w;
-    GameWidget w;
+    StartPage w;
+    //GameWidget w;
     w.show();
 
     return a.exec();

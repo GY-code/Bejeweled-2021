@@ -8,6 +8,8 @@
 #include <QImage>
 #include <QFile>
 #include "hoverbutton.h"
+#include "gamewidget.h"
+
 namespace Ui {
 class StartPage;
 }
@@ -19,6 +21,7 @@ class StartPage : public QWidget
 public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
+    GameWidget* gameWidget;
 
 private:
     Ui::StartPage *ui;
