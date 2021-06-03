@@ -167,8 +167,8 @@ void GameWidget::initScene(){
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
+    QParallelAnimationGroup *group=new QParallelAnimationGroup;
     for(int j = 7; j >=0; --j){
-        QParallelAnimationGroup *group=new QParallelAnimationGroup;
         for(int i = 0; i <8 ; ++i){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
             gems[i][j] = new Gem(gemBoard[i][j], 118, i, j , boardWidget);
@@ -176,21 +176,17 @@ void GameWidget::initScene(){
             //gems[i][j]->installEventFilter(this);
             connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
-        group->start(QAbstractAnimation::DeleteWhenStopped);
-        Sleep(200);
     }
+    group->start(QAbstractAnimation::DeleteWhenStopped);
 }
-
-
 
 QPropertyAnimation* GameWidget::fallAnimation(Gem *gem, int h){
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", boardWidget);
-    animation->setDuration(400);
-    animation->setStartValue(QRect(gem->geometry().x(), gem->geometry().y()-118*h, gem->width(), gem->height()));
+    animation->setDuration((int)(sqrt((8-h)*300+550)*20));
+    animation->setStartValue(QRect(gem->geometry().x(), gem->geometry().y()-118*h-(8-h)*30, gem->width(), gem->height()));
     animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y(), gem->width(), gem->height()));
-    animation->setEasingCurve(QEasingCurve::InQuad);
+    animation->setEasingCurve(QEasingCurve::Custom);
     return animation;
-
 }
 
 bool GameWidget::eventFilter(QObject *watched, QEvent *event){              //动画进行中禁用点击事件
