@@ -11,7 +11,6 @@
 #include <QTimer>
 #include <hoverbutton.h>
 #include <myprobar.h>
-
 #include <QRandomGenerator>
 #include "gem.h"
 #include<QTime>
@@ -26,6 +25,7 @@ class GameWidget : public QWidget
 public:
     explicit GameWidget(QWidget *parent = nullptr);
     void setAdaptedImg(QString path,QLabel *label);
+    void setupScene();
 //    ~GameWidget();
 
 protected:
@@ -50,6 +50,8 @@ private:
 
 
     Ui::GameWidget *ui;
+signals:
+    void showStartPage();
 };
 
 #endif // GAMEWIDGET_H

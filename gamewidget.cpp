@@ -6,6 +6,8 @@ GameWidget::GameWidget(QWidget *parent) :
     ui(new Ui::GameWidget)
 {
     ui->setupUi(this);
+}
+void GameWidget::setupScene(){
     //禁用最大化按钮、设置窗口大小固定
     this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     this->setFixedSize(this->width(),this->height());
@@ -47,6 +49,20 @@ GameWidget::GameWidget(QWidget *parent) :
     pauseButton->setImage(":/picture/3balls/ball3.png",nullptr,ui->pauseLbl->width(),ui->pauseLbl->height(),ui->pauseLbl);
     pauseButton->showContent("PAUSE",20);
     pauseButton->show();
+
+    connect(menuButton, &HoverButton::clicked, [=](){
+        this->hide();
+        if(selectedLbl)
+            delete  selectedLbl;
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                delete gems[i][j];
+            }
+        }
+        delete boardWidget;
+        delete this;
+        showStartPage();
+    }) ;
 
 
     //设置鼠标-普通
@@ -120,7 +136,6 @@ GameWidget::GameWidget(QWidget *parent) :
             progressBar->setValue(progressBar->value()-1);
     });
 }
-
 
 //将path的图片放置到label上，自适应label大小
 void GameWidget::setAdaptedImg(QString path,QLabel *label)

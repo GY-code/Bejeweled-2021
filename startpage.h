@@ -22,7 +22,7 @@ class StartPage : public QWidget
 public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
-    GameWidget* gameWidget;
+    GameWidget* gameWidget=new GameWidget;
     QPropertyAnimation *bkAnim;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);

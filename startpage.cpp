@@ -27,7 +27,6 @@ StartPage::StartPage(QWidget *parent) :
     this->setPalette(palette);
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
-
     QTimer::singleShot(1500, this, [=](){
         SetButton();
         startButton->showContent("Start",40);
@@ -37,7 +36,7 @@ StartPage::StartPage(QWidget *parent) :
         group->addAnimation(startButton->textAnim);
         group->addAnimation(recordButton->textAnim);
         group->addAnimation(settingButton->textAnim);
-        group->start();
+        group->start(QAbstractAnimation::DeleteWhenStopped);
         ShowTitle();
     });
 
@@ -59,7 +58,7 @@ void StartPage::ShowTitle(){
     animation->setStartValue(QRect(title->x(), title->y(), title->width(), title->height()));
     animation->setEndValue(QRect(title->x(), 100, title->width(), title->height()));
     animation->setEasingCurve(QEasingCurve::OutExpo);
-    animation->start();
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 
 
 }
@@ -84,11 +83,15 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
-
     connect(startButton, &HoverButton::clicked, [=](){
         this->hide();
-        gameWidget = new GameWidget;
+        gameWidget->setupScene();
         gameWidget->show();
+    }) ;
+
+    connect(gameWidget, &GameWidget::showStartPage, [=](){
+        qDebug()<<"show";
+        this->show();
     }) ;
 
 }
