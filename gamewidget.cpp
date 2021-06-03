@@ -55,8 +55,8 @@ GameWidget::GameWidget(QWidget *parent) :
 
     //进度条
     MyProBar* progressBar = new MyProBar(this);
-    progressBar->setRange(0,30000);
-    progressBar->setValue(30000);
+    progressBar->setRange(0,10000);
+    progressBar->setValue(10000);
     progressBar->setTextVisible(false);
     progressBar->show();
     //动画
@@ -110,7 +110,7 @@ GameWidget::GameWidget(QWidget *parent) :
 
     //开始记时
     QTimer *progressTimer = new QTimer(this);
-    progressTimer->setInterval(50);
+    progressTimer->setInterval(15);
     progressTimer->start();
     connect(progressTimer, &QTimer::timeout, [=](){
         if(progressBar->value() == 0){
@@ -171,7 +171,7 @@ void GameWidget::initScene(){
         for(int j = 0; j <8 ; ++j){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
             gems[i][j] = new Gem(gemBoard[i][j], 118, i, j, boardWidget);
-            gems[i][j]->installEventFilter(this);
+            //gems[i][j]->installEventFilter(this);
             //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
     for(int i = 0; i < 7; ++i)

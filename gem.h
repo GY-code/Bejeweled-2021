@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QMovie>
+#include <QDebug>
+
 class Gem:public QPushButton
 {
     Q_OBJECT
