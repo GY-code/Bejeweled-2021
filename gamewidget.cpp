@@ -55,8 +55,8 @@ GameWidget::GameWidget(QWidget *parent) :
 
     //进度条
     MyProBar* progressBar = new MyProBar(this);
-    progressBar->setRange(0,4000);
-    progressBar->setValue(4000);
+    progressBar->setRange(0,30000);
+    progressBar->setValue(30000);
     progressBar->setTextVisible(false);
     progressBar->show();
     //动画
@@ -104,14 +104,13 @@ GameWidget::GameWidget(QWidget *parent) :
     group->addAnimation(anim5);
     group->addAnimation(anim6);
     group->start();
-    group->start();
+
     Sleep(500);
     initScene();
 
-
     //开始记时
     QTimer *progressTimer = new QTimer(this);
-    progressTimer->setInterval(10);
+    progressTimer->setInterval(50);
     progressTimer->start();
     connect(progressTimer, &QTimer::timeout, [=](){
         if(progressBar->value() == 0){
@@ -166,12 +165,12 @@ int GameWidget::randomGem(bool allowMagic){
 void GameWidget::initScene(){
     boardWidget = new QWidget(this);
     boardWidget->show();
-    boardWidget->setGeometry(665, 45, 952, 952);
+    boardWidget->setGeometry(665, 44, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
     for(int i = 0; i < 8; ++i)
         for(int j = 0; j <8 ; ++j){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
-            gems[i][j] = new Gem(gemBoard[i][j], 119, i, j, boardWidget);
+            gems[i][j] = new Gem(gemBoard[i][j], 118, i, j, boardWidget);
             gems[i][j]->installEventFilter(this);
             //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }

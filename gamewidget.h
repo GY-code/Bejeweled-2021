@@ -41,7 +41,6 @@ private:
     void initScene();
     int DIFFICULITY=5;
     void fall();
-    void test();
     void fallAnimation(Gem *gem, int h);
     void Sleep(int msec);
 

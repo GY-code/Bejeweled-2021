@@ -10,6 +10,8 @@ Gem::Gem(int type, int len, int x, int y, QWidget *parent, int offset) : QPushBu
 
     connect(this, &Gem::clicked, [=](bool){
         this->mouseClicked(this);
+        setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(path_dynamic[type]));
+        setIconSize(QSize(len, len));
     });
 }
 
