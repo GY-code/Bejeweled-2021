@@ -171,10 +171,10 @@ void GameWidget::initScene(){
         QParallelAnimationGroup *group=new QParallelAnimationGroup;
         for(int i = 0; i <8 ; ++i){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
-            gems[i][j] = new Gem(gemBoard[i][j], 118, i, -1 , boardWidget);
+            gems[i][j] = new Gem(gemBoard[i][j], 118, i, j , boardWidget);
             group->addAnimation(fallAnimation(gems[i][j],j+1));
             //gems[i][j]->installEventFilter(this);
-            //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
+            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
         group->start(QAbstractAnimation::DeleteWhenStopped);
         Sleep(200);
@@ -184,10 +184,10 @@ void GameWidget::initScene(){
 
 
 QPropertyAnimation* GameWidget::fallAnimation(Gem *gem, int h){
-    QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", this);
+    QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", boardWidget);
     animation->setDuration(400);
-    animation->setStartValue(gem->geometry());
-    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y() + 118*h+2, gem->width(), gem->height()));
+    animation->setStartValue(QRect(gem->geometry().x(), gem->geometry().y()-118*h, gem->width(), gem->height()));
+    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y(), gem->width(), gem->height()));
     animation->setEasingCurve(QEasingCurve::InQuad);
     return animation;
 
@@ -205,4 +205,102 @@ void GameWidget::Sleep(int msec)
     QTime dieTime = QTime::currentTime().addMSecs(msec);
     while( QTime::currentTime() < dieTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
+void GameWidget::act(Gem* gem){
+    int len = 118;
+    int gemX = gem->x;
+    int gemY = gem->y;
+    //如果当前没有宝石被选中，则让点击的宝石选中
+    if(selectedX==-1 && selectedY==-1){
+        selectedX = gemX;
+        selectedY = gemY;
+
+        //加选框
+        selectedLbl = new QLabel(boardWidget);
+        QImage image("://picture/GameWidget/selected.png");
+        selectedLbl->setPixmap(QPixmap::fromImage(image));
+        selectedLbl->setGeometry(len*selectedX, len*selectedY, len, len);
+        selectedLbl->setAttribute(Qt::WA_TransparentForMouseEvents);
+        selectedLbl->show();
+        //旋转gif
+        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
+        gems[selectedX][selectedY]->gifLabel = new QLabel(gems[selectedX][selectedY]);
+        gems[selectedX][selectedY]->gifLabel->setGeometry(0,0,gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height());
+        gems[selectedX][selectedY]->gif = new QMovie(gems[selectedX][selectedY]->path_dynamic[gems[selectedX][selectedY]->type], QByteArray(), gems[selectedX][selectedY]);
+        gems[selectedX][selectedY]->gif->setScaledSize(QSize(gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height()));
+        gems[selectedX][selectedY]->gifLabel->setMovie(gems[selectedX][selectedY]->gif);
+        gems[selectedX][selectedY]->gifLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+        gems[selectedX][selectedY]->gifLabel->show();
+        gems[selectedX][selectedY]->gif->start();
+
+    }
+    //如果有宝石选中，并点击了邻居宝石，则让宝石交换
+    else if(  ( (selectedX==gemX)&&(abs(selectedY-gemY)==1)  )
+                         || ( (selectedY==gemY)&&(abs(selectedX-gemX)==1) ) ){
+
+        //去选框
+        selectedLbl->clear();
+        //处理宝石交换
+        int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
+        int width1 = gems[selectedX][selectedY]->width();int height1 = gems[selectedX][selectedY]->height();
+
+        int xVal2 = gems[gemX][gemY]->x*118;int yVal2 = gems[gemX][gemY]->y*118;
+        int width2 = gems[gemX][gemY]->width();int height2 = gems[gemX][gemY]->height();
+
+        //宝石
+        QParallelAnimationGroup* group = new QParallelAnimationGroup;
+        QPropertyAnimation *anim1 = new QPropertyAnimation(gems[selectedX][selectedY],"geometry",boardWidget);
+        anim1->setDuration(300);
+        anim1->setStartValue(QRect(xVal1,yVal1,width1,height1));
+        anim1->setEndValue(QRect(xVal2,yVal2,width2,height2));
+        anim1->setEasingCurve(QEasingCurve::Custom);
+        //宝石动图
+        QPropertyAnimation *anim11 = new QPropertyAnimation(gems[selectedX][selectedY]->gifLabel,"geometry",boardWidget);
+        anim11->setDuration(300);
+        anim11->setStartValue(QRect(xVal1,yVal1,width1,height1));
+        anim11->setEndValue(QRect(xVal2,yVal2,width2,height2));
+        anim11->setEasingCurve(QEasingCurve::Custom);
+        //被交换宝石
+        QPropertyAnimation *anim2 = new QPropertyAnimation(gems[gemX][gemY],"geometry",boardWidget);
+        anim2->setDuration(300);
+        anim2->setStartValue(QRect(xVal2,yVal2,width2,height2));
+        anim2->setEndValue(QRect(xVal1,yVal1,width1,height1));
+        anim2->setEasingCurve(QEasingCurve::Custom);
+
+        group->addAnimation(anim1);
+        group->addAnimation(anim11);
+        group->addAnimation(anim2);
+        group->start();
+
+        //静止
+        gems[selectedX][selectedY]->gif->stop();
+        gems[selectedX][selectedY]->gifLabel->clear();
+
+        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
+        gems[selectedX][selectedY]->setIconSize(QSize(len, len));
+
+        std::swap(gems[gemX][gemY],gems[selectedX][selectedY]);
+        std::swap(gems[gemX][gemY]->x,gems[selectedX][selectedY]->x);
+        std::swap(gems[gemX][gemY]->y,gems[selectedX][selectedY]->y);
+
+
+        selectedX=-1;
+        selectedY=-1;
+    }
+    //如果当前有选中的宝石，点击了非邻居宝石，则取消选中
+    else
+    {
+        //去选框
+        selectedLbl->clear();
+        //静止
+        gems[selectedX][selectedY]->gif->stop();
+        gems[selectedX][selectedY]->gifLabel->clear();
+
+        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
+        gems[selectedX][selectedY]->setIconSize(QSize(len, len));
+
+        selectedX=-1;
+        selectedY=-1;
+    }
 }

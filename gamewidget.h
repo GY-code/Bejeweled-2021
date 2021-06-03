@@ -44,6 +44,9 @@ private:
     void fall();
     QPropertyAnimation* fallAnimation(Gem *gem, int h);
     void Sleep(int msec);
+    void act(Gem* gem);
+    int selectedX=-1,selectedY=-1;
+    QLabel* selectedLbl;
 
 
     Ui::GameWidget *ui;

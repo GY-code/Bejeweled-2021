@@ -18,9 +18,9 @@ public:
     int x, y;
     explicit Gem(int type, int len, int x, int y, QWidget *parent = nullptr, int offset=0);
     void bomb();
-private:
     QMovie* gif;
     QLabel* gifLabel;
+private:
 
 signals:
     void mouseClicked(Gem*);

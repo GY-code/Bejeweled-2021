@@ -9,15 +9,7 @@ Gem::Gem(int type, int len, int x, int y, QWidget *parent, int offset) : QPushBu
     setIconSize(QSize(len, len));
 
     connect(this, &Gem::clicked, [=](){
-        setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
-        gifLabel = new QLabel(this);
-        gifLabel->setGeometry(0,0,this->width(), this->height());
-        gif = new QMovie(path_dynamic[type], QByteArray(), this);
-        gif->setScaledSize(QSize(this->width(), this->height()));
-        gifLabel->setMovie(gif);
-        gifLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-        gifLabel->show();
-        gif->start();
+        this->mouseClicked(this);
     });
 }
 
