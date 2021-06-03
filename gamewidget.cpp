@@ -103,7 +103,7 @@ GameWidget::GameWidget(QWidget *parent) :
     group->addAnimation(anim4);
     group->addAnimation(anim5);
     group->addAnimation(anim6);
-    group->start();
+    group->start(QAbstractAnimation::DeleteWhenStopped);
 
     Sleep(500);
     initScene();
@@ -115,7 +115,7 @@ GameWidget::GameWidget(QWidget *parent) :
     connect(progressTimer, &QTimer::timeout, [=](){
         if(progressBar->value() == 0){
         }
-            //end();
+        //end();
         else
             progressBar->setValue(progressBar->value()-1);
     });
@@ -167,37 +167,30 @@ void GameWidget::initScene(){
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
-    for(int i = 0; i < 8; ++i)
-        for(int j = 0; j <8 ; ++j){
+    for(int j = 7; j >=0; --j){
+        QParallelAnimationGroup *group=new QParallelAnimationGroup;
+        for(int i = 0; i <8 ; ++i){
             gemBoard[i][j] = gemBoard[i][j] % DIFFICULITY + 1;
-            gems[i][j] = new Gem(gemBoard[i][j], 118, i, j, boardWidget);
+            gems[i][j] = new Gem(gemBoard[i][j], 118, i, -1 , boardWidget);
+            group->addAnimation(fallAnimation(gems[i][j],j+1));
             //gems[i][j]->installEventFilter(this);
             //            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
-    for(int i = 0; i < 7; ++i)
-        for(int j = 7; j >= 0; --j){
-            fallboard[i][j]=j;
-        }
-}
-void GameWidget::fall(){
-
-    for(int i = 0; i < 7; ++i)
-        for(int j = 7; j >= 0; --j){
-            fallAnimation(gems[i][j], fallboard[i][j]);
-        }
+        group->start(QAbstractAnimation::DeleteWhenStopped);
+        Sleep(200);
+    }
 }
 
 
-void GameWidget::fallAnimation(Gem *gem, int h){
+
+QPropertyAnimation* GameWidget::fallAnimation(Gem *gem, int h){
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", this);
-    animation->setDuration(500);
+    animation->setDuration(400);
     animation->setStartValue(gem->geometry());
-    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y() + 119*h+2, gem->width(), gem->height()));
+    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y() + 118*h+2, gem->width(), gem->height()));
     animation->setEasingCurve(QEasingCurve::InQuad);
-    animation->start();
-    QTimer::singleShot(1000, this, [=](){
-        delete animation;
-    });
+    return animation;
+
 }
 
 bool GameWidget::eventFilter(QObject *watched, QEvent *event){              //动画进行中禁用点击事件

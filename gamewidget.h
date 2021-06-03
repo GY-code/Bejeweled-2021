@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QSequentialAnimationGroup>
 #include <QIcon>
 #include <QTimer>
 #include <hoverbutton.h>
@@ -41,7 +42,7 @@ private:
     void initScene();
     int DIFFICULITY=5;
     void fall();
-    void fallAnimation(Gem *gem, int h);
+    QPropertyAnimation* fallAnimation(Gem *gem, int h);
     void Sleep(int msec);
 
 
