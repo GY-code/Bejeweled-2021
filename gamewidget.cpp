@@ -34,17 +34,17 @@ void GameWidget::setupScene(){
     ui->hintLbl->setVisible(false);
     ui->pauseLbl->setVisible(false);
 
-    HoverButton *menuButton = new HoverButton(this);
+    menuButton = new HoverButton(this);
     menuButton->setGeometry(ui->menuLbl->geometry());
     menuButton->setImage(":/picture/3balls/ball1.png",nullptr,ui->menuLbl->width(),ui->menuLbl->height(),ui->menuLbl);
     menuButton->showContent("MENU",20);
     menuButton->show();
-    HoverButton *hintButton = new HoverButton(this);
+    hintButton = new HoverButton(this);
     hintButton->setGeometry(ui->hintLbl->geometry());
     hintButton->setImage(":/picture/3balls/ball2.png",nullptr,ui->hintLbl->width(),ui->hintLbl->height(),ui->hintLbl);
     hintButton->showContent("HINT",30);
     hintButton->show();
-    HoverButton *pauseButton = new HoverButton(this);
+    pauseButton = new HoverButton(this);
     pauseButton->setGeometry(ui->pauseLbl->geometry());
     pauseButton->setImage(":/picture/3balls/ball3.png",nullptr,ui->pauseLbl->width(),ui->pauseLbl->height(),ui->pauseLbl);
     pauseButton->showContent("PAUSE",20);
@@ -52,6 +52,13 @@ void GameWidget::setupScene(){
 
     connect(menuButton, &HoverButton::clicked, [=](){
         this->hide();
+        showStartPage();
+        if(menuButton)
+            delete menuButton;
+        if(hintButton)
+            delete hintButton;
+        if(pauseButton)
+            delete pauseButton;
         if(selectedLbl)
             delete  selectedLbl;
         for(int i=0;i<8;i++){
@@ -60,8 +67,6 @@ void GameWidget::setupScene(){
             }
         }
         delete boardWidget;
-        delete this;
-        showStartPage();
     }) ;
 
 
@@ -248,7 +253,7 @@ void GameWidget::act(Gem* gem){
     }
     //如果有宝石选中，并点击了邻居宝石，则让宝石交换
     else if(  ( (selectedX==gemX)&&(abs(selectedY-gemY)==1)  )
-                         || ( (selectedY==gemY)&&(abs(selectedX-gemX)==1) ) ){
+              || ( (selectedY==gemY)&&(abs(selectedX-gemX)==1) ) ){
 
         //去选框
         selectedLbl->clear();

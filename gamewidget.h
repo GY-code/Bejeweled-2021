@@ -37,7 +37,10 @@ private:
     unsigned int gemBoard[8][8];
     Gem* gems[8][8];
     int fallboard[8][8];
-    QWidget* boardWidget;
+    QWidget* boardWidget=nullptr;
+    HoverButton *menuButton=nullptr;
+    HoverButton *hintButton=nullptr;
+    HoverButton *pauseButton=nullptr;
     int randomGem(bool allowMagic);
     void initScene();
     int DIFFICULITY=5;
@@ -46,7 +49,8 @@ private:
     void Sleep(int msec);
     void act(Gem* gem);
     int selectedX=-1,selectedY=-1;
-    QLabel* selectedLbl;
+    QLabel* selectedLbl=nullptr;
+
 
 
     Ui::GameWidget *ui;
