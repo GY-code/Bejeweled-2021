@@ -4,13 +4,13 @@ Gem::Gem(int type, int len, int x, int y, QWidget *parent, int offset) : QPushBu
     initialPath();
 
     //setGeometry(len*x, len*(y+offset), len, len);
-    oriX = LEN*x;  oriY = LEN*(y+offset);
+    oriX = LEN*x;  oriY = LEN*(y+offset);//setGeometry移至动画，现在创建Gem需要自己setgeometry
 
     setVisible(true);
     setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(path_stable[type]));
     setIconSize(QSize(len, len));
 
-    connect(this, &Gem::clicked, [=](){
+    connect(this, &Gem::pressed, [=](){
         this->mouseClicked(this);
     });
 }

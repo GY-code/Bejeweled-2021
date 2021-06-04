@@ -14,7 +14,6 @@ void GameWidget::setupScene(){
     //全屏
     QWidget::showFullScreen();
 
-
     //窗口基本设置
     setWindowFlag(Qt::Window);  //设置为独立窗口
     setWindowTitle("Bejeweled");
@@ -29,7 +28,7 @@ void GameWidget::setupScene(){
     setAdaptedImg(":/picture/backdrop00.jpg",ui->oriBkLbl);
     setAdaptedImg(":/picture/frame.png",ui->borderLbl);
     setAdaptedImg(":/picture/scorepod.png",ui->scoreLbl);
-
+    //辅助label，不用管
     ui->menuLbl->setVisible(false);
     ui->hintLbl->setVisible(false);
     ui->pauseLbl->setVisible(false);
@@ -50,11 +49,8 @@ void GameWidget::setupScene(){
     pauseButton->showContent("PAUSE",20);
     pauseButton->show();
 
-
-
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
-
 
     //进度条
     progressBar = new MyProBar(this);
@@ -62,6 +58,7 @@ void GameWidget::setupScene(){
     progressBar->setValue(10000);
     progressBar->setTextVisible(false);
     progressBar->show();
+
     //动画
 
     //棋盘
@@ -117,8 +114,9 @@ void GameWidget::setupScene(){
     progressTimer->start();
     connect(progressTimer, &QTimer::timeout, [=](){
         if(progressBar->value() == 0){
+
+            //计时结束
         }
-        //end();
         else
             progressBar->setValue(progressBar->value()-1);
     });
@@ -157,11 +155,6 @@ void GameWidget::setAdaptedImg(QString path,QLabel *label)
     label->setPixmap(QPixmap::fromImage(image2));//显示
 }
 
-//GameWidget::~GameWidget()
-//{
-//    delete ui;
-//}
-
 void GameWidget::keyPressEvent(QKeyEvent *ev)
 {
     //Esc退出全屏
@@ -192,6 +185,7 @@ void GameWidget::initScene(){
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
     QRandomGenerator::global()->fillRange(gemBoard[0], 64);
+    //掉落动画
     QParallelAnimationGroup *group=new QParallelAnimationGroup;
     for(int j = 7; j >=0; --j){
         for(int i = 0; i <8 ; ++i){
@@ -202,14 +196,14 @@ void GameWidget::initScene(){
             connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
     }
-
     group->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 QPropertyAnimation* GameWidget::fallAnimation(Gem *gem, int h){
+    //每一行的掉落动画
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", boardWidget);
-    animation->setDuration((int)(sqrt((8-h)*300+550)*20));
-    animation->setStartValue(QRect(gem->oriX, gem->oriY-118*h-(8-h)*30, LEN, LEN));
+    animation->setDuration((int)(sqrt((8-h)*300+550)*20));//
+    animation->setStartValue(QRect(gem->oriX, gem->oriY-118*h-(8-h)*30, LEN, LEN));//
     animation->setEndValue(QRect(gem->oriX, gem->oriY, LEN, LEN));
     animation->setEasingCurve(QEasingCurve::Linear);
     return animation;
@@ -302,6 +296,7 @@ void GameWidget::act(Gem* gem){
         gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
         gems[selectedX][selectedY]->setIconSize(QSize(len, len));
 
+        //?
         std::swap(gems[gemX][gemY],gems[selectedX][selectedY]);
         std::swap(gems[gemX][gemY]->x,gems[selectedX][selectedY]->x);
         std::swap(gems[gemX][gemY]->y,gems[selectedX][selectedY]->y);
