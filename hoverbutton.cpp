@@ -48,7 +48,7 @@ void HoverButton::setCircle(int r, int x, int y, int width, int height, QString 
 {
     setParent(parent);
     setGeometry(x - r, y - r, 2*r, 2*r);
-    setImage(path, path2, 2*r, 2*r);    
+    setImage(path, path2, 2*r, 2*r);
     textAnim->setParent(parent);
     textAnim->setTargetObject(this);
     textAnim->setDuration(2000);
@@ -61,9 +61,7 @@ void HoverButton::setCircle(int r, int x, int y, int width, int height, QString 
 
 void HoverButton::showContent(QString text,int size){
     setVisible(true);
-    QTimer::singleShot(000, this, [=](){
-        setLabel(text,size);
-    });
+    setLabel(text,size);
 }
 
 bool HoverButton::event(QEvent *e) {

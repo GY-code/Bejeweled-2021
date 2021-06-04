@@ -7,6 +7,8 @@
 #include <QMovie>
 #include <QDebug>
 
+#define LEN 118
+
 class Gem:public QPushButton
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public:
     void initialPath();
     int type;
     int x, y;
+    int oriX,oriY;
     explicit Gem(int type, int len, int x, int y, QWidget *parent = nullptr, int offset=0);
     void bomb();
     QMovie* gif;

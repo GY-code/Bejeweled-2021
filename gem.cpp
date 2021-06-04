@@ -3,7 +3,9 @@ Gem::Gem(int type, int len, int x, int y, QWidget *parent, int offset) : QPushBu
 {
     initialPath();
 
-    setGeometry(len*x, len*(y+offset), len, len);
+    //setGeometry(len*x, len*(y+offset), len, len);
+    oriX = LEN*x;  oriY = LEN*(y+offset);
+
     setVisible(true);
     setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(path_stable[type]));
     setIconSize(QSize(len, len));

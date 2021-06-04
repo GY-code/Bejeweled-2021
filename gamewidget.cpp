@@ -50,24 +50,6 @@ void GameWidget::setupScene(){
     pauseButton->showContent("PAUSE",20);
     pauseButton->show();
 
-    connect(menuButton, &HoverButton::clicked, [=](){
-        this->hide();
-        showStartPage();
-        if(menuButton)
-            delete menuButton;
-        if(hintButton)
-            delete hintButton;
-        if(pauseButton)
-            delete pauseButton;
-        if(selectedLbl)
-            delete  selectedLbl;
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                delete gems[i][j];
-            }
-        }
-        delete boardWidget;
-    }) ;
 
 
     //设置鼠标-普通
@@ -75,7 +57,7 @@ void GameWidget::setupScene(){
 
 
     //进度条
-    MyProBar* progressBar = new MyProBar(this);
+    progressBar = new MyProBar(this);
     progressBar->setRange(0,10000);
     progressBar->setValue(10000);
     progressBar->setTextVisible(false);
@@ -93,7 +75,7 @@ void GameWidget::setupScene(){
     anim2->setDuration(500);
     anim2->setStartValue(QRect(270, 0, 327, 178));
     anim2->setEndValue(QRect(270, 80, 327, 178));
-    anim2->setEasingCurve(QEasingCurve::Custom);
+    anim2->setEasingCurve(QEasingCurve::InQuad);
     //进度条
     QPropertyAnimation* anim3 = new QPropertyAnimation(progressBar,"geometry");
     anim3->setDuration(500);
@@ -130,7 +112,7 @@ void GameWidget::setupScene(){
     initScene();
 
     //开始记时
-    QTimer *progressTimer = new QTimer(this);
+    progressTimer = new QTimer(this);
     progressTimer->setInterval(15);
     progressTimer->start();
     connect(progressTimer, &QTimer::timeout, [=](){
@@ -140,6 +122,29 @@ void GameWidget::setupScene(){
         else
             progressBar->setValue(progressBar->value()-1);
     });
+    connect(menuButton, &HoverButton::clicked, [=](){
+        this->hide();
+        showStartPage();
+        if(menuButton)
+            delete menuButton;
+        if(hintButton)
+            delete hintButton;
+        if(pauseButton)
+            delete pauseButton;
+        if(progressTimer)
+            delete progressTimer;
+        if(progressBar)
+            delete progressBar;
+        if(selectedLbl)
+            delete  selectedLbl;
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                delete gems[i][j];
+            }
+        }
+        delete boardWidget;
+    }) ;
+
 }
 
 //将path的图片放置到label上，自适应label大小
@@ -197,15 +202,16 @@ void GameWidget::initScene(){
             connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
         }
     }
+
     group->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 QPropertyAnimation* GameWidget::fallAnimation(Gem *gem, int h){
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", boardWidget);
     animation->setDuration((int)(sqrt((8-h)*300+550)*20));
-    animation->setStartValue(QRect(gem->geometry().x(), gem->geometry().y()-118*h-(8-h)*30, gem->width(), gem->height()));
-    animation->setEndValue(QRect(gem->geometry().x(), gem->geometry().y(), gem->width(), gem->height()));
-    animation->setEasingCurve(QEasingCurve::Custom);
+    animation->setStartValue(QRect(gem->oriX, gem->oriY-118*h-(8-h)*30, LEN, LEN));
+    animation->setEndValue(QRect(gem->oriX, gem->oriY, LEN, LEN));
+    animation->setEasingCurve(QEasingCurve::Linear);
     return animation;
 }
 
@@ -270,19 +276,19 @@ void GameWidget::act(Gem* gem){
         anim1->setDuration(300);
         anim1->setStartValue(QRect(xVal1,yVal1,width1,height1));
         anim1->setEndValue(QRect(xVal2,yVal2,width2,height2));
-        anim1->setEasingCurve(QEasingCurve::Custom);
+        anim1->setEasingCurve(QEasingCurve::Linear);
         //宝石动图
         QPropertyAnimation *anim11 = new QPropertyAnimation(gems[selectedX][selectedY]->gifLabel,"geometry",boardWidget);
         anim11->setDuration(300);
         anim11->setStartValue(QRect(xVal1,yVal1,width1,height1));
         anim11->setEndValue(QRect(xVal2,yVal2,width2,height2));
-        anim11->setEasingCurve(QEasingCurve::Custom);
+        anim11->setEasingCurve(QEasingCurve::Linear);
         //被交换宝石
         QPropertyAnimation *anim2 = new QPropertyAnimation(gems[gemX][gemY],"geometry",boardWidget);
         anim2->setDuration(300);
         anim2->setStartValue(QRect(xVal2,yVal2,width2,height2));
         anim2->setEndValue(QRect(xVal1,yVal1,width1,height1));
-        anim2->setEasingCurve(QEasingCurve::Custom);
+        anim2->setEasingCurve(QEasingCurve::Linear);
 
         group->addAnimation(anim1);
         group->addAnimation(anim11);

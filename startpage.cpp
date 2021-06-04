@@ -27,27 +27,28 @@ StartPage::StartPage(QWidget *parent) :
     this->setPalette(palette);
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
-    QTimer::singleShot(1500, this, [=](){
+//    QTimer::singleShot(1500, this, [=](){
+        QParallelAnimationGroup *group = new QParallelAnimationGroup;
+        group->addAnimation(ShowBackground());
         SetButton();
         startButton->showContent("Start",40);
         recordButton->showContent("Record",20);
         settingButton->showContent("Setting",20);
-        QParallelAnimationGroup *group = new QParallelAnimationGroup;
         group->addAnimation(startButton->textAnim);
         group->addAnimation(recordButton->textAnim);
         group->addAnimation(settingButton->textAnim);
+        group->addAnimation(ShowTitle());
+        Sleep(200);
         group->start(QAbstractAnimation::DeleteWhenStopped);
-        ShowTitle();
-    });
+//    });
 
-    ShowBackground();
 }
 
 StartPage::~StartPage()
 {
     delete ui;
 }
-void StartPage::ShowTitle(){
+QPropertyAnimation * StartPage::ShowTitle(){
     QPixmap pix;
     QLabel *title = new QLabel(this);
     title->setGeometry(this->width()/2-903/2,-title->height(),903,200);
@@ -58,21 +59,20 @@ void StartPage::ShowTitle(){
     animation->setStartValue(QRect(title->x(), title->y(), title->width(), title->height()));
     animation->setEndValue(QRect(title->x(), 100, title->width(), title->height()));
     animation->setEasingCurve(QEasingCurve::OutExpo);
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
-
+    return animation;
 
 }
-void StartPage::ShowBackground(){
+QPropertyAnimation *  StartPage::ShowBackground(){
     QPixmap pix;
     QLabel *background = new QLabel(this);
     bkAnim = new QPropertyAnimation(background, "geometry",this);
     setBkImg("://picture/StartPage/background.png",background);
     background->show();
-    bkAnim->setDuration(3000);
+    bkAnim->setDuration(2000);
     bkAnim->setStartValue(QRect(background->x(), background->y(), background->width(), background->height()));
     bkAnim->setEndValue(QRect(background->x(), this->height() - background->height(), background->width(), background->height()));
     bkAnim->setEasingCurve(QEasingCurve::InOutCubic);
-    bkAnim->start(QAbstractAnimation::DeleteWhenStopped);
+    return bkAnim;
 }
 
 void StartPage::SetButton(){
@@ -90,7 +90,6 @@ void StartPage::SetButton(){
     }) ;
 
     connect(gameWidget, &GameWidget::showStartPage, [=](){
-        qDebug()<<"show";
         this->show();
     }) ;
 
@@ -131,4 +130,10 @@ void StartPage::keyPressEvent(QKeyEvent *ev)
         return;
     }
     QWidget::keyPressEvent(ev);
+}
+void StartPage::Sleep(int msec)
+{
+    QTime dieTime = QTime::currentTime().addMSecs(msec);
+    while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }

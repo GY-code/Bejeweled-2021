@@ -41,6 +41,8 @@ private:
     HoverButton *menuButton=nullptr;
     HoverButton *hintButton=nullptr;
     HoverButton *pauseButton=nullptr;
+    MyProBar* progressBar=nullptr;
+    QTimer *progressTimer=nullptr;
     int randomGem(bool allowMagic);
     void initScene();
     int DIFFICULITY=5;

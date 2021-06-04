@@ -30,11 +30,12 @@ private:
     Ui::StartPage *ui;
     HoverButton *startButton, *recordButton, *settingButton;
     QLabel *background;
-    void ShowBackground();
-    void ShowTitle();
+    QPropertyAnimation *  ShowBackground();
+    QPropertyAnimation * ShowTitle();
     void SetButton();
     void setBkImg(QString path,QLabel *label);
     void setAdaptedImg(QString path,QLabel *label);
+    void Sleep(int msec);
 
 };
 
