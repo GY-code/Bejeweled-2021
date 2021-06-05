@@ -10,7 +10,7 @@
 #include "hoverbutton.h"
 #include "gamewidget.h"
 #include <QTime>
-
+#include"brightWidget.h"
 namespace Ui {
 class StartPage;
 }
@@ -24,6 +24,7 @@ public:
     ~StartPage();
     GameWidget* gameWidget=new GameWidget;
     QPropertyAnimation *bkAnim;
+    brightWidget brightW;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
