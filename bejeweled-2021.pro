@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui multimedia widgets
+QT       += axcontainer
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = bejeweled_2021
@@ -31,7 +32,8 @@ SOURCES += \
     startpage.cpp \
     gamewidget.cpp \
     myprobar.cpp \
-    gem.cpp
+    gem.cpp \
+    volumeWidget.cpp
 
 HEADERS += \
     CGammaRamp.h \
@@ -40,7 +42,8 @@ HEADERS += \
     startpage.h \
     gamewidget.h \
     myprobar.h \
-    gem.h
+    gem.h \
+    volumeWidget.h
 
 FORMS += \
     startpage.ui \
@@ -57,3 +60,5 @@ RESOURCES += \
 DISTFILES += \
     gdi32.dll
 
+
+LIBS += -lole32
