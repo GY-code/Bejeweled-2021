@@ -11,6 +11,8 @@
 #include "gamewidget.h"
 #include <QTime>
 #include"brightWidget.h"
+#include"volumeWidget.h"
+
 namespace Ui {
 class StartPage;
 }
