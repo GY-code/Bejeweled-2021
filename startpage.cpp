@@ -1,5 +1,9 @@
+#include<windows.h>
+#include<stdio.h>
+#include <QDesktopServices>
 #include "startpage.h"
 #include "ui_startpage.h"
+#include "CGammaRamp.h"
 
 StartPage::StartPage(QWidget *parent) :
     QWidget(parent),
