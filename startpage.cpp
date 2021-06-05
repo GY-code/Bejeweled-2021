@@ -13,6 +13,12 @@ StartPage::StartPage(QWidget *parent) :
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
+     gitButton=new HoverButton();
+    documentButton=new HoverButton();
+    bright=new HoverButton();
+    volume=new HoverButton();
+
+    
     startButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     recordButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     settingButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
