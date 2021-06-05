@@ -126,7 +126,7 @@ void StartPage::SetButton(){
 
         if (file.exists())
 
-        {QDesktopServices::openUrl(QUrl::fromLocalFile(""D:/Exp.doc""));
+        {QDesktopServices::openUrl(QUrl::fromLocalFile("D:/Exp.doc"));
         }
     }) ;
 
