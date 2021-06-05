@@ -24,6 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    CGammaRamp.cpp \
+    brightWidget.cpp \
     main.cpp \
     hoverbutton.cpp \
     startpage.cpp \
@@ -32,6 +34,8 @@ SOURCES += \
     gem.cpp
 
 HEADERS += \
+    CGammaRamp.h \
+    brightWidget.h \
     hoverbutton.h \
     startpage.h \
     gamewidget.h \
@@ -49,3 +53,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc
+
+DISTFILES += \
+    gdi32.dll
+
