@@ -28,7 +28,9 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
     Ui::StartPage *ui;
-    HoverButton *startButton, *recordButton, *settingButton;
+    HoverButton *startButton, *recordButton, *settingButton,*documentButton,*gitButton;
+    HoverButton *bright,*volume;
+
     QLabel *background;
     QPropertyAnimation *  ShowBackground();
     QPropertyAnimation * ShowTitle();
