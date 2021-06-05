@@ -122,7 +122,7 @@ void StartPage::SetButton(){
     }) ;
     //打开文档
     connect(documentButton, &HoverButton::clicked, [=](){
-        QFile file("C:/Users/13191/Desktop/zuoye/shujujiegoushijian/dazuoye/guyi2020-bejeweled-2021-master/bejeweled-2021/doc/Exp.doc");
+        QFile file("://doc/Exp.doc");
 
         if (file.exists())
 
