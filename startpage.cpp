@@ -122,11 +122,11 @@ void StartPage::SetButton(){
     }) ;
     //打开文档
     connect(documentButton, &HoverButton::clicked, [=](){
-        QFile file("://doc/Exp.doc");
+        QFile file("D:/Exp.doc");
 
         if (file.exists())
 
-        {QDesktopServices::openUrl(QUrl::fromLocalFile("://doc/Exp.doc"));
+        {QDesktopServices::openUrl(QUrl::fromLocalFile(""D:/Exp.doc""));
         }
     }) ;
 
