@@ -25,6 +25,7 @@ public:
     GameWidget* gameWidget=new GameWidget;
     QPropertyAnimation *bkAnim;
     brightWidget brightW;
+    volumeWidget volumeW;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
