@@ -34,9 +34,18 @@ StartPage::StartPage(QWidget *parent) :
         startButton->showContent("Start",40);
         recordButton->showContent("Record",20);
         settingButton->showContent("Setting",20);
+        gitButton->showContent("Git",10);
+        documentButton->showContent("Document",10);
+        volume->showContent("volueme",10);
+        bright->showContent("brightness",10);
         group->addAnimation(startButton->textAnim);
         group->addAnimation(recordButton->textAnim);
         group->addAnimation(settingButton->textAnim);
+        group->addAnimation(documentButton->textAnim);
+        group->addAnimation(gitButton->textAnim);
+
+        group->addAnimation(bright->textAnim);
+        group->addAnimation(volume->textAnim);
         group->addAnimation(ShowTitle());
         Sleep(200);
         group->start(QAbstractAnimation::DeleteWhenStopped);
@@ -83,6 +92,15 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
+     documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
+                              ":/picture/button/ball.png", "", this);
+    gitButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
+                         ":/picture/button/ball.png", "", this);
+    bright->setCircle(this->width()/50, this->width()/10, this->height()/2+500, this->width(), this->height(),\
+                      ":/picture/button/ball.png", "", this);
+
+    volume->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
+                      ":/picture/button/ball.png", "", this);
     connect(startButton, &HoverButton::clicked, [=](){
         this->hide();
         gameWidget->setupScene();
@@ -91,6 +109,25 @@ void StartPage::SetButton(){
 
     connect(gameWidget, &GameWidget::showStartPage, [=](){
         this->show();
+    }) ;
+    //打开文档
+    connect(documentButton, &HoverButton::clicked, [=](){
+        QFile file("C:/Users/13191/Desktop/zuoye/shujujiegoushijian/dazuoye/guyi2020-bejeweled-2021-master/bejeweled-2021/doc/Exp.doc");
+
+        if (file.exists())
+
+        {QDesktopServices::openUrl(QUrl::fromLocalFile("C:/Users/13191/Desktop/zuoye/shujujiegoushijian/dazuoye/guyi2020-bejeweled-2021-master/bejeweled-2021/doc/Exp.doc"));
+        }
+    }) ;
+
+
+    //访问网页
+    connect(gitButton, &HoverButton::clicked, [=](){
+        QDesktopServices::openUrl(QUrl(QLatin1String("https://gitee.com/guyi2020/bejeweled-2021")));
+    }) ;
+    //亮度调节
+    connect(bright, &HoverButton::clicked, [=](){
+        brightW.show();
     }) ;
 
 }
