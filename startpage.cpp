@@ -140,6 +140,11 @@ void StartPage::SetButton(){
         brightW.show();
     }) ;
 
+    //声音调节
+    connect(volume, &HoverButton::clicked, [=](){
+        volumeW.show();
+    }) ;
+
 }
 //将path的图片放置到label上，自适应label大小
 void StartPage::setAdaptedImg(QString path,QLabel *label)
