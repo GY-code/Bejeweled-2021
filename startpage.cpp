@@ -126,7 +126,7 @@ void StartPage::SetButton(){
 
         if (file.exists())
 
-        {QDesktopServices::openUrl(QUrl::fromLocalFile("C:/Users/13191/Desktop/zuoye/shujujiegoushijian/dazuoye/guyi2020-bejeweled-2021-master/bejeweled-2021/doc/Exp.doc"));
+        {QDesktopServices::openUrl(QUrl::fromLocalFile("://doc/Exp.doc"));
         }
     }) ;
 
