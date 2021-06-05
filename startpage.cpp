@@ -13,7 +13,8 @@ StartPage::StartPage(QWidget *parent) :
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
-     gitButton=new HoverButton();
+
+    gitButton=new HoverButton();
     documentButton=new HoverButton();
     bright=new HoverButton();
     volume=new HoverButton();
@@ -22,9 +23,6 @@ StartPage::StartPage(QWidget *parent) :
     startButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     recordButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     settingButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
-
-    QTime dieTime = QTime::currentTime().addMSecs(2000);
-    while( QTime::currentTime() < dieTime ){QCoreApplication::processEvents(QEventLoop::AllEvents, 100);}
 
     //禁用最大化按钮、设置窗口大小固定
     this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
@@ -122,12 +120,17 @@ void StartPage::SetButton(){
     }) ;
     //打开文档
     connect(documentButton, &HoverButton::clicked, [=](){
-        QFile file("D:/Exp.doc");
-
-        if (file.exists())
-
-        {QDesktopServices::openUrl(QUrl::fromLocalFile("D:/Exp.doc"));
+        QFile file(":/doc/Exp.doc");
+        QTemporaryDir tempDir;
+        tempDir.setAutoRemove(false);
+        if (tempDir.isValid()) {
+          QString tempFile = tempDir.path() + "/Exp.doc";
+          if (QFile::copy(":/doc/Exp.doc", tempFile)) {
+            //now extracted to the filesystem
+              QDesktopServices::openUrl(QUrl::fromLocalFile(tempDir.path() + "/Exp.doc"));
+          }
         }
+
     }) ;
 
 

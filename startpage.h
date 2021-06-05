@@ -12,6 +12,7 @@
 #include <QTime>
 #include"brightWidget.h"
 #include"volumeWidget.h"
+#include <QTemporaryDir>
 
 namespace Ui {
 class StartPage;

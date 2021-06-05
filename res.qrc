@@ -37,5 +37,7 @@
         <file>picture/3balls/ball3.png</file>
         <file>picture/3balls/ball2.png</file>
         <file>picture/GameWidget/selected.png</file>
+        <file>doc/.keep</file>
+        <file>doc/Exp.doc</file>
     </qresource>
 </RCC>
