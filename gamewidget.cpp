@@ -197,6 +197,18 @@ void GameWidget::initScene(){
         }
     }
     group->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QTimer::singleShot(2500,this,[=](){
+        int s = updateBombList();
+        eliminateBoard();
+        Sleep(2500);
+        while(s!=0){
+            s = updateBombList();
+            eliminateBoard();
+            Sleep(2500);
+        }
+    });
+
 }
 
 QPropertyAnimation* GameWidget::startfallAnimation(Gem *gem, int h){
@@ -235,6 +247,95 @@ void GameWidget::Sleep(int msec)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void GameWidget::fall(){
+    for(int i = 0; i < 8; ++i)
+        for(int j = 7; j >= 0; --j){
+            if(fallHeight[i][j] != -1 && fallHeight[i][j] != 0 && gemType[i][j] != 100){
+                gemType[i][j + fallHeight[i][j]] = gemType[i][j];
+                gems[i][j]->setY(gems[i][j]->y + fallHeight[i][j]);
+                gems[i][j + fallHeight[i][j]] = gems[i][j];
+                gemType[i][j] = 100;
+                fallAnimation(gems[i][j], fallHeight[i][j]);
+            }
+        }
+}
+
+void GameWidget::fill(){
+    QTimer::singleShot(100, this, [=](){
+        int lack[8] = {0};
+
+        for(int i = 0; i < 8; ++i){
+            for(int j = 0; j < 8; ++j)
+                if(fallHeight[i][j] == -1)
+                    lack[i]++;
+                else if(fallHeight[i][j] != 0){
+                    lack[i] += fallHeight[i][j];
+                    break;
+                }
+        }
+
+        for(int i = 0; i < 8; ++i)
+            for(int j = 0; j < lack[i]; ++j){
+                gems[i][lack[i]-j-1] = new Gem(randomGem(true), LEN, i, lack[i]-j-1, boardWidget, -lack[i]);
+                gems[i][lack[i]-j-1]->setGeometry(LEN*i, LEN*(-j-1), LEN, LEN);
+                gemType[i][lack[i]-j-1] = gems[i][lack[i]-j-1]->type;
+                //gems[i][lack[i]-j-1] -> installEventFilter(this);
+                connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
+            }
+
+        for(int i = 0; i < 8; ++i)
+            for(int j = 0; j < lack[i]; ++j){
+                fallAnimation(gems[i][lack[i]-j-1], lack[i]);
+            }
+    });
+}
+
+void GameWidget::swap(int gemX,int gemY){
+    //处理宝石交换
+    int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
+    int width1 = gems[selectedX][selectedY]->width();int height1 = gems[selectedX][selectedY]->height();
+
+    int xVal2 = gems[gemX][gemY]->x*118;int yVal2 = gems[gemX][gemY]->y*118;
+    int width2 = gems[gemX][gemY]->width();int height2 = gems[gemX][gemY]->height();
+
+    //宝石
+    QParallelAnimationGroup* group = new QParallelAnimationGroup;
+    QPropertyAnimation *anim1 = new QPropertyAnimation(gems[selectedX][selectedY],"geometry",boardWidget);
+    anim1->setDuration(300);
+    anim1->setStartValue(QRect(xVal1,yVal1,width1,height1));
+    anim1->setEndValue(QRect(xVal2,yVal2,width2,height2));
+    anim1->setEasingCurve(QEasingCurve::Linear);
+    //宝石动图
+    QPropertyAnimation *anim11 = new QPropertyAnimation(gems[selectedX][selectedY]->gifLabel,"geometry",boardWidget);
+    anim11->setDuration(300);
+    anim11->setStartValue(QRect(xVal1,yVal1,width1,height1));
+    anim11->setEndValue(QRect(xVal2,yVal2,width2,height2));
+    anim11->setEasingCurve(QEasingCurve::Linear);
+    //被交换宝石
+    QPropertyAnimation *anim2 = new QPropertyAnimation(gems[gemX][gemY],"geometry",boardWidget);
+    anim2->setDuration(300);
+    anim2->setStartValue(QRect(xVal2,yVal2,width2,height2));
+    anim2->setEndValue(QRect(xVal1,yVal1,width1,height1));
+    anim2->setEasingCurve(QEasingCurve::Linear);
+
+    group->addAnimation(anim1);
+    group->addAnimation(anim11);
+    group->addAnimation(anim2);
+    group->start();
+}
+
+void GameWidget::makeSpin(){
+    gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
+    gems[selectedX][selectedY]->gifLabel = new QLabel(gems[selectedX][selectedY]);
+    gems[selectedX][selectedY]->gifLabel->setGeometry(0,0,gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height());
+    gems[selectedX][selectedY]->gif = new QMovie(gems[selectedX][selectedY]->path_dynamic[gems[selectedX][selectedY]->type], QByteArray(), gems[selectedX][selectedY]);
+    gems[selectedX][selectedY]->gif->setScaledSize(QSize(gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height()));
+    gems[selectedX][selectedY]->gifLabel->setMovie(gems[selectedX][selectedY]->gif);
+    gems[selectedX][selectedY]->gifLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+    gems[selectedX][selectedY]->gifLabel->show();
+    gems[selectedX][selectedY]->gif->start();
+}
+
 void GameWidget::act(Gem* gem){
     int len = 118;
     int gemX = gem->x;
@@ -252,16 +353,8 @@ void GameWidget::act(Gem* gem){
         selectedLbl->setGeometry(len*selectedX, len*selectedY, len, len);
         selectedLbl->setAttribute(Qt::WA_TransparentForMouseEvents);
         selectedLbl->show();
-        //旋转gif
-        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
-        gems[selectedX][selectedY]->gifLabel = new QLabel(gems[selectedX][selectedY]);
-        gems[selectedX][selectedY]->gifLabel->setGeometry(0,0,gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height());
-        gems[selectedX][selectedY]->gif = new QMovie(gems[selectedX][selectedY]->path_dynamic[gems[selectedX][selectedY]->type], QByteArray(), gems[selectedX][selectedY]);
-        gems[selectedX][selectedY]->gif->setScaledSize(QSize(gems[selectedX][selectedY]->width(), gems[selectedX][selectedY]->height()));
-        gems[selectedX][selectedY]->gifLabel->setMovie(gems[selectedX][selectedY]->gif);
-        gems[selectedX][selectedY]->gifLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-        gems[selectedX][selectedY]->gifLabel->show();
-        gems[selectedX][selectedY]->gif->start();
+        //让选中宝石旋转
+        makeSpin();
 
     }
     //如果有宝石选中，并点击了邻居宝石，则让宝石交换
@@ -272,46 +365,14 @@ void GameWidget::act(Gem* gem){
 
         //去选框
         selectedLbl->clear();
-        //处理宝石交换
-        int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
-        int width1 = gems[selectedX][selectedY]->width();int height1 = gems[selectedX][selectedY]->height();
 
-        int xVal2 = gems[gemX][gemY]->x*118;int yVal2 = gems[gemX][gemY]->y*118;
-        int width2 = gems[gemX][gemY]->width();int height2 = gems[gemX][gemY]->height();
-
-        //宝石
-        QParallelAnimationGroup* group = new QParallelAnimationGroup;
-        QPropertyAnimation *anim1 = new QPropertyAnimation(gems[selectedX][selectedY],"geometry",boardWidget);
-        anim1->setDuration(300);
-        anim1->setStartValue(QRect(xVal1,yVal1,width1,height1));
-        anim1->setEndValue(QRect(xVal2,yVal2,width2,height2));
-        anim1->setEasingCurve(QEasingCurve::Linear);
-        //宝石动图
-        QPropertyAnimation *anim11 = new QPropertyAnimation(gems[selectedX][selectedY]->gifLabel,"geometry",boardWidget);
-        anim11->setDuration(300);
-        anim11->setStartValue(QRect(xVal1,yVal1,width1,height1));
-        anim11->setEndValue(QRect(xVal2,yVal2,width2,height2));
-        anim11->setEasingCurve(QEasingCurve::Linear);
-        //被交换宝石
-        QPropertyAnimation *anim2 = new QPropertyAnimation(gems[gemX][gemY],"geometry",boardWidget);
-        anim2->setDuration(300);
-        anim2->setStartValue(QRect(xVal2,yVal2,width2,height2));
-        anim2->setEndValue(QRect(xVal1,yVal1,width1,height1));
-        anim2->setEasingCurve(QEasingCurve::Linear);
-
-        group->addAnimation(anim1);
-        group->addAnimation(anim11);
-        group->addAnimation(anim2);
-        group->start();
+        //让选中宝石与(gemX,gemY)交换
+        swap(gemX,gemY);
 
         //静止
-        gems[selectedX][selectedY]->gif->stop();
-        gems[selectedX][selectedY]->gifLabel->clear();
+        makeStopSpin();
 
-        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
-        gems[selectedX][selectedY]->setIconSize(QSize(len, len));
-
-        //?
+        //在对象矩阵中交换
         std::swap(gems[gemX][gemY],gems[selectedX][selectedY]);
         std::swap(gems[gemX][gemY]->x,gems[selectedX][selectedY]->x);
         std::swap(gems[gemX][gemY]->y,gems[selectedX][selectedY]->y);
@@ -320,113 +381,30 @@ void GameWidget::act(Gem* gem){
         selectedX=-1;
         selectedY=-1;
 
-        int currentScore = eliminate(gem);//将这次的分数返回，如果是0就回退
+        int currentScore = updateBombList();//将这次的分数返回，如果是0就回退
         if(currentScore == 0) {
-            //处理宝石交换
-            int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
-            int width1 = gems[selectedX][selectedY]->width();int height1 = gems[selectedX][selectedY]->height();
 
-            int xVal2 = gems[gemX][gemY]->x*118;int yVal2 = gems[gemX][gemY]->y*118;
-            int width2 = gems[gemX][gemY]->width();int height2 = gems[gemX][gemY]->height();
-
-            //宝石
-            QParallelAnimationGroup* group = new QParallelAnimationGroup;
-            QPropertyAnimation *anim1 = new QPropertyAnimation(gems[selectedX][selectedY],"geometry",boardWidget);
-            anim1->setDuration(300);
-            anim1->setStartValue(QRect(xVal1,yVal1,width1,height1));
-            anim1->setEndValue(QRect(xVal2,yVal2,width2,height2));
-            anim1->setEasingCurve(QEasingCurve::Linear);
-            //宝石动图
-            QPropertyAnimation *anim11 = new QPropertyAnimation(gems[selectedX][selectedY]->gifLabel,"geometry",boardWidget);
-            anim11->setDuration(300);
-            anim11->setStartValue(QRect(xVal1,yVal1,width1,height1));
-            anim11->setEndValue(QRect(xVal2,yVal2,width2,height2));
-            anim11->setEasingCurve(QEasingCurve::Linear);
-            //被交换宝石
-            QPropertyAnimation *anim2 = new QPropertyAnimation(gems[gemX][gemY],"geometry",boardWidget);
-            anim2->setDuration(300);
-            anim2->setStartValue(QRect(xVal2,yVal2,width2,height2));
-            anim2->setEndValue(QRect(xVal1,yVal1,width1,height1));
-            anim2->setEasingCurve(QEasingCurve::Linear);
-
-            group->addAnimation(anim1);
-            group->addAnimation(anim11);
-            group->addAnimation(anim2);
-            group->start();
+            swap(gemX,gemY);
 
             //静止
-            gems[selectedX][selectedY]->gif->stop();
-            gems[selectedX][selectedY]->gifLabel->clear();
+            makeStopSpin();
 
-            gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
-            gems[selectedX][selectedY]->setIconSize(QSize(len, len));
-
-            //?
+            //在对象矩阵中交换
             std::swap(gems[gemX][gemY],gems[selectedX][selectedY]);
             std::swap(gems[gemX][gemY]->x,gems[selectedX][selectedY]->x);
             std::swap(gems[gemX][gemY]->y,gems[selectedX][selectedY]->y);
         }
         score += currentScore;//加上分数
         Sleep(500);
-        //处理宝石掉落
 
-        for(int i = 0; i < 8; ++i)
-            for(int j = 0; j < 8; ++j)
-                fallHeight[i][j]=0;
-
-        for(int i=0;i<static_cast<int>(bombList.size());i++){
-            gemType[bombList[i]->x][bombList[i]->y] = 100;
-            fallHeight[bombList[i]->x][bombList[i]->y] = -1;
-            for(int k = bombList[i]->y - 1; k >= 0; --k)
-                if(fallHeight[bombList[i]->x][k] != -1)
-                    fallHeight[bombList[i]->x][k]++;
+        eliminateBoard();
+        Sleep(2000);
+        while(currentScore!=0){
+            currentScore = updateBombList();
+            eliminateBoard();
+            Sleep(2000);
+            score += currentScore;//加上分数
         }
-
-        for(int i=0;i<static_cast<int>(bombList.size());i++)
-            bombList[i]->bomb();
-
-        //fall
-        for(int i = 0; i < 8; ++i)
-            for(int j = 7; j >= 0; --j){
-                if(fallHeight[i][j] != -1 && fallHeight[i][j] != 0 && gemType[i][j] != 100){
-                    gemType[i][j + fallHeight[i][j]] = gemType[i][j];
-                    gems[i][j]->setY(gems[i][j]->y + fallHeight[i][j]);
-                    gems[i][j + fallHeight[i][j]] = gems[i][j];
-                    gemType[i][j] = 100;
-                    fallAnimation(gems[i][j], fallHeight[i][j]);
-                }
-            }
-
-        //fill
-        QTimer::singleShot(200, this, [=](){
-            int lack[8] = {0};
-
-            for(int i = 0; i < 8; ++i){
-                for(int j = 0; j < 8; ++j)
-                    if(fallHeight[i][j] == -1)
-                        lack[i]++;
-                    else if(fallHeight[i][j] != 0){
-                        lack[i] += fallHeight[i][j];
-                        break;
-                    }
-            }
-
-            for(int i = 0; i < 8; ++i)
-                for(int j = 0; j < lack[i]; ++j){
-                    gems[i][lack[i]-j-1] = new Gem(randomGem(true), len, i, lack[i]-j-1, boardWidget, -lack[i]);
-                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(lack[i]-j-1), len, len);
-                    gemType[i][lack[i]-j-1] = gems[i][lack[i]-j-1]->type;
-                    gems[i][lack[i]-j-1] -> installEventFilter(this);
-                    connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
-                }
-
-            for(int i = 0; i < 8; ++i)
-                for(int j = 0; j < lack[i]; ++j){
-                    fallAnimation(gems[i][lack[i]-j-1], lack[i]);
-                }
-        });
-
-
     }
     //如果当前有选中的宝石，点击了非邻居宝石，则取消选中
     else
@@ -434,30 +412,72 @@ void GameWidget::act(Gem* gem){
         //去选框
         selectedLbl->clear();
         //静止
-        gems[selectedX][selectedY]->gif->stop();
-        gems[selectedX][selectedY]->gifLabel->clear();
-
-        gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
-        gems[selectedX][selectedY]->setIconSize(QSize(len, len));
+        makeStopSpin();
 
         selectedX=-1;
         selectedY=-1;
     }
 }
 
+//在调用eliminate()后使用
+void GameWidget::eliminateBoard(){
+    for(int i = 0; i < 8; ++i)
+        for(int j = 0; j < 8; ++j)
+            fallHeight[i][j]=0;
+
+    //计算当前页面宝石要掉落的高度
+    for(int i=0;i<static_cast<int>(bombList.size());i++){
+        gemType[bombList[i]->x][bombList[i]->y] = 100;
+        fallHeight[bombList[i]->x][bombList[i]->y] = -1;
+        for(int k = bombList[i]->y - 1; k >= 0; --k)
+            if(fallHeight[bombList[i]->x][k] != -1)
+                fallHeight[bombList[i]->x][k]++;
+    }
+
+    //消去宝石
+    for(int i=0;i<static_cast<int>(bombList.size());i++)
+        bombList[i]->bomb();
+
+    //当前页面宝石掉落
+    fall();
+
+    //随机生成新宝石并掉落
+    fill();
+}
+
+void GameWidget::makeStopSpin(){
+    gems[selectedX][selectedY]->gif->stop();
+    gems[selectedX][selectedY]->gifLabel->clear();
+
+    gems[selectedX][selectedY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[selectedX][selectedY]->path_stable[gems[selectedX][selectedY]->type]));
+    gems[selectedX][selectedY]->setIconSize(QSize(LEN, LEN));
+}
+
+
+
 //检测宝石并消除符合条件的宝石，返回分数
-int GameWidget::eliminate() {
+int GameWidget::updateBombList() {
+    QString str = "";
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++)
+        {
+            str+=QString::number(gems[i][j]->type)+" ";
+        }
+        str+="fuck";
+    }
+    qDebug()<<str;
+
     int score = 0;//消除一个加10分
     int eliminating[8][8];//要消除的坐标
     memset(eliminating, 0, sizeof(eliminating));
-    bombList.clear();
     for(int i=0;i<8;i++){
         int start=0,end=0;
         //当start超过5，没有检测的必要，必然连着的超不过三个
         while(start<=5){
-            while(gems[i][start]==gems[i][end]){
+            while(gems[i][start]->type==gems[i][end]->type){
                 end++;
             }
+            end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
                     eliminating[i][j]=1;
@@ -471,9 +491,10 @@ int GameWidget::eliminate() {
         int start=0,end=0;
         //当start超过5，没有检测的必要，必然连着的超不过三个
         while(start<=5){
-            while(gems[start][i]==gems[end][i]){
+            while(gems[start][i]->type==gems[end][i]->type){
                 end++;
             }
+            end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
                     eliminating[j][i]=1;
@@ -483,6 +504,29 @@ int GameWidget::eliminate() {
             start=end;
         }
     }
+
+    str="";
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++)
+        {
+            str+=QString::number(eliminating[i][j])+" ";
+        }
+        str+="fuck";
+    }
+
+    qDebug()<<str;
+
+    str = "";
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++)
+        {
+            str+=QString::number(gems[i][j]->type)+" ";
+        }
+        str+="fuck";
+    }
+    qDebug()<<str;
+
+    bombList.clear();
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if(eliminating[i][j] != 0){
@@ -493,34 +537,3 @@ int GameWidget::eliminate() {
     }
     return score;
 }
-/*  for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            //行内在第一个，中间，最后一个的情况
-            if(i < 6 && gems[i][j]->type == gems[i+1][j]->type && gems[i+1][j]->type == gems[i+2][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 0 && i < 7 && gems[i][j]->type == gems[i-1][j]->type && gems[i-1][j]->type == gems[i+1][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 1 && gems[i][j]->type == gems[i-1][j]->type && gems[i-1][j]->type == gems[i-2][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            //列内在第一个，中间，最后一个的情况
-            if(j < 6 && gems[i][j]->type == gems[i][j+1]->type && gems[i][j+1]->type == gems[i][j+2]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(j < 7 && j > 0 && gems[i][j]->type == gems[i][j-1]->type && gems[i][j-1]->type == gems[i][j+1]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 1 && gems[i][j]->type == gems[i][j-1]->type && gems[i][j-1]->type == gems[i][j-2]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-        }
-
-    }*/
