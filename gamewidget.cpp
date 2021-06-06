@@ -320,7 +320,7 @@ void GameWidget::act(Gem* gem){
         selectedX=-1;
         selectedY=-1;
 
-        int currentScore = eliminate(gem);//将这次的分数返回，如果是0就回退
+        int currentScore = eliminate();//将这次的分数返回，如果是0就回退
         if(currentScore == 0) {
             //处理宝石交换
             int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
@@ -414,7 +414,7 @@ void GameWidget::act(Gem* gem){
             for(int i = 0; i < 8; ++i)
                 for(int j = 0; j < lack[i]; ++j){
                     gems[i][lack[i]-j-1] = new Gem(randomGem(true), len, i, lack[i]-j-1, boardWidget, -lack[i]);
-                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(lack[i]-j-1), len, len);
+                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(-j-1), len, len);
                     gemType[i][lack[i]-j-1] = gems[i][lack[i]-j-1]->type;
                     gems[i][lack[i]-j-1] -> installEventFilter(this);
                     connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
@@ -447,6 +447,14 @@ void GameWidget::act(Gem* gem){
 
 //检测宝石并消除符合条件的宝石，返回分数
 int GameWidget::eliminate() {
+    QString string="";
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++){
+            string+=QString::number(gems[j][i]->type)+" ";
+        }
+        string+="\n";
+    }
+    qDebug()<<string;
     int score = 0;//消除一个加10分
     int eliminating[8][8];//要消除的坐标
     memset(eliminating, 0, sizeof(eliminating));
@@ -455,9 +463,10 @@ int GameWidget::eliminate() {
         int start=0,end=0;
         //当start超过5，没有检测的必要，必然连着的超不过三个
         while(start<=5){
-            while(gems[i][start]==gems[i][end]){
+            while(gems[i][start]->type==gems[i][end]->type){
                 end++;
             }
+            end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
                     eliminating[i][j]=1;
@@ -471,9 +480,10 @@ int GameWidget::eliminate() {
         int start=0,end=0;
         //当start超过5，没有检测的必要，必然连着的超不过三个
         while(start<=5){
-            while(gems[start][i]==gems[end][i]){
+            while(gems[start][i]->type==gems[end][i]->type){
                 end++;
             }
+            end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
                     eliminating[j][i]=1;
@@ -483,6 +493,14 @@ int GameWidget::eliminate() {
             start=end;
         }
     }
+    string.clear();
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++){
+            string+=QString::number(eliminating[j][i])+" ";
+        }
+        string+="\n";
+    }
+    qDebug()<<string;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if(eliminating[i][j] != 0){
