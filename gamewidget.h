@@ -58,7 +58,7 @@ private:
     void act(Gem* gem);
     int selectedX=-1,selectedY=-1;
     QLabel* selectedLbl=nullptr;
-    int eliminate(Gem* gem);
+    int eliminate();
     int score=0;
 
     Ui::GameWidget *ui;

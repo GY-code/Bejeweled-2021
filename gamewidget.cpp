@@ -176,7 +176,7 @@ void GameWidget::keyPressEvent(QKeyEvent *ev)
 //关于宝石的随机数生成
 int GameWidget::randomGem(bool allowMagic){
     //if(allowMagic && QRandomGenerator::global()->bounded(0, 85) == 1)        //Magic方块1/85生成概率
-        //return 0;
+    //return 0;
     return QRandomGenerator::global()->bounded(1, DIFFICULITY+1);
 }
 
@@ -368,7 +368,6 @@ void GameWidget::act(Gem* gem){
         }
         score += currentScore;//加上分数
         Sleep(500);
-
         //处理宝石掉落
 
         for(int i = 0; i < 8; ++i)
@@ -415,7 +414,7 @@ void GameWidget::act(Gem* gem){
             for(int i = 0; i < 8; ++i)
                 for(int j = 0; j < lack[i]; ++j){
                     gems[i][lack[i]-j-1] = new Gem(randomGem(true), len, i, lack[i]-j-1, boardWidget, -lack[i]);
-                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(-j-1), len, len);
+                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(lack[i]-j-1), len, len);
                     gemType[i][lack[i]-j-1] = gems[i][lack[i]-j-1]->type;
                     gems[i][lack[i]-j-1] -> installEventFilter(this);
                     connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
@@ -447,11 +446,54 @@ void GameWidget::act(Gem* gem){
 }
 
 //检测宝石并消除符合条件的宝石，返回分数
-int GameWidget::eliminate(Gem* gem) {
+int GameWidget::eliminate() {
     int score = 0;//消除一个加10分
     int eliminating[8][8];//要消除的坐标
     memset(eliminating, 0, sizeof(eliminating));
+    bombList.clear();
+    for(int i=0;i<8;i++){
+        int start=0,end=0;
+        //当start超过5，没有检测的必要，必然连着的超不过三个
+        while(start<=5){
+            while(gems[i][start]==gems[i][end]){
+                end++;
+            }
+            if(end-start>=2){
+                for(int j=start;j<=end;j++){
+                    eliminating[i][j]=1;
+                }
+            }
+            end++;
+            start=end;
+        }
+    }
+    for(int i=0;i<8;i++){
+        int start=0,end=0;
+        //当start超过5，没有检测的必要，必然连着的超不过三个
+        while(start<=5){
+            while(gems[start][i]==gems[end][i]){
+                end++;
+            }
+            if(end-start>=2){
+                for(int j=start;j<=end;j++){
+                    eliminating[j][i]=1;
+                }
+            }
+            end++;
+            start=end;
+        }
+    }
     for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if(eliminating[i][j] != 0){
+                bombList.push_back(gems[i][j]);
+                score += 10;//每个加10分
+            }
+        }
+    }
+    return score;
+}
+/*  for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             //行内在第一个，中间，最后一个的情况
             if(i < 6 && gems[i][j]->type == gems[i+1][j]->type && gems[i+1][j]->type == gems[i+2][j]->type) {
@@ -481,15 +523,4 @@ int GameWidget::eliminate(Gem* gem) {
             }
         }
 
-    }
-    bombList.clear();
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if(eliminating[i][j] != 0){
-                bombList.push_back(gems[i][j]);
-                score += 10;//每个加10分
-            }
-        }
-    }
-    return score;
-}
+    }*/
