@@ -368,6 +368,7 @@ void GameWidget::act(Gem* gem){
         }
         score += currentScore;//加上分数
         Sleep(500);
+
         //处理宝石掉落
 
         for(int i = 0; i < 8; ++i)
@@ -414,7 +415,7 @@ void GameWidget::act(Gem* gem){
             for(int i = 0; i < 8; ++i)
                 for(int j = 0; j < lack[i]; ++j){
                     gems[i][lack[i]-j-1] = new Gem(randomGem(true), len, i, lack[i]-j-1, boardWidget, -lack[i]);
-                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(lack[i]-j-1), len, len);
+                    gems[i][lack[i]-j-1]->setGeometry(len*i, len*(-j-1), len, len);
                     gemType[i][lack[i]-j-1] = gems[i][lack[i]-j-1]->type;
                     gems[i][lack[i]-j-1] -> installEventFilter(this);
                     connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
