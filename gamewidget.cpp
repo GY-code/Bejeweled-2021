@@ -290,6 +290,7 @@ void GameWidget::fill(){
     });
 }
 
+//交换按钮位置
 void GameWidget::swap(int gemX,int gemY){
     //处理宝石交换
     int xVal1 = gems[selectedX][selectedY]->x*118;int yVal1 = gems[selectedX][selectedY]->y*118;
@@ -377,15 +378,13 @@ void GameWidget::act(Gem* gem){
         std::swap(gems[gemX][gemY]->x,gems[selectedX][selectedY]->x);
         std::swap(gems[gemX][gemY]->y,gems[selectedX][selectedY]->y);
 
-
-        selectedX=-1;
-        selectedY=-1;
-
         int currentScore = updateBombList();//将这次的分数返回，如果是0就回退
         if(currentScore == 0) {
-
+            Sleep(500);
+            std::swap(gemX,selectedX);
+            std::swap(gemY,selectedY);
             swap(gemX,gemY);
-
+            Sleep(500);
             //静止
             makeStopSpin();
 
@@ -405,6 +404,9 @@ void GameWidget::act(Gem* gem){
             Sleep(2000);
             score += currentScore;//加上分数
         }
+
+        selectedX=-1;
+        selectedY=-1;
     }
     //如果当前有选中的宝石，点击了非邻居宝石，则取消选中
     else
@@ -421,6 +423,8 @@ void GameWidget::act(Gem* gem){
 
 //在调用eliminate()后使用
 void GameWidget::eliminateBoard(){
+    if(bombList.size()==0)
+        return;
     for(int i = 0; i < 8; ++i)
         for(int j = 0; j < 8; ++j)
             fallHeight[i][j]=0;
