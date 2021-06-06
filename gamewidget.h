@@ -17,6 +17,7 @@
 #include "gem.h"
 #include<QTime>
 
+
 #define TO_BOMB 100
 
 namespace Ui {
