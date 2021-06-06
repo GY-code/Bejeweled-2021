@@ -447,14 +447,6 @@ void GameWidget::act(Gem* gem){
 
 //检测宝石并消除符合条件的宝石，返回分数
 int GameWidget::eliminate() {
-    QString string="";
-    for(int i=0;i<8;i++){
-        for(int j=0;j<8;j++){
-            string+=QString::number(gems[j][i]->type)+" ";
-        }
-        string+="\n";
-    }
-    qDebug()<<string;
     int score = 0;//消除一个加10分
     int eliminating[8][8];//要消除的坐标
     memset(eliminating, 0, sizeof(eliminating));
@@ -493,14 +485,6 @@ int GameWidget::eliminate() {
             start=end;
         }
     }
-    string.clear();
-    for(int i=0;i<8;i++){
-        for(int j=0;j<8;j++){
-            string+=QString::number(eliminating[j][i])+" ";
-        }
-        string+="\n";
-    }
-    qDebug()<<string;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if(eliminating[i][j] != 0){
@@ -511,34 +495,4 @@ int GameWidget::eliminate() {
     }
     return score;
 }
-/*  for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            //行内在第一个，中间，最后一个的情况
-            if(i < 6 && gems[i][j]->type == gems[i+1][j]->type && gems[i+1][j]->type == gems[i+2][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 0 && i < 7 && gems[i][j]->type == gems[i-1][j]->type && gems[i-1][j]->type == gems[i+1][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 1 && gems[i][j]->type == gems[i-1][j]->type && gems[i-1][j]->type == gems[i-2][j]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            //列内在第一个，中间，最后一个的情况
-            if(j < 6 && gems[i][j]->type == gems[i][j+1]->type && gems[i][j+1]->type == gems[i][j+2]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(j < 7 && j > 0 && gems[i][j]->type == gems[i][j-1]->type && gems[i][j-1]->type == gems[i][j+1]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-            if(i > 1 && gems[i][j]->type == gems[i][j-1]->type && gems[i][j-1]->type == gems[i][j-2]->type) {
-                eliminating[i][j] = 1;
-                continue;
-            }
-        }
 
-    }*/
