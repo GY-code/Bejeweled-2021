@@ -14,6 +14,9 @@
 #include <QRandomGenerator>
 #include "gem.h"
 #include<QTime>
+
+#define TO_BOMB 100
+
 namespace Ui {
 class GameWidget;
 }
@@ -33,10 +36,12 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
 private:
-    unsigned int gemBoard[8][8];//type数组
+    unsigned int gemType[8][8];//type数组
     Gem* gems[8][8];//gem对象数组
+    int fallHeight[8][8];//掉落高度数组
+    std::vector<Gem*> bombList; //存要消去的宝石
 
-    //int fallboard[8][8];
+
     QWidget* boardWidget=nullptr;
     HoverButton *menuButton=nullptr;
     HoverButton *hintButton=nullptr;
@@ -47,11 +52,14 @@ private:
     void initScene();
     int DIFFICULITY=5;
     void fall();
-    QPropertyAnimation* fallAnimation(Gem *gem, int h);
+    QPropertyAnimation* startfallAnimation(Gem *gem, int h);
+    void fallAnimation(Gem *gem, int h);
     void Sleep(int msec);
     void act(Gem* gem);
     int selectedX=-1,selectedY=-1;
     QLabel* selectedLbl=nullptr;
+    int eliminate(Gem* gem);
+    int score=0;
 
     Ui::GameWidget *ui;
 signals:

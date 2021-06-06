@@ -18,6 +18,8 @@ public:
     void initialPath();
     int type;
     int x, y;
+    void setY(int num){y=num;}
+
     int oriX,oriY;
     explicit Gem(int type, int len, int x, int y, QWidget *parent = nullptr, int offset=0);
     void bomb();
