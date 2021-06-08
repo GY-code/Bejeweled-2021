@@ -148,6 +148,11 @@ void GameWidget::setupScene(){
         }
         delete boardWidget;
     }) ;
+    connect(hintButton,&HoverButton::clicked,[=](){
+        Point p=tipsdetect();
+        QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
+        qDebug()<<msg;
+    });
 
 }
 
@@ -200,6 +205,7 @@ int GameWidget::randomGem(){
 
 void GameWidget::startGame(){
     boardWidget = new QWidget(this);
+
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
     QRandomGenerator::global()->fillRange(gemType[0], 64);
@@ -226,6 +232,7 @@ void GameWidget::startGame(){
                 Sleep(100);
                 forbidAll(true);//禁用
                 eliminateBoard();
+
             }
         });
         forbidAll(false);
@@ -235,6 +242,7 @@ void GameWidget::startGame(){
             forbidAll(true);//禁用
             eliminateBoard();
         }
+
 
         delete group;
     });
@@ -543,17 +551,26 @@ Point GameWidget::tipsdetect(){
             int t=types[i][j];
             //第一，检测连着两个相同类型的宝石，并检测其周围
             if(t==types[i][j+1]){
-                if(t==types[i][j-2]||t==types[i-1][j-1]||t==types[i+1][j-1])
-                    return Point(i-2,j-3);
-                if(t==types[i-1][j+2]||t==types[i+1][j+2]||t==types[i][j+3]){
-                    return Point(i-2,j);
-                }
+                if(t==types[i][j-2])
+                    return Point(i-2,j-4);
+                if(t==types[i-1][j-1])
+                    return Point(i-3,j-3);
+                if(t==types[i+1][j-1])
+                    return Point(i-1,j-3);
+                if(t==types[i-1][j+2])
+                    return Point(i-3,j);
+                if(t==types[i+1][j+2])
+                    return Point(i-1,j);
+                if(t==types[i][j+3])
+                    return Point(i-2,j+1);
+
             }
             //第二，检测两个跳着的宝石，看是否有宝石能填补中间位置
             if(t==types[i][j+2]){
-                if(t==types[i-1][j+1]||t==types[i+1][j+1]){
-                    return Point(i-2,j-1);
-                }
+                if(t==types[i-1][j+1])
+                    return Point(i-3,j-1);
+                if(t==types[i+1][j+1])
+                    return Point(i-1,j-1);
             }
         }
     }
@@ -562,16 +579,26 @@ Point GameWidget::tipsdetect(){
         for (int j=2;j<=9;j++) {
             int t=types[j][i];
             if(t==types[j+1][i]){
-                if(t==types[j-2][i]||t==types[j-1][i-1]||t==types[j-1][i+1])
-                    return Point(j-3,i-2);
-                if(t==types[j+2][i-1]||t==types[j+2][i+1]||t==types[j+3][i]){
-                    return Point(j,i-2);
-                }
+                if(t==types[j-2][i])
+                    return Point(j-4,i-2);
+                if(t==types[j-1][i-1])
+                    return Point(j-3,i-3);
+                if(t==types[j-1][i+1])
+                    return Point(j-3,i-1);
+                if(t==types[j+2][i-1])
+                    return Point(j,i-3);
+                if(t==types[j+2][i+1])
+                    return Point(j,i-1);
+                if(t==types[j+3][i])
+                    return Point(j+1,i-2);
+
             }
             if(t==types[j+2][i]){
-                if(t==types[j+1][i-1]||t==types[j+1][i+1]){
-                    return Point(j-1,i-2);
-                }
+                if(t==types[j+1][i-1])
+                    return Point(j-1,i-3);
+                if(t==types[j+1][i+1])
+                    return Point(j-1,i-1);
+
             }
         }
     }
