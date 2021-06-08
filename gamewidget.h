@@ -17,7 +17,8 @@
 #include "gem.h"
 #include<QTime>
 #include <QMainWindow>
-
+#include<qsound.h>
+#include<qsoundeffect.h>
 #define TO_BOMB 100
 
 namespace Ui {
@@ -32,7 +33,7 @@ public:
     explicit GameWidget(QWidget *parent = nullptr);
     void setAdaptedImg(QString path,QLabel *label);
     void setupScene();
-
+    QSoundEffect* sound;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
