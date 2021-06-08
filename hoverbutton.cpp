@@ -42,8 +42,8 @@ void HoverButton::setLabel(QString text,int size){
     label->setFont(QFont("Microsoft YaHei", size, QFont::Normal));
     label->setStyleSheet("QLabel{color:white;}");
     label->setVisible(true);
-
 }
+
 void HoverButton::setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent)
 {
     setParent(parent);

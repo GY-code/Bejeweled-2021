@@ -212,18 +212,21 @@ void GameWidget::startGame(){
     group->start();
 
     connect(group, &QParallelAnimationGroup::finished, [=] {
-        forbidAll(false);//取消禁用
+
         connect(this, &GameWidget::eliminateFinished, [=] {
+            forbidAll(false);
             int s = updateBombList();
             if(s!=0){
                 Sleep(100);
+                forbidAll(true);//禁用
                 eliminateBoard();
             }
         });
-
+        forbidAll(false);
         int s = updateBombList();
         if(s!=0){
             Sleep(100);
+            forbidAll(true);//禁用
             eliminateBoard();
         }
 
@@ -305,6 +308,7 @@ void GameWidget::act(Gem* gem){
             gems[gemX][gemY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         }else{
+            forbidAll(true);//禁用
             score += currentScore;//加上分数
             gems[gemX][gemY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
@@ -476,7 +480,7 @@ int GameWidget::updateBombList() {
             end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
-                    eliminating[i][j]=1;
+                    eliminating[i][j]=static_cast<int>(gemType[i][j]);
                 }
             }
             end++;
@@ -493,18 +497,16 @@ int GameWidget::updateBombList() {
             end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
-                    eliminating[j][i]=1;
+                    eliminating[j][i]=static_cast<int>(gemType[j][i]);
                 }
             }
             end++;
             start=end;
         }
     }
-    bombList.clear();
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if(eliminating[i][j] != 0){
-                gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents,true);
+            if(eliminating[i][j] != 0 && eliminating[i][j]!=100){
                 bombList.push_back(gems[i][j]);
                 score += 10;//每个加10分
             }
@@ -531,16 +533,48 @@ void GameWidget::eliminateBoard(){
     }
 
     //消去宝石
-    for(unsigned int i=0;i<(bombList.size());i++)
-        bombList[i]->bomb();
+    int r = 10;
+    QParallelAnimationGroup* biggerGroup = new QParallelAnimationGroup;
+    for(unsigned int i=0;i<(bombList.size());i++){
+        QPropertyAnimation *anim = new QPropertyAnimation(bombList[i],"geometry",boardWidget);
+        anim->setDuration(250);
+        anim->setStartValue(QRect(bombList[i]->geometry()));
+        anim->setEndValue(QRect(bombList[i]->geometry().x()-r,bombList[i]->geometry().y()-r,LEN+2*r,LEN+2*r));
+        anim->setEasingCurve(QEasingCurve::OutQuad);
+        biggerGroup->addAnimation(anim);
+    }
+    biggerGroup->start();
+    connect(biggerGroup,&QParallelAnimationGroup::finished,[=]{
+        delete biggerGroup;
+        QParallelAnimationGroup* smallerGroup = new QParallelAnimationGroup;
+        for(unsigned int i=0;i<(bombList.size());i++){
+            QPropertyAnimation *anim = new QPropertyAnimation(bombList[i],"geometry",boardWidget);
+            anim->setDuration(150);
+            anim->setStartValue(QRect(bombList[i]->geometry()));
+            anim->setEndValue(QRect(bombList[i]->geometry().x()+r+LEN/2-1,bombList[i]->geometry().y()+r+LEN/2-1,2,2));
+            anim->setEasingCurve(QEasingCurve::InQuad);
+            smallerGroup->addAnimation(anim);
+        }
+        smallerGroup->start();
+        connect(smallerGroup,&QParallelAnimationGroup::finished,[=]{
+            delete smallerGroup;
+            for(unsigned int i=0;i<(bombList.size());i++)
+                bombList[i]->bomb();
 
-    fallNum=fallCount=0;
+            bombList.clear();
 
-    //当前页面宝石掉落
-    fall();
+            fallNum=fallCount=0;
 
-    //随机生成新宝石并掉落
-    fill();
+            //当前页面宝石掉落
+            fall();
+
+            //随机生成新宝石并掉落
+            fill();
+
+        });
+    });
+
+
 }
 
 void GameWidget::makeSpin(int SX,int SY){
@@ -560,8 +594,10 @@ void GameWidget::makeSpin(int SX,int SY){
 void GameWidget::makeStopSpin(int SX,int SY){
     if(!gems[SX][SY]||SX==-1)
         return;
-    gems[SX][SY]->gif->stop();
-    gems[SX][SY]->gifLabel->clear();
+    if(gems[SX][SY]->gif)
+        gems[SX][SY]->gif->stop();
+    if(gems[SX][SY]->gifLabel)
+        gems[SX][SY]->gifLabel->clear();
 
     gems[SX][SY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[SX][SY]->path_stable[gems[SX][SY]->type]));
     gems[SX][SY]->setIconSize(QSize(LEN, LEN));
