@@ -462,7 +462,7 @@ void GameWidget::fill(){
                 }
             }
         for(int i = 0; i < 8; ++i)
-                fallNum+=lack[i];
+            fallNum+=lack[i];
 
         for(int i = 0; i < 8; ++i)
             for(int j = 0; j < lack[i]; ++j){
@@ -519,6 +519,62 @@ int GameWidget::updateBombList() {
         }
     }
     return score;
+}
+Point GameWidget::tipsdetect(){
+    int types[12][12];
+    for (int i = 0; i < 10; ++i) {
+        types[0][i]=-1;
+        types[1][i]=-1;
+        types[10][i]=-1;
+        types[11][i]=-1;
+        types[i][0]=-1;
+        types[i][1]=-1;
+        types[i][10]=-1;
+        types[i][11]=-1;
+    }
+    for(int i=2;i<=9;i++){
+        for(int j=2;j<=9;j++){
+            types[i][j]=gems[i-2][j-2]->type;
+        }
+    }
+    //分两种情况讨论
+    //第一，检测连着两个相同类型的宝石，并检测其周围
+    for(int i=2;i<=9;i++){
+        for (int j=2;j<=9;j++) {
+            int t=types[i][j];
+            if(t==types[i][j+1]){
+                if(t==types[i][j-2]||t==types[i-1][j-1]||t==types[i+1][j-1])
+                    return Point(i-2,j-3);
+                if(t==types[i-1][j+2]||t==types[i+1][j+2]||t==types[i][j+3]){
+                    return Point(i-2,j);
+                }
+            }
+            if(t==types[i][j+2]){
+                if(t==types[i-1][j+1]||t==types[i+1][j+1]){
+                    return Point(i-2,j-1);
+                }
+            }
+        }
+    }
+    for(int i=2;i<=9;i++){
+        for (int j=2;j<=9;j++) {
+            int t=types[j][i];
+            if(t==types[j+1][i]){
+                if(t==types[j-2][i]||t==types[j-1][i-1]||t==types[j-1][i+1])
+                    return Point(j-3,i-2);
+                if(t==types[j+2][i-1]||t==types[j+2][i+1]||t==types[j+3][i]){
+                    return Point(j,i-2);
+                }
+            }
+            if(t==types[j+2][i]){
+                if(t==types[j+1][i-1]||t==types[j+1][i+1]){
+                    return Point(j-1,i-2);
+                }
+            }
+        }
+    }
+
+    return Point(-1,-1);
 }
 
 void GameWidget::eliminateBoard(){
@@ -582,6 +638,7 @@ void GameWidget::eliminateBoard(){
 
 
 }
+
 
 void GameWidget::makeSpin(int SX,int SY){
     if(!gems[SX][SY]||SX==-1)
