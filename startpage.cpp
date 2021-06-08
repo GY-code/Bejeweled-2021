@@ -10,6 +10,12 @@ StartPage::StartPage(QWidget *parent) :
     ui(new Ui::StartPage)
 {
     ui->setupUi(this);
+     //循环播放背景音乐
+    sound=new QSoundEffect(this);
+
+    sound->setSource(QUrl::fromLocalFile("D:/music-1.wav"));
+    sound->setLoopCount(QSoundEffect::Infinite);
+    sound->play();
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
@@ -111,12 +117,15 @@ void StartPage::SetButton(){
                       ":/picture/button/ball.png", "", this);
     connect(startButton, &HoverButton::clicked, [=](){
         this->hide();
+        sound->stop();
         gameWidget->setupScene();
         gameWidget->show();
     }) ;
 
     connect(gameWidget, &GameWidget::showStartPage, [=](){
         this->show();
+         sound->setLoopCount(QSoundEffect::Infinite);
+        sound->play();
     }) ;
     //打开文档
     connect(documentButton, &HoverButton::clicked, [=](){
