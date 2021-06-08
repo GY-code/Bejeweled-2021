@@ -20,6 +20,16 @@
 #include<qsound.h>
 #include<qsoundeffect.h>
 #define TO_BOMB 100
+class Point{
+public:
+    int x;
+    int y;
+    Point(int x1,int y1){
+        x=x1;
+        y=y1;
+    }
+
+};
 
 namespace Ui {
 class GameWidget;
@@ -66,6 +76,7 @@ private:
     void makeSpin(int,int);
     void swap(int, int, int gemX,int gemY);
     void eliminateBoard();
+    Point tipsdetect();
 
     void fallAnimation(Gem *gem, int h);
     void fillfallAnimation(Gem *gem, int h);

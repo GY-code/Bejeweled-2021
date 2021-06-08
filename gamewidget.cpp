@@ -126,7 +126,7 @@ void GameWidget::setupScene(){
             progressBar->setValue(progressBar->value()-1);
     });
     connect(menuButton, &HoverButton::clicked, [=](){
-         sound->stop();
+        sound->stop();
         this->hide();
         showStartPage();
         if(menuButton)
@@ -538,10 +538,10 @@ Point GameWidget::tipsdetect(){
         }
     }
     //分两种情况讨论
-    //第一，检测连着两个相同类型的宝石，并检测其周围
     for(int i=2;i<=9;i++){
         for (int j=2;j<=9;j++) {
             int t=types[i][j];
+            //第一，检测连着两个相同类型的宝石，并检测其周围
             if(t==types[i][j+1]){
                 if(t==types[i][j-2]||t==types[i-1][j-1]||t==types[i+1][j-1])
                     return Point(i-2,j-3);
@@ -549,6 +549,7 @@ Point GameWidget::tipsdetect(){
                     return Point(i-2,j);
                 }
             }
+            //第二，检测两个跳着的宝石，看是否有宝石能填补中间位置
             if(t==types[i][j+2]){
                 if(t==types[i-1][j+1]||t==types[i+1][j+1]){
                     return Point(i-2,j-1);
@@ -556,6 +557,7 @@ Point GameWidget::tipsdetect(){
             }
         }
     }
+    //列检测
     for(int i=2;i<=9;i++){
         for (int j=2;j<=9;j++) {
             int t=types[j][i];
