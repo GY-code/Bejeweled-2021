@@ -13,7 +13,12 @@ void GameWidget::setupScene(){
     this->setFixedSize(this->width(),this->height());
     //全屏
     QWidget::showFullScreen();
+    //循环播放背景音乐
+    sound=new QSoundEffect(this);
 
+    sound->setSource(QUrl::fromLocalFile("D:/music-2.wav"));
+    sound->setLoopCount(QSoundEffect::Infinite);
+    sound->play();
     //窗口基本设置
     setWindowFlag(Qt::Window);  //设置为独立窗口
     setWindowTitle("Bejeweled");
@@ -121,6 +126,7 @@ void GameWidget::setupScene(){
             progressBar->setValue(progressBar->value()-1);
     });
     connect(menuButton, &HoverButton::clicked, [=](){
+         sound->stop();
         this->hide();
         showStartPage();
         if(menuButton)
