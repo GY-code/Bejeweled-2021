@@ -13,7 +13,9 @@
 #include"brightWidget.h"
 #include"volumeWidget.h"
 #include <QTemporaryDir>
-
+#include<qsound.h>
+#include<qmediaplayer.h>
+#include<qsoundeffect.h>
 namespace Ui {
 class StartPage;
 }
@@ -29,6 +31,7 @@ public:
     QPropertyAnimation *bkAnim;
     brightWidget brightW;
     volumeWidget volumeW;
+     QSoundEffect* sound;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
