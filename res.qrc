@@ -39,6 +39,7 @@
         <file>picture/GameWidget/selected.png</file>
         <file>doc/.keep</file>
         <file>doc/Exp.doc</file>
+        <file>picture/starsBK.gif</file>
         <file>picture/arrow.png</file>
     </qresource>
 </RCC>

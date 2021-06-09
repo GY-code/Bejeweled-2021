@@ -142,7 +142,6 @@ void StartPage::SetButton(){
 
     }) ;
 
-
     //访问网页
     connect(gitButton, &HoverButton::clicked, [=](){
         QDesktopServices::openUrl(QUrl(QLatin1String("https://gitee.com/guyi2020/bejeweled-2021")));

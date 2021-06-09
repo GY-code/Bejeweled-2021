@@ -15,11 +15,13 @@
 #include <myprobar.h>
 #include <QRandomGenerator>
 #include "gem.h"
-#include<QTime>
+#include <QTime>
 #include <QMainWindow>
 #include<qsound.h>
 #include<qsoundeffect.h>
 #include<QTemporaryDir>
+#include <QFont>
+
 #define TO_BOMB 100
 class Point{
 public:
@@ -42,6 +44,7 @@ class GameWidget : public QMainWindow
 
 public:
     explicit GameWidget(QWidget *parent = nullptr);
+    ~GameWidget();
     void setAdaptedImg(QString path,QLabel *label);
     void setupScene();
     QSoundEffect* sound;
@@ -49,9 +52,15 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
 private:
-    int times=6;
+    int DIFFICULITY=7;
+    int hintArrowTimes=6;
     int score=0;
     bool is_acting=false;
+    bool is_paused=false;
+    QLabel* pauseBKLbl = nullptr;
+    QMovie* pauseBKgif = nullptr;
+    QLabel* pauseTXLbl = nullptr;
+
     int fallNum=0;
     int fallCount=0;
 
@@ -71,7 +80,6 @@ private:
     QPropertyAnimation* startfallAnimation(Gem *gem, int h);
     int randomGem();
     void startGame();
-    int DIFFICULITY=5;
     void fall();
     void fill();
     void makeStopSpin(int,int);

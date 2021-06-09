@@ -20,6 +20,7 @@ public:
     void setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent);
     void showContent(QString text,int size);
     QPropertyAnimation* textAnim = new QPropertyAnimation;
+    QLabel* label=nullptr;
 
 protected:
     bool event(QEvent *e) override;
@@ -28,7 +29,6 @@ private:
     int w=0, h=0,textSize;
     QSound *soundHover = nullptr, *soundPress = nullptr, *soundRelease = nullptr, *soundLeave = nullptr;
     QIcon iconNormal, iconHover;
-    QLabel* label=nullptr;
 
 };
 

@@ -56,6 +56,7 @@ void GameWidget::setupScene(){
     pauseButton->showContent("PAUSE",20);
     pauseButton->show();
 
+
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
 
@@ -121,17 +122,24 @@ void GameWidget::setupScene(){
     progressTimer->setInterval(15);
     progressTimer->start();
     connect(progressTimer, &QTimer::timeout, [=](){
-        if(progressBar->value() == 0){
+        if(!is_paused){
+            if(progressBar->value() == 0){
 
-            //计时结束
+                //计时结束
+            }
+            else
+                progressBar->setValue(progressBar->value()-1);
         }
-        else
-            progressBar->setValue(progressBar->value()-1);
+
     });
+
+
+
     connect(menuButton, &HoverButton::clicked, [=](){
         sound->stop();
         this->hide();
         showStartPage();
+
         if(menuButton)
             delete menuButton;
         if(hintButton)
@@ -143,7 +151,15 @@ void GameWidget::setupScene(){
         if(progressBar)
             delete progressBar;
         if(selectedLbl)
-            delete  selectedLbl;
+            delete selectedLbl;
+        if(pauseBKLbl)
+            delete pauseBKLbl;
+        if(pauseBKgif)
+            delete pauseBKgif;
+        if(pauseTXLbl)
+            delete pauseTXLbl;
+
+
         for(int i=0;i<8;i++){
             for(int j=0;j<8;j++){
                 delete gems[i][j];
@@ -152,13 +168,13 @@ void GameWidget::setupScene(){
         delete boardWidget;
     }) ;
     connect(hintButton,&HoverButton::clicked,[=](){
-        if(!is_acting&&times>=6){
-            times=0;
+        if(!is_acting&&hintArrowTimes>=6){
+            hintArrowTimes=0;
             Point p=tipsdetect();
             QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
             qDebug()<<msg;
-            QLabel *hintLabel=new QLabel(boardWidget);
-            hintLabel->setGeometry(p.x*118+39,p.y*118+118,40,60);
+            QLabel *hintLabel=new QLabel(this);
+            hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
             hintLabel->show();
             setAdaptedImg(":/picture/arrow.png",hintLabel);
             QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
@@ -178,8 +194,8 @@ void GameWidget::setupScene(){
             });
 
             connect(danim,&QPropertyAnimation::finished,[=]{
-                times=times+1;
-                if(times>=6){
+                hintArrowTimes=hintArrowTimes+1;
+                if(hintArrowTimes>=6){
                     if(anim)
                         delete anim;
                     if(danim)
@@ -190,9 +206,56 @@ void GameWidget::setupScene(){
                     anim->start();
                 }
             });
-            connect(gems[p.x][p.y],&Gem::mouseClicked,[=]{
-                times=6;
-            });
+
+        }
+    });
+
+    connect(pauseButton,&HoverButton::clicked,[=]{
+        if(!is_acting){
+            if(!is_paused)
+            {
+                pauseButton->label->setText("CONTINUE");
+
+                forbidAll(true);
+                pauseBKLbl = new QLabel(boardWidget);
+                pauseBKLbl->setGeometry(0,0,952, 952);
+                //setAdaptedImg("://picture/starsBK.gif",pauseBKLbl);
+                pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
+                pauseBKgif->setScaledSize(QSize(952,952));
+                pauseBKLbl->setMovie(pauseBKgif);
+                pauseBKLbl->show();
+                pauseBKgif->start();
+
+
+
+
+                pauseTXLbl = new QLabel(boardWidget);
+                pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
+                pauseTXLbl->setText("The Game Has Been Paused.");
+                pauseTXLbl->setAlignment(Qt::AlignCenter);
+                pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
+                pauseTXLbl->setStyleSheet("QLabel{color:white;}");
+                pauseTXLbl->setVisible(true);
+
+                is_paused=true;
+            }else if(is_paused){
+                pauseButton->label->setText("PAUSE");
+
+                pauseBKLbl->hide();
+                if(pauseBKgif){
+                    pauseBKgif->stop();
+                    delete pauseBKgif;
+                }
+
+                if(pauseBKLbl)
+                    delete pauseBKLbl;
+
+                if(pauseTXLbl)
+                    delete pauseTXLbl;
+
+                forbidAll(false);
+                is_paused=false;
+            }
         }
     });
 
@@ -250,6 +313,7 @@ void GameWidget::startGame(){
 
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
+
     QRandomGenerator::global()->fillRange(gemType[0], 64);
 
     //掉落动画
@@ -306,6 +370,8 @@ QPropertyAnimation* GameWidget::startfallAnimation(Gem *gem, int h){
 }
 
 void GameWidget::act(Gem* gem){
+    hintArrowTimes=6;
+
     int len = 118;
     int gemX = gem->x;
     int gemY = gem->y;
@@ -740,4 +806,9 @@ void GameWidget::makeStopSpin(int SX,int SY){
 
     gems[SX][SY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[SX][SY]->path_stable[gems[SX][SY]->type]));
     gems[SX][SY]->setIconSize(QSize(LEN, LEN));
+}
+
+GameWidget::~GameWidget()
+{
+    delete ui;
 }
