@@ -19,6 +19,7 @@
 #include <QMainWindow>
 #include<qsound.h>
 #include<qsoundeffect.h>
+#include<QTemporaryDir>
 #define TO_BOMB 100
 class Point{
 public:
@@ -48,6 +49,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
 private:
+    int times=6;
     int score=0;
     bool is_acting=false;
     int fallNum=0;

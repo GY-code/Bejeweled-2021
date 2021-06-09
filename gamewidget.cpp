@@ -14,11 +14,13 @@ void GameWidget::setupScene(){
     //全屏
     QWidget::showFullScreen();
     //循环播放背景音乐
-    sound=new QSoundEffect(this);
 
-    sound->setSource(QUrl::fromLocalFile("D:/music-2.wav"));
+    sound=new QSoundEffect(this);
+    sound->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath()+"/music/background/music-2.wav"));
     sound->setLoopCount(QSoundEffect::Infinite);
     sound->play();
+
+
     //窗口基本设置
     setWindowFlag(Qt::Window);  //设置为独立窗口
     setWindowTitle("Bejeweled");
@@ -76,6 +78,7 @@ void GameWidget::setupScene(){
     QPropertyAnimation* anim2 = new QPropertyAnimation(ui->scoreLbl, "geometry");
     anim2->setDuration(500);
     anim2->setStartValue(QRect(270, 0, 327, 178));
+
     anim2->setEndValue(QRect(270, 80, 327, 178));
     anim2->setEasingCurve(QEasingCurve::InQuad);
     //进度条
@@ -149,9 +152,48 @@ void GameWidget::setupScene(){
         delete boardWidget;
     }) ;
     connect(hintButton,&HoverButton::clicked,[=](){
-        Point p=tipsdetect();
-        QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
-        qDebug()<<msg;
+        if(!is_acting&&times>=6){
+            times=0;
+            Point p=tipsdetect();
+            QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
+            qDebug()<<msg;
+            QLabel *hintLabel=new QLabel(boardWidget);
+            hintLabel->setGeometry(p.x*118+39,p.y*118+118,40,60);
+            hintLabel->show();
+            setAdaptedImg(":/picture/arrow.png",hintLabel);
+            QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
+            anim->setDuration(300);
+            anim->setStartValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+            anim->setEndValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+            anim->setEasingCurve(QEasingCurve::OutQuad);
+            anim->start();
+
+            QPropertyAnimation* danim = new QPropertyAnimation(hintLabel,"geometry");
+            connect(anim,&QPropertyAnimation::finished,[=]{
+                danim->setDuration(300);
+                danim->setEndValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+                danim->setStartValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+                danim->setEasingCurve(QEasingCurve::InQuad);
+                danim->start();
+            });
+
+            connect(danim,&QPropertyAnimation::finished,[=]{
+                times=times+1;
+                if(times>=6){
+                    if(anim)
+                        delete anim;
+                    if(danim)
+                        delete danim;
+                    if(hintLabel)
+                        delete hintLabel;
+                }else{
+                    anim->start();
+                }
+            });
+            connect(gems[p.x][p.y],&Gem::mouseClicked,[=]{
+                times=6;
+            });
+        }
     });
 
 }
@@ -227,19 +269,23 @@ void GameWidget::startGame(){
 
         connect(this, &GameWidget::eliminateFinished, [=] {
             forbidAll(false);
+            is_acting=false;
             int s = updateBombList();
             if(s!=0){
                 Sleep(100);
                 forbidAll(true);//禁用
+                is_acting=true;
                 eliminateBoard();
 
             }
         });
         forbidAll(false);
+        is_acting=false;
         int s = updateBombList();
         if(s!=0){
             Sleep(100);
             forbidAll(true);//禁用
+            is_acting=true;
             eliminateBoard();
         }
 
@@ -286,7 +332,7 @@ void GameWidget::act(Gem* gem){
         selectedX=-1;
         selectedY=-1;
         makeStopSpin(SX,SY);
-        is_acting=true;
+
 
         //去选框
         selectedLbl->clear();
@@ -323,6 +369,7 @@ void GameWidget::act(Gem* gem){
             gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         }else{
             forbidAll(true);//禁用
+            is_acting=true;
             score += currentScore;//加上分数
             gems[gemX][gemY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
