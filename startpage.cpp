@@ -10,12 +10,14 @@ StartPage::StartPage(QWidget *parent) :
     ui(new Ui::StartPage)
 {
     ui->setupUi(this);
-     //循环播放背景音乐
+    //循环播放背景音乐
+    qDebug()<<QCoreApplication::applicationDirPath();
     sound=new QSoundEffect(this);
-
-    sound->setSource(QUrl::fromLocalFile("D:/music-1.wav"));
+    sound->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath()+"/music/background/music-1.wav"));
     sound->setLoopCount(QSoundEffect::Infinite);
     sound->play();
+
+
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
@@ -41,29 +43,27 @@ StartPage::StartPage(QWidget *parent) :
     this->setPalette(palette);
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
-//    QTimer::singleShot(1500, this, [=](){
-        QParallelAnimationGroup *group = new QParallelAnimationGroup;
-        group->addAnimation(ShowBackground());
-        SetButton();
-        startButton->showContent("Start",40);
-        recordButton->showContent("Record",20);
-        settingButton->showContent("Setting",20);
-        gitButton->showContent("Git",10);
-        documentButton->showContent("Document",10);
-        volume->showContent("volueme",10);
-        bright->showContent("brightness",10);
-        group->addAnimation(startButton->textAnim);
-        group->addAnimation(recordButton->textAnim);
-        group->addAnimation(settingButton->textAnim);
-        group->addAnimation(documentButton->textAnim);
-        group->addAnimation(gitButton->textAnim);
+    QParallelAnimationGroup *group = new QParallelAnimationGroup;
+    group->addAnimation(ShowBackground());
+    SetButton();
+    startButton->showContent("Start",40);
+    recordButton->showContent("Record",20);
+    settingButton->showContent("Setting",20);
+    gitButton->showContent("Git",10);
+    documentButton->showContent("Document",10);
+    volume->showContent("volueme",10);
+    bright->showContent("brightness",10);
+    group->addAnimation(startButton->textAnim);
+    group->addAnimation(recordButton->textAnim);
+    group->addAnimation(settingButton->textAnim);
+    group->addAnimation(documentButton->textAnim);
+    group->addAnimation(gitButton->textAnim);
 
-        group->addAnimation(bright->textAnim);
-        group->addAnimation(volume->textAnim);
-        group->addAnimation(ShowTitle());
-        Sleep(200);
-        group->start(QAbstractAnimation::DeleteWhenStopped);
-//    });
+    group->addAnimation(bright->textAnim);
+    group->addAnimation(volume->textAnim);
+    group->addAnimation(ShowTitle());
+    Sleep(200);
+    group->start(QAbstractAnimation::DeleteWhenStopped);
 
 }
 
@@ -106,7 +106,7 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
-     documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
+    documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
                               ":/picture/button/ball.png", "", this);
     gitButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
                          ":/picture/button/ball.png", "", this);
@@ -120,11 +120,11 @@ void StartPage::SetButton(){
         sound->stop();
         gameWidget->setupScene();
         gameWidget->show();
-    }) ;
+    });
 
     connect(gameWidget, &GameWidget::showStartPage, [=](){
         this->show();
-         sound->setLoopCount(QSoundEffect::Infinite);
+        sound->setLoopCount(QSoundEffect::Infinite);
         sound->play();
     }) ;
     //打开文档
@@ -133,11 +133,11 @@ void StartPage::SetButton(){
         QTemporaryDir tempDir;
         tempDir.setAutoRemove(false);
         if (tempDir.isValid()) {
-          QString tempFile = tempDir.path() + "/Exp.doc";
-          if (QFile::copy(":/doc/Exp.doc", tempFile)) {
-            //now extracted to the filesystem
-              QDesktopServices::openUrl(QUrl::fromLocalFile(tempDir.path() + "/Exp.doc"));
-          }
+            QString tempFile = tempDir.path() + "/Exp.doc";
+            if (QFile::copy(":/doc/Exp.doc", tempFile)) {
+                //now extracted to the filesystem
+                QDesktopServices::openUrl(QUrl::fromLocalFile(tempDir.path() + "/Exp.doc"));
+            }
         }
 
     }) ;
