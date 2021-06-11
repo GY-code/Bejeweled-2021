@@ -22,11 +22,6 @@ StartPage::StartPage(QWidget *parent) :
     recordButton=new HoverButton();
     settingButton=new HoverButton();
 
-    gitButton=new HoverButton();
-    documentButton=new HoverButton();
-    bright=new HoverButton();
-    volume=new HoverButton();
-
     
     startButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
     recordButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
@@ -49,18 +44,11 @@ StartPage::StartPage(QWidget *parent) :
     startButton->showContent("Start",40);
     recordButton->showContent("Record",20);
     settingButton->showContent("Setting",20);
-    gitButton->showContent("Git",10);
-    documentButton->showContent("Document",10);
-    volume->showContent("volueme",10);
-    bright->showContent("brightness",10);
+
     group->addAnimation(startButton->textAnim);
     group->addAnimation(recordButton->textAnim);
     group->addAnimation(settingButton->textAnim);
-    group->addAnimation(documentButton->textAnim);
-    group->addAnimation(gitButton->textAnim);
 
-    group->addAnimation(bright->textAnim);
-    group->addAnimation(volume->textAnim);
     group->addAnimation(ShowTitle());
     Sleep(200);
     group->start(QAbstractAnimation::DeleteWhenStopped);
@@ -106,15 +94,15 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
-    documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
-                              ":/picture/button/ball.png", "", this);
-    gitButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
-                         ":/picture/button/ball.png", "", this);
-    bright->setCircle(this->width()/50, this->width()/10, this->height()/2+500, this->width(), this->height(),\
-                      ":/picture/button/ball.png", "", this);
+//    documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
+//                              ":/picture/button/ball.png", "", this);
+//    gitButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
+//                         ":/picture/button/ball.png", "", this);
+//    bright->setCircle(this->width()/50, this->width()/10, this->height()/2+500, this->width(), this->height(),\
+//                      ":/picture/button/ball.png", "", this);
 
-    volume->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
-                      ":/picture/button/ball.png", "", this);
+//    volume->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
+//                      ":/picture/button/ball.png", "", this);
     connect(startButton, &HoverButton::clicked, [=](){
         this->hide();
         sound->stop();
@@ -127,34 +115,13 @@ void StartPage::SetButton(){
         sound->setLoopCount(QSoundEffect::Infinite);
         sound->play();
     }) ;
-    //打开文档
-    connect(documentButton, &HoverButton::clicked, [=](){
-        QFile file(":/doc/Exp.doc");
-        QTemporaryDir tempDir;
-        tempDir.setAutoRemove(false);
-        if (tempDir.isValid()) {
-            QString tempFile = tempDir.path() + "/Exp.doc";
-            if (QFile::copy(":/doc/Exp.doc", tempFile)) {
-                //now extracted to the filesystem
-                QDesktopServices::openUrl(QUrl::fromLocalFile(tempDir.path() + "/Exp.doc"));
-            }
-        }
 
+
+    //打开设置界面
+    connect(settingButton, &HoverButton::clicked, [=](){
+        settingP.show();
     }) ;
 
-    //访问网页
-    connect(gitButton, &HoverButton::clicked, [=](){
-        QDesktopServices::openUrl(QUrl(QLatin1String("https://gitee.com/guyi2020/bejeweled-2021")));
-    }) ;
-    //亮度调节
-    connect(bright, &HoverButton::clicked, [=](){
-        brightW.show();
-    }) ;
-
-    //声音调节
-    connect(volume, &HoverButton::clicked, [=](){
-        volumeW.show();
-    }) ;
 
 }
 //将path的图片放置到label上，自适应label大小
