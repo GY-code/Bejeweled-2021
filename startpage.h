@@ -10,12 +10,11 @@
 #include "hoverbutton.h"
 #include "gamewidget.h"
 #include <QTime>
-#include"brightWidget.h"
-#include"volumeWidget.h"
 #include <QTemporaryDir>
 #include<qsound.h>
 #include<qmediaplayer.h>
 #include<qsoundeffect.h>
+#include"settingpage.h"
 namespace Ui {
 class StartPage;
 }
@@ -28,16 +27,17 @@ public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
     GameWidget* gameWidget=new GameWidget;
+
     QPropertyAnimation *bkAnim;
-    brightWidget brightW;
-    volumeWidget volumeW;
+    settingpage settingP;
+    //volumeWidget volumeW;
      QSoundEffect* sound;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
 private:
     Ui::StartPage *ui;
-    HoverButton *startButton, *recordButton, *settingButton,*documentButton,*gitButton;
-    HoverButton *bright,*volume;
+    HoverButton *startButton, *recordButton, *settingButton;
+    //HoverButton *bright,*volume;
 
     QLabel *background;
     QPropertyAnimation *  ShowBackground();
