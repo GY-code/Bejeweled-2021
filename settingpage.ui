@@ -94,7 +94,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="label_help">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -111,7 +111,7 @@ color: rgb(255, 255, 255);</string>
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="label_web">
     <property name="geometry">
      <rect>
       <x>500</x>
@@ -128,7 +128,7 @@ color: rgb(255, 255, 255);</string>
      <string>Web</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_7">
+   <widget class="QLabel" name="label_done">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -143,6 +143,9 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Done</string>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::LinksAccessibleByMouse</set>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -219,7 +222,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

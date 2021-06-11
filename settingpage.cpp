@@ -15,7 +15,6 @@ settingpage::settingpage(QWidget *parent) :
     ui(new Ui::settingpage)
 {
 
-
     ui->setupUi(this);
     QPixmap pixmap = QPixmap(":/picture/Settingpage/dialogbox.png").scaled(this->size());
     QPalette palette(this->palette());
@@ -28,7 +27,10 @@ settingpage::settingpage(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground);
     //以下属性默认为false，即mouseMoveEvent只有在按键按下时移动才能触发
 
-
+    //设置标签对鼠标事件穿透
+    ui->label_help->setAttribute(Qt::WA_TransparentForMouseEvents);
+    ui->label_done->setAttribute(Qt::WA_TransparentForMouseEvents);
+    ui->label_web->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     ui->Help->setCursor(QCursor(Qt::PointingHandCursor));
     ui->Web->setCursor(QCursor(Qt::PointingHandCursor));

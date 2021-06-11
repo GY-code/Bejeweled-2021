@@ -119,6 +119,8 @@ void StartPage::SetButton(){
 
     //打开设置界面
     connect(settingButton, &HoverButton::clicked, [=](){
+        settingP.setParent(this);
+        settingP.setGeometry(560,262,800,555);
         settingP.show();
     }) ;
 
