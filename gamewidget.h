@@ -76,6 +76,8 @@ private:
     HoverButton *pauseButton=nullptr;
     MyProBar* progressBar=nullptr;
     QTimer *progressTimer=nullptr;
+    int redBordershow=0;
+    double trans=0;
 
     QPropertyAnimation* startfallAnimation(Gem *gem, int h);
     int randomGem();

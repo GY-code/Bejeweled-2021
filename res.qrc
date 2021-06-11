@@ -51,5 +51,7 @@
         <file>picture/Settingpage/slider-track-1.png</file>
         <file>picture/Settingpage/slider-track-2.png</file>
         <file>picture/Settingpage/dialogtitle.png</file>
+        <file>picture/frame_red.png</file>
+        <file>picture/time_out.png</file>
     </qresource>
 </RCC>

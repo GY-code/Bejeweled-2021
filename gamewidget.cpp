@@ -35,6 +35,11 @@ void GameWidget::setupScene(){
     setAdaptedImg(":/picture/backdrop00.jpg",ui->oriBkLbl);
     setAdaptedImg(":/picture/frame.png",ui->borderLbl);
     setAdaptedImg(":/picture/scorepod.png",ui->scoreLbl);
+    //设置变红的四周提示灯标签
+    QLabel* redBorder=new QLabel(this);
+    redBorder->setGeometry(610, 2, 1055, 1073);
+    setAdaptedImg(":/picture/frame_red.png",redBorder);
+    redBorder->setAttribute(Qt::WA_TransparentForMouseEvents);
     //辅助label，不用管
     ui->menuLbl->setVisible(false);
     ui->hintLbl->setVisible(false);
@@ -121,14 +126,58 @@ void GameWidget::setupScene(){
     progressTimer = new QTimer(this);
     progressTimer->setInterval(15);
     progressTimer->start();
+    QTimer *redBorderTimer=new QTimer(this);
+    redBorderTimer->setInterval(500);
+    QTimer *timeoutTimer=new QTimer(this);
+    timeoutTimer->setInterval(30);
+//    timeoutTimer->start();
+    connect(redBorderTimer, &QTimer::timeout, [=](){
+        if(redBordershow==0){
+            redBorder->show();
+            redBordershow=1;
+        }else{
+            redBorder->hide();
+            redBordershow=0;
+        }
+    });
+    //设置超时标签
+    connect(timeoutTimer, &QTimer::timeout, [=](){
+        QLabel* outLabel=new QLabel(this);
+        outLabel->setGeometry(837,388,600,300);
+
+        outLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+        QPixmap input(":/picture/time_out.png");
+        QImage image(input.size(), QImage::Format_ARGB32_Premultiplied);
+        image.fill(Qt::transparent);
+        QPainter p(&image);
+        p.setOpacity(trans);
+        p.drawPixmap(0, 0, input);
+        p.end();
+        QPixmap output = QPixmap::fromImage(image);
+        outLabel->setPixmap(output);
+        outLabel->show();
+        outLabel->setParent(this);
+        if(trans<=1)
+            trans=trans+0.01;
+    });
+
     connect(progressTimer, &QTimer::timeout, [=](){
         if(!is_paused){
             if(progressBar->value() == 0){
-
                 //计时结束
+                if(!timeoutTimer->isActive()){
+                    timeoutTimer->start();
+                }
             }
-            else
+            else{
                 progressBar->setValue(progressBar->value()-1);
+                if(progressBar->value()/10000.0<=0.25){
+                    if(!redBorderTimer->isActive()){
+                        redBorderTimer->start();
+                    }
+
+                }
+            }
         }
 
     });
