@@ -41,5 +41,15 @@
         <file>doc/Exp.doc</file>
         <file>picture/starsBK.gif</file>
         <file>picture/arrow.png</file>
+        <file>picture/Settingpage/BttomBar.png</file>
+        <file>picture/Settingpage/dialogbox.png</file>
+        <file>picture/Settingpage/dialogbutton.png</file>
+        <file>picture/Settingpage/DialogButtonGlow.png</file>
+        <file>picture/Settingpage/slider-track.png</file>
+        <file>picture/Settingpage/thumb.png</file>
+        <file>picture/Settingpage/Toggle.png</file>
+        <file>picture/Settingpage/slider-track-1.png</file>
+        <file>picture/Settingpage/slider-track-2.png</file>
+        <file>picture/Settingpage/dialogtitle.png</file>
     </qresource>
 </RCC>
