@@ -26,26 +26,27 @@ CONFIG += c++11
 
 SOURCES += \
     CGammaRamp.cpp \
-    brightWidget.cpp \
+    PixmapSlider.cpp \
     main.cpp \
     hoverbutton.cpp \
+    settingpage.cpp \
     startpage.cpp \
     gamewidget.cpp \
     myprobar.cpp \
-    gem.cpp \
-    volumeWidget.cpp
+    gem.cpp
 
 HEADERS += \
     CGammaRamp.h \
-    brightWidget.h \
+    PixmapSlider.h \
     hoverbutton.h \
+    settingpage.h \
     startpage.h \
     gamewidget.h \
     myprobar.h \
-    gem.h \
-    volumeWidget.h
+    gem.h
 
 FORMS += \
+    settingpage.ui \
     startpage.ui \
     gamewidget.ui
 
