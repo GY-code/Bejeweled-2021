@@ -53,5 +53,7 @@
         <file>picture/Settingpage/dialogtitle.png</file>
         <file>picture/frame_red.png</file>
         <file>picture/time_out.png</file>
+        <file>picture/button/Level.png</file>
+        <file>picture/button/Level_back.png</file>
     </qresource>
 </RCC>
