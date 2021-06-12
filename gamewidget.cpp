@@ -8,6 +8,15 @@ GameWidget::GameWidget(QWidget *parent) :
     ui->setupUi(this);
 }
 void GameWidget::setupScene(){
+    score=0;
+    
+    scoreTextLbl=new QLabel(this);
+    scoreTextLbl->setGeometry(383,130,100,50);
+    scoreTextLbl->setAlignment(Qt::AlignCenter);
+    scoreTextLbl->setFont(QFont("Euclid",40,QFont::Normal));
+    scoreTextLbl->setStyleSheet("QLabel{color:white;}");
+    scoreTextLbl->setVisible(true);
+
     //禁用最大化按钮、设置窗口大小固定
     this->setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     this->setFixedSize(this->width(),this->height());
@@ -207,7 +216,8 @@ void GameWidget::setupScene(){
             delete pauseBKgif;
         if(pauseTXLbl)
             delete pauseTXLbl;
-
+        if(scoreTextLbl)
+            delete scoreTextLbl;
 
         for(int i=0;i<8;i++){
             for(int j=0;j<8;j++){
@@ -221,7 +231,6 @@ void GameWidget::setupScene(){
             hintArrowTimes=0;
             Point p=tipsdetect();
             QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
-            qDebug()<<msg;
             QLabel *hintLabel=new QLabel(this);
             hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
             hintLabel->show();
@@ -363,6 +372,12 @@ void GameWidget::startGame(){
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
 
+    connect(this,&GameWidget::myMouseMove,this,[=](QMouseEvent* event){
+       mousePosX = event->x()-665;
+       mousePosY = event->y()-44;
+       qDebug()<<mousePosX<<","<<mousePosY;
+    });
+
     QRandomGenerator::global()->fillRange(gemType[0], 64);
 
     //掉落动画
@@ -373,28 +388,30 @@ void GameWidget::startGame(){
             gems[i][j] = new Gem(static_cast<int>(gemType[i][j]), 118, i, j , boardWidget);
             gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents, true);
             group->addAnimation(startfallAnimation(gems[i][j],j+1));
-            connect(gems[i][j], &Gem::mouseClicked, this, &GameWidget::act);
+            connect(gems[i][j], &Gem::mouseClickedGem, this, &GameWidget::act);
         }
     }
     group->start();
 
     connect(group, &QParallelAnimationGroup::finished, [=] {
-
+        scoreTextLbl->setText("0");
         connect(this, &GameWidget::eliminateFinished, [=] {
+            scoreTextLbl->setText(QString::number(score));
             forbidAll(false);
             is_acting=false;
             int s = updateBombList();
+            score+=s;
             if(s!=0){
                 Sleep(100);
                 forbidAll(true);//禁用
                 is_acting=true;
                 eliminateBoard();
-
             }
         });
         forbidAll(false);
         is_acting=false;
         int s = updateBombList();
+        score+=s;
         if(s!=0){
             Sleep(100);
             forbidAll(true);//禁用
@@ -402,10 +419,32 @@ void GameWidget::startGame(){
             eliminateBoard();
         }
 
-
         delete group;
     });
+    connect(this,&GameWidget::finishCount,this,&GameWidget::finishAct);
+//    connect(this,&GameWidget::finishCount,[=](int tempHeight[][8]){
+//        if(FTime==2){
+//            //qDebug()<<"flagsss";
+//            //当前页面宝石掉落
+//            magicFall(tempHeight);
 
+//            //随机生成新宝石并掉落
+//            magicFill(tempHeight);
+//            FTime=0;
+//        }
+//    });
+}
+
+void GameWidget::finishAct(){
+    if(FTime==2){
+        qDebug()<<"flagsss";
+        //当前页面宝石掉落
+        magicFall();
+
+        //随机生成新宝石并掉落
+        magicFill();
+        FTime=0;
+    }
 }
 
 QPropertyAnimation* GameWidget::startfallAnimation(Gem *gem, int h){
@@ -448,7 +487,6 @@ void GameWidget::act(Gem* gem){
         selectedY=-1;
         makeStopSpin(SX,SY);
 
-
         //去选框
         selectedLbl->clear();
 
@@ -466,6 +504,7 @@ void GameWidget::act(Gem* gem){
         std::swap(gemType[gemX][gemY],gemType[SX][SY]);
 
         int currentScore = updateBombList();//将这次的分数返回，如果是0就回退
+        score+=currentScore;
         if(currentScore == 0) {
             std::swap(gemX,SX);
             std::swap(gemY,SY);
@@ -485,10 +524,17 @@ void GameWidget::act(Gem* gem){
         }else{
             forbidAll(true);//禁用
             is_acting=true;
-            score += currentScore;//加上分数
             gems[gemX][gemY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-            eliminateBoard();
+
+            bombList.clear();
+            int magicType1 = getBombsToMakeMagic(SX,SY,bombsToMakeMagic1,1);
+            qDebug()<<magicType1;
+            generateMagic(SX,SY,magicType1,1);
+            int magicType2 = getBombsToMakeMagic(gemX,gemY,bombsToMakeMagic2,2);
+            qDebug()<<magicType2;
+            generateMagic(gemX,gemY,magicType2,2);
+
         }
     }
     //如果点击了自己
@@ -603,6 +649,59 @@ void GameWidget::fall(){
         }
 }
 
+void GameWidget::magicFall(){
+
+    for(int i = 0; i < 8; ++i)
+        for(int j = 7; j >= 0; --j){
+            if(tHeight[i][j] != -1 && tHeight[i][j] != 0 && gemType[i][j] != 100){
+                gemType[i][j + tHeight[i][j]] = gemType[i][j];
+                gems[i][j]->setY(gems[i][j]->y + tHeight[i][j]);
+                gems[i][j + tHeight[i][j]] = gems[i][j];
+                gemType[i][j] = 100;
+                fallAnimation(gems[i][j], tHeight[i][j]);
+            }
+        }
+}
+
+void GameWidget::magicFill(){
+    QTimer::singleShot(100, this, [=](){
+        int lack[8] = {0};
+
+        for(int i = 0; i < 8; ++i){
+            for(int j = 0; j < 8; ++j)
+                if(tHeight[i][j] == -1)
+                    lack[i]++;
+                else if(tHeight[i][j] != 0){
+                    lack[i] += tHeight[i][j];
+                    break;
+                }
+        }
+
+        for(int i = 0; i < 8; ++i)
+            for(int j = 0; j < lack[i]; ++j){
+                gems[i][lack[i]-j-1] = new Gem(randomGem(), LEN, i, lack[i]-j-1, boardWidget, -lack[i]);
+                gems[i][lack[i]-j-1]->setGeometry(LEN*i, LEN*(-j-1), LEN, LEN);
+                gemType[i][lack[i]-j-1] = static_cast<unsigned int>(gems[i][lack[i]-j-1]->type);
+                connect(gems[i][lack[i]-j-1], &Gem::mouseClickedGem, this, &GameWidget::act);
+            }
+
+        for(int i = 0; i < 8; ++i)
+            for(int j = 7; j >= 0; --j){
+                if(tHeight[i][j] != -1 && tHeight[i][j] != 0 && gemType[i][j] != 100){
+                    fallNum++;
+                }
+            }
+        for(int i = 0; i < 8; ++i)
+            fallNum+=lack[i];
+
+        for(int i = 0; i < 8; ++i)
+            for(int j = 0; j < lack[i]; ++j){
+                fillfallAnimation(gems[i][lack[i]-j-1], lack[i]);
+            }
+
+    });
+}
+
 void GameWidget::fill(){
     QTimer::singleShot(100, this, [=](){
         int lack[8] = {0};
@@ -622,7 +721,7 @@ void GameWidget::fill(){
                 gems[i][lack[i]-j-1] = new Gem(randomGem(), LEN, i, lack[i]-j-1, boardWidget, -lack[i]);
                 gems[i][lack[i]-j-1]->setGeometry(LEN*i, LEN*(-j-1), LEN, LEN);
                 gemType[i][lack[i]-j-1] = static_cast<unsigned int>(gems[i][lack[i]-j-1]->type);
-                connect(gems[i][lack[i]-j-1], &Gem::mouseClicked, this, &GameWidget::act);
+                connect(gems[i][lack[i]-j-1], &Gem::mouseClickedGem, this, &GameWidget::act);
             }
 
         for(int i = 0; i < 8; ++i)
@@ -640,6 +739,200 @@ void GameWidget::fill(){
             }
 
     });
+}
+
+void GameWidget::generateMagic(int cX,int cY,int type,int time){
+
+    std::vector<Gem*> tempList;//动画用
+
+    if(time==1){
+
+        if(type==-1)
+            bombsToMakeMagic1.clear();
+        if(type==0)
+            bombsToMakeMagic1.push_back(gems[cX][cY]);
+        for(unsigned int i=0;i<bombsToMakeMagic1.size();i++){
+            tempList.push_back(bombsToMakeMagic1[i]);
+        }
+    }else if(time==2){
+        if(type==-1)
+            bombsToMakeMagic2.clear();
+        if(type==0)
+            bombsToMakeMagic2.push_back(gems[cX][cY]);
+        for(unsigned int i=0;i<bombsToMakeMagic2.size();i++){
+            tempList.push_back(bombsToMakeMagic2[i]);
+        }
+
+        std::vector<Gem*> combine;
+        for(unsigned int i=0;i<bombsToMakeMagic1.size();i++){
+            combine.push_back(bombsToMakeMagic1[i]);
+        }
+        for(unsigned int i=0;i<bombsToMakeMagic2.size();i++){
+            combine.push_back(bombsToMakeMagic2[i]);
+        }
+        bombsToMakeMagic1.clear();
+        bombsToMakeMagic2.clear();
+        for(int i=0;i<8;i++)
+            for(int j=0;j<8;j++){
+                tHeight[i][j]=0;
+            }
+        //计算当前页面宝石要掉落的高度
+        for(unsigned int i=0;i<(combine.size());i++){
+            gemType[combine[i]->x][combine[i]->y] = 100;
+            tHeight[combine[i]->x][combine[i]->y] = -1;
+            for(int k = combine[i]->y - 1; k >= 0; --k)
+                if(tHeight[combine[i]->x][k] != -1)
+                    tHeight[combine[i]->x][k]++;
+        }
+    }
+
+    if(type==-1){
+
+        fallNum=fallCount=0;
+        FTime++;
+        finishCount();
+
+        return;
+    }
+
+
+    if(type==0){
+        //普通三消动画
+        int r=10;
+
+        QParallelAnimationGroup* biggerGroup = new QParallelAnimationGroup;
+        for(unsigned int i=0;i<(tempList.size());i++){
+            QPropertyAnimation *anim = new QPropertyAnimation(tempList[i],"geometry",boardWidget);
+            anim->setDuration(250);
+            anim->setStartValue(QRect(tempList[i]->geometry()));
+            anim->setEndValue(QRect(tempList[i]->geometry().x()-r,tempList[i]->geometry().y()-r,LEN+2*r,LEN+2*r));
+            anim->setEasingCurve(QEasingCurve::OutQuad);
+            biggerGroup->addAnimation(anim);
+        }
+        biggerGroup->start();
+        connect(biggerGroup,&QParallelAnimationGroup::finished,[=]{
+            delete biggerGroup;
+            QParallelAnimationGroup* smallerGroup = new QParallelAnimationGroup;
+            for(unsigned int i=0;i<(tempList.size());i++){
+                QPropertyAnimation *anim = new QPropertyAnimation(tempList[i],"geometry",boardWidget);
+                anim->setDuration(200);
+                anim->setStartValue(QRect(tempList[i]->geometry()));
+                anim->setEndValue(QRect(tempList[i]->geometry().x()+r+LEN/2-1,tempList[i]->geometry().y()+r+LEN/2-1,2,2));
+                anim->setEasingCurve(QEasingCurve::InQuad);
+                smallerGroup->addAnimation(anim);
+            }
+            smallerGroup->start();
+            connect(smallerGroup,&QParallelAnimationGroup::finished,[=]{
+                delete smallerGroup;
+                for(unsigned int i=0;i<(tempList.size());i++)
+                    if(tempList[i])
+                        tempList[i]->bomb();
+                fallNum=fallCount=0;
+                FTime++;
+                finishCount();
+            });
+        });
+
+
+
+    }else if(type!=-1){
+
+        //特殊消除，周围的收到中心动画
+        QParallelAnimationGroup* gather = new QParallelAnimationGroup;
+        for(unsigned int i=0;i<tempList.size();i++){
+            QPropertyAnimation* anim = new QPropertyAnimation(tempList[i],"geometry",boardWidget);
+            anim->setDuration(280);
+            anim->setStartValue(tempList[i]->geometry());
+            anim->setEndValue(gems[cX][cY]->geometry());
+            anim->setEasingCurve(QEasingCurve::Linear);
+            gather->addAnimation(anim);
+        }
+        gather->start();
+
+        connect(gather,&QParallelAnimationGroup::finished,[=]{
+            delete gather;
+            Sleep(100);
+
+            for(unsigned int i=0;i<(tempList.size());i++)
+                if(tempList[i])
+                    tempList[i]->bomb();
+
+            fallNum=fallCount=0;
+            FTime++;
+            finishCount();
+        });
+
+    }
+
+}
+
+
+int GameWidget::getBombsToMakeMagic(int cX, int cY,std::vector<Gem*> bombsToMakeMagic,int time)
+{
+    int rNum=0,cNum=0;//同行、同列相同个数
+
+    //检测以cXcY为起点，同行连着的有几个（除去自己
+    //1.向右检测
+    int start=cX,end=cX+1;
+    while(end<=8&&gemType[start][cY]==gemType[end][cY]){
+        bombsToMakeMagic.push_back(gems[end][cY]);
+        end++;
+    }
+    end--;
+    rNum+=end-start;
+    //2.向左检测
+    start=cX;end=cX-1;
+    while(end>=0&&gemType[start][cY]==gemType[end][cY]){
+        bombsToMakeMagic.push_back(gems[end][cY]);
+        end--;
+    }
+    end++;
+    rNum+=start-end;
+
+    if(rNum==1){
+        bombsToMakeMagic.pop_back();
+    }
+
+    //检测同列连着的有几个（除去自己
+    //1.向下检测
+    start=cY;end=cY+1;
+    while(end<=8&&gemType[cX][start]==gemType[cX][end]){
+        bombsToMakeMagic.push_back(gems[cX][end]);
+        end++;
+    }
+    end--;
+    cNum+=end-start;
+    //2.向上检测
+    start=cY;end=cY-1;
+    while(end>=0&&gemType[cX][start]==gemType[cX][end]){
+        bombsToMakeMagic.push_back(gems[cX][end]);
+        end--;
+    }
+    end++;
+    cNum+=start-end;
+
+    if(cNum==1){
+        bombsToMakeMagic.pop_back();
+    }
+
+    int magicType=-1;//-1无 0普通三消 1 爆炸 2 行消/列消 3魔方
+    if(bombsToMakeMagic.size()>=3){
+        if(cNum==4||rNum==4)
+            magicType=3;
+        else if((rNum==3&&cNum==0)||(rNum==0&&cNum==3))
+            magicType=2;
+        else
+            magicType=1;
+    }else if(bombsToMakeMagic.size()==2){
+        if((rNum==2&&cNum<=1)||(rNum<=1&&cNum==2))
+            magicType=0;
+    }
+    if(time==1){
+        bombsToMakeMagic1=bombsToMakeMagic;
+    }else if(time==2){
+        bombsToMakeMagic2=bombsToMakeMagic;
+    }
+    return magicType;
 }
 
 int GameWidget::updateBombList() {
@@ -663,6 +956,7 @@ int GameWidget::updateBombList() {
             start=end;
         }
     }
+
     for(int i=0;i<8;i++){
         int start=0,end=0;
         //当start超过5，没有检测的必要，必然连着的超不过三个
@@ -680,6 +974,7 @@ int GameWidget::updateBombList() {
             start=end;
         }
     }
+
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if(eliminating[i][j] != 0 && eliminating[i][j]!=100){
@@ -688,8 +983,10 @@ int GameWidget::updateBombList() {
             }
         }
     }
+
     return score;
 }
+
 Point GameWidget::tipsdetect(){
     int types[12][12];
     for (int i = 0; i < 10; ++i) {
@@ -787,6 +1084,10 @@ void GameWidget::eliminateBoard(){
 
     //消去宝石
     int r = 10;
+    for(unsigned int i=0;i<(bombList.size());i++){
+        if(!bombList[i])
+            bombList.erase(bombList.begin()+i);
+    }
     QParallelAnimationGroup* biggerGroup = new QParallelAnimationGroup;
     for(unsigned int i=0;i<(bombList.size());i++){
         QPropertyAnimation *anim = new QPropertyAnimation(bombList[i],"geometry",boardWidget);
@@ -812,7 +1113,8 @@ void GameWidget::eliminateBoard(){
         connect(smallerGroup,&QParallelAnimationGroup::finished,[=]{
             delete smallerGroup;
             for(unsigned int i=0;i<(bombList.size());i++)
-                bombList[i]->bomb();
+                if(bombList[i])
+                    bombList[i]->bomb();
 
             bombList.clear();
 
@@ -829,7 +1131,6 @@ void GameWidget::eliminateBoard(){
 
 
 }
-
 
 void GameWidget::makeSpin(int SX,int SY){
     if(!gems[SX][SY]||SX==-1)
@@ -855,9 +1156,4 @@ void GameWidget::makeStopSpin(int SX,int SY){
 
     gems[SX][SY]->setStyleSheet(QString("QPushButton{border-image:url(%1);}").arg(gems[SX][SY]->path_stable[gems[SX][SY]->type]));
     gems[SX][SY]->setIconSize(QSize(LEN, LEN));
-}
-
-GameWidget::~GameWidget()
-{
-    delete ui;
 }

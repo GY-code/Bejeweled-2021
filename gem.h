@@ -25,11 +25,11 @@ public:
     void bomb();
     QMovie* gif;
     QLabel* gifLabel;
+
 private:
 
 signals:
-    void mouseClicked(Gem*);
-
+    void mouseClickedGem(Gem*);
 };
 
 #endif // GEM_H

@@ -44,19 +44,25 @@ class GameWidget : public QMainWindow
 
 public:
     explicit GameWidget(QWidget *parent = nullptr);
-    ~GameWidget();
     void setAdaptedImg(QString path,QLabel *label);
     void setupScene();
     QSoundEffect* sound;
+
 protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
 private:
-    int DIFFICULITY=7;
+    int FTime=0;
+    int mousePosX=-1,mousePosY=-1;
+
+    int DIFFICULITY=4;
     int hintArrowTimes=6;
     int score=0;
     bool is_acting=false;
     bool is_paused=false;
+
+    QLabel* scoreTextLbl=nullptr;
+
     QLabel* pauseBKLbl = nullptr;
     QMovie* pauseBKgif = nullptr;
     QLabel* pauseTXLbl = nullptr;
@@ -76,6 +82,7 @@ private:
     HoverButton *pauseButton=nullptr;
     MyProBar* progressBar=nullptr;
     QTimer *progressTimer=nullptr;
+    QLabel* selectedLbl=nullptr;
     int redBordershow=0;
     double trans=0;
 
@@ -84,6 +91,8 @@ private:
     void startGame();
     void fall();
     void fill();
+    void magicFall();
+    void magicFill();
     void makeStopSpin(int,int);
     void makeSpin(int,int);
     void swap(int, int, int gemX,int gemY);
@@ -95,14 +104,23 @@ private:
     void Sleep(int msec);
     void act(Gem* gem);
     int selectedX=-1,selectedY=-1;
-    QLabel* selectedLbl=nullptr;
 
     void forbidAll(bool forbid);
+    std::vector<Gem*> bombsToMakeMagic1;
+    std::vector<Gem*> bombsToMakeMagic2;
+    std::vector<Gem*> tList1;
+    std::vector<Gem*> tList2;
+    int getBombsToMakeMagic(int cX,int cY,std::vector<Gem*> bombsToMakeMagic,int time);
+    void generateMagic(int cX,int cY,int type,int time);
+    void finishAct();
+    int tHeight[8][8];
 
     Ui::GameWidget *ui;
 signals:
     void showStartPage();
     void eliminateFinished();
+    void myMouseMove(QMouseEvent*);
+    void finishCount();
 };
 
 #endif // GAMEWIDGET_H

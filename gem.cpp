@@ -11,10 +11,9 @@ Gem::Gem(int type, int len, int x, int y, QWidget *parent, int offset) : QPushBu
     setIconSize(QSize(len, len));
 
     connect(this, &Gem::pressed, [=](){
-        this->mouseClicked(this);
+        this->mouseClickedGem(this);
     });
 }
-
 
 void Gem::initialPath(){
     path_stable[0] = ":/picture/GameWidget/Gem/Magic.png";
@@ -33,7 +32,6 @@ void Gem::initialPath(){
     path_dynamic[5] = ":/picture/GameWidget/Gem/violet.gif";
     path_dynamic[6] = ":/picture/GameWidget/Gem/Silver.gif";
     path_dynamic[7] = ":/picture/GameWidget/Gem/Gold.gif";
-
 }
 void Gem::bomb(){
     delete this;
