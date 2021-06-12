@@ -29,6 +29,7 @@ SOURCES += \
     PixmapSlider.cpp \
     main.cpp \
     hoverbutton.cpp \
+    selectlevel.cpp \
     settingpage.cpp \
     startpage.cpp \
     gamewidget.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     CGammaRamp.h \
     PixmapSlider.h \
     hoverbutton.h \
+    selectlevel.h \
     settingpage.h \
     startpage.h \
     gamewidget.h \
@@ -46,6 +48,7 @@ HEADERS += \
     gem.h
 
 FORMS += \
+    selectlevel.ui \
     settingpage.ui \
     startpage.ui \
     gamewidget.ui
