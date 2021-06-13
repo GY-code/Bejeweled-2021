@@ -10,11 +10,14 @@
 #include<qdesktopservices.h>
 #include<qurl.h>
 #include<qpainter.h>
+#include<stdio.h>
+
 settingpage::settingpage(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::settingpage)
 {
 
+    //index=0;
     ui->setupUi(this);
     QPixmap pixmap = QPixmap(":/picture/Settingpage/dialogbox.png").scaled(this->size());
     QPalette palette(this->palette());
@@ -26,15 +29,16 @@ settingpage::settingpage(QWidget *parent) :
     //把窗口背景设置为透明
     this->setAttribute(Qt::WA_TranslucentBackground);
     //以下属性默认为false，即mouseMoveEvent只有在按键按下时移动才能触发
-
     //设置标签对鼠标事件穿透
     ui->label_help->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->label_done->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->label_web->setAttribute(Qt::WA_TransparentForMouseEvents);
+    ui->LangL->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     ui->Help->setCursor(QCursor(Qt::PointingHandCursor));
     ui->Web->setCursor(QCursor(Qt::PointingHandCursor));
     ui->Done->setCursor(QCursor(Qt::PointingHandCursor));
+    ui->LangB->setCursor(QCursor(Qt::PointingHandCursor));
 
     ui->Help->setGeometry(140, 260, 131, 51);
     ui->Help->setStyleSheet("border-image:url(:/picture/Settingpage/dialogbutton.png)");
@@ -85,6 +89,8 @@ settingpage::settingpage(QWidget *parent) :
     slider2->SetRange(0, 99);
     slider2->SetPos(40,false);
     QObject::connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(onSpinValueChanged(int)));
+
+
 
 }
 
@@ -204,5 +210,36 @@ settingpage::~settingpage()
 
 
 
+void settingpage::on_LangB_clicked()
+{
+    if(index==0){
+        ui->LangB->setStyleSheet("border-image:url(:/picture/Settingpage/Toggle_2.png)");
+        ui->LangL->setText("简体中文");
+        ui->label_Bright->setText("亮度");
+        ui->label_Bright->setGeometry(190,200,101,31);
+        ui->label_volume->setText("音量");
+        ui->label_settings->setText("设置");
+        ui->label_settings->setGeometry(320,30,121,51);
+        ui->label_help->setText("帮助");
+        ui->label_done->setText("退出");
+        ui->label_web->setText("网页");
+        selectLan(index);
+        index=1;
+        return;
+    }else{
+        ui->LangB->setStyleSheet("border-image:url(:/picture/Settingpage/Toggle_1.png)");
+        ui->LangL->setText("English");
+        ui->label_Bright->setText("Brightness");
+        ui->label_volume->setText("Volume");
+        ui->label_settings->setText("Settings");
 
+        ui->label_help->setText("Help");
+        ui->label_done->setText("Done");
+        ui->label_web->setText("Web");
+        selectLan(index);
+        index=0;
+        return;
+    }
+
+}
 
