@@ -46,40 +46,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="DoneL">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>213</y>
-      <width>101</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
-font: 87 12pt &quot;Arial Black&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Done</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="level2L">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>130</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
-font: 87 12pt &quot;Arial Black&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Medium</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="level3B">
     <property name="geometry">
      <rect>
@@ -112,40 +78,6 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="level3L">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>130</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
-font: 87 12pt &quot;Arial Black&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Hard</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="level1L">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>130</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
-font: 87 12pt &quot;Arial Black&quot;;</string>
-    </property>
-    <property name="text">
-     <string>Easy</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -160,23 +92,6 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
     </property>
     <property name="text">
      <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>20</y>
-      <width>91</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 87 11pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>Level</string>
     </property>
    </widget>
   </widget>
