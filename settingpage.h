@@ -3,12 +3,15 @@
 
 #include <QMainWindow>
 #include"PixmapSlider.h"
+#include<QLabel>
+static int index=0;
 namespace Ui {
 class settingpage;
 }
 
 class settingpage : public QMainWindow
 {
+
     Q_OBJECT
 
 public:
@@ -31,12 +34,18 @@ private slots:
     void onSpinValueChanged(int i);
 
 
+
+    void on_LangB_clicked();
+
 private:
     Ui::settingpage *ui;
 
     PixmapSlider * slider1;
     PixmapSlider * slider2;
 
+
+signals:
+    void selectLan(int index);
 };
 
 #endif // SETTINGPAGE_H
