@@ -1,16 +1,39 @@
 #include "selectlevel.h"
 #include "ui_selectlevel.h"
-
+#include"qfont.h"
 selectlevel::selectlevel(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::selectlevel)
 {
     ui->setupUi(this);
+
     QPalette palette(this->palette());
     palette.setBrush(QPalette::Background, QBrush(pixmap));
     this->setPalette(palette);
 
+    levelL->setGeometry(260,20,91,41);
+    level1L->setGeometry(110,130,51,21);
+    level2L->setGeometry(250,130,81,21);
+    level3L->setGeometry(420,130,51,21);
+    DoneL->setGeometry(260,213,101,21);
+    levelL->setParent(this);
+    levelL->setVisible(true);
+    level1L->setParent(this);
+    levelL->setVisible(true);
+    level2L->setParent(this);
+    levelL->setVisible(true);
+    level3L->setParent(this);
+    levelL->setVisible(true);
+    DoneL->setParent(this);
+    DoneL->setVisible(true);
 
+    QFont font ( "Arial Black", 12, 87);
+    levelL->setFont(font);
+    levelL->setFont(font);
+    level1L->setFont(font);
+    level2L->setFont(font);
+    level3L->setFont(font);
+    DoneL->setFont(font);
     //去窗口边框
     this->setWindowFlags(Qt::FramelessWindowHint | this->windowFlags());
     //把窗口背景设置为透明
@@ -21,16 +44,17 @@ selectlevel::selectlevel(QWidget *parent) :
     ui->level3B->setCursor(QCursor(Qt::PointingHandCursor));
     ui->DoneB->setCursor(QCursor(Qt::PointingHandCursor));
     //防止标签遮挡
-    ui->level1L->setAttribute(Qt::WA_TransparentForMouseEvents);
-    ui->level2L->setAttribute(Qt::WA_TransparentForMouseEvents);
-    ui->level3L->setAttribute(Qt::WA_TransparentForMouseEvents);
-    ui->DoneL->setAttribute(Qt::WA_TransparentForMouseEvents);
+    level1L->setAttribute(Qt::WA_TransparentForMouseEvents);
+    level2L->setAttribute(Qt::WA_TransparentForMouseEvents);
+    level3L->setAttribute(Qt::WA_TransparentForMouseEvents);
+    DoneL->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     white.setColor(QPalette::WindowText,Qt::white);
     dyellow.setColor(QPalette::WindowText,Qt::darkYellow);
     purple.setColor(QPalette::WindowText,Qt::magenta);
 
     initColor();
+
 }
 
 selectlevel::~selectlevel()
@@ -42,7 +66,7 @@ selectlevel::~selectlevel()
 //点击变色
 void selectlevel::on_level1B_pressed()
 {
-    ui->level1L->setPalette(dyellow);
+    level1L->setPalette(dyellow);
 }
 
 
@@ -50,41 +74,41 @@ void selectlevel::on_level1B_released()
 {
     level=4;
     initColor();
-    ui->level1L->setPalette(purple);
+    level1L->setPalette(purple);
 }
 
 void selectlevel::on_level2B_pressed()
 {
-    ui->level2L->setPalette(dyellow);
+    level2L->setPalette(dyellow);
 }
 
 void selectlevel::on_level2B_released()
 {
     level=6;
     initColor();
-    ui->level2L->setPalette(purple);
+    level2L->setPalette(purple);
 }
 
 void selectlevel::on_level3B_pressed()
 {
-    ui->level3L->setPalette(dyellow);
+    level3L->setPalette(dyellow);
 }
 
 void selectlevel::on_level3B_released()
 {
     level=7;
     initColor();
-    ui->level3L->setPalette(purple);
+    level3L->setPalette(purple);
 }
 
 void selectlevel::on_DoneB_pressed()
 {
-    ui->DoneL->setPalette(dyellow);
+    DoneL->setPalette(dyellow);
 }
 
 void selectlevel::on_DoneB_released()
 {
-    ui->DoneL->setPalette(white);
+    DoneL->setPalette(white);
     this->setVisible(false);
     this->selectDone(level);
 }
@@ -97,10 +121,11 @@ void selectlevel::on_DoneB_clicked()
 
 void selectlevel::initColor()
 {
-    ui->level1L->setPalette(white);
-    ui->level2L->setPalette(white);
-    ui->level3L->setPalette(white);
-    ui->DoneL->setPalette(white);
+    level1L->setPalette(white);
+    level2L->setPalette(white);
+    level3L->setPalette(white);
+    levelL->setPalette(white);
+    DoneL->setPalette(white);
 }
 
 void selectlevel::paintEvent(QPaintEvent *)
