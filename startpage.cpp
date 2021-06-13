@@ -10,6 +10,7 @@ StartPage::StartPage(QWidget *parent) :
     ui(new Ui::StartPage)
 {
     ui->setupUi(this);
+//select=new selectlevel();
     //循环播放背景音乐
     qDebug()<<QCoreApplication::applicationDirPath();
     sound=new QSoundEffect(this);
@@ -103,6 +104,28 @@ void StartPage::SetButton(){
         gameWidget->show();
     });
 
+
+    //语言切换
+    connect(&settingP,&settingpage::selectLan,[=](int index){
+
+        if(index==0){
+            select->level1L->setText("简单");
+            select->level2L->setText("普通");
+            select->level2L->setGeometry(260,130,81,21);
+            select->level3L->setText("困难");
+            select->levelL->setText("设置");
+            select->DoneL->setText("开始");
+        }else{
+            select->level1L->setText("Easy");
+            select->level2L->setText("Medium");
+            select->level3L->setText("Hard");
+            select->levelL->setText("Settings");
+            select->DoneL->setText("Done");
+        }
+    });
+
+
+
     connect(startButton, &HoverButton::clicked, [=](){
         select->setVisible(true);
     });
@@ -120,6 +143,24 @@ void StartPage::SetButton(){
         settingP.setGeometry(560,262,800,555);
         settingP.show();
     }) ;
+
+    //语言切换
+    connect(&settingP,&settingpage::selectLan,[=](int index){
+
+        if(index==0){
+            startButton->showContent("开始",40);
+            recordButton->showContent("记录",20);
+            settingButton->showContent("设置",20);
+        }
+
+        if(index==1){
+            startButton->showContent("Start",40);
+            recordButton->showContent("Record",20);
+            settingButton->showContent("Settings",20);
+        }
+    });
+
+
 
 
 }
@@ -172,3 +213,4 @@ void StartPage::closeEvent(QCloseEvent *event)
 {
     select->close();
 }
+
