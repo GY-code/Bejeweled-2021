@@ -20,7 +20,8 @@ public:
     void setCircle(int r, int x, int y, int width, int height, QString path, QString path2, QWidget *parent);
     void showContent(QString text,int size);
     QPropertyAnimation* textAnim = new QPropertyAnimation;
-    QLabel* label=nullptr;
+    QLabel label;
+
 
 protected:
     bool event(QEvent *e) override;
