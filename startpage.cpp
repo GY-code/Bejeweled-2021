@@ -103,11 +103,16 @@ void StartPage::SetButton(){
 
 //    volume->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
 //                      ":/picture/button/ball.png", "", this);
-    connect(startButton, &HoverButton::clicked, [=](){
+    connect(select,&selectlevel::selectDone,[=](int difficulty){
         this->hide();
         sound->stop();
+        gameWidget->DIFFICULITY=difficulty;
         gameWidget->setupScene();
         gameWidget->show();
+    });
+
+    connect(startButton, &HoverButton::clicked, [=](){
+        select->setVisible(true);
     });
 
     connect(gameWidget, &GameWidget::showStartPage, [=](){

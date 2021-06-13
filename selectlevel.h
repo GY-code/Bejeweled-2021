@@ -34,10 +34,15 @@ private slots:
 
     void on_DoneB_clicked();
 
+    void initColor();
 private:
     Ui::selectlevel *ui;
-    QPalette pe1;
-    QPalette pe2;
+    QPalette yellow;
+    QPalette dyellow;
+    QPalette red;
+    int level=5;
+signals:
+    void selectDone(int difficulty);
 };
 
 #endif // SELECTLEVEL_H

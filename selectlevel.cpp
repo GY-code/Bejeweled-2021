@@ -22,14 +22,11 @@ selectlevel::selectlevel(QWidget *parent) :
     ui->label->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->DoneL->setAttribute(Qt::WA_TransparentForMouseEvents);
 
+    yellow.setColor(QPalette::WindowText,Qt::yellow);
+    dyellow.setColor(QPalette::WindowText,Qt::darkYellow);
+    red.setColor(QPalette::WindowText,Qt::red);
 
-    pe1.setColor(QPalette::WindowText,Qt::yellow);
-    pe2.setColor(QPalette::WindowText,Qt::blue);
-
-    ui->level1L->setPalette(pe1);
-    ui->level2L->setPalette(pe1);
-    ui->level3L->setPalette(pe1);
-    ui->DoneL->setPalette(pe1);
+    initColor();
 }
 
 selectlevel::~selectlevel()
@@ -41,55 +38,64 @@ selectlevel::~selectlevel()
 //点击变色
 void selectlevel::on_level1B_pressed()
 {
-    ui->level1L->setPalette(pe2);
+    ui->level1L->setPalette(dyellow);
 }
 
 
 void selectlevel::on_level1B_released()
 {
-    ui->level1L->setPalette(pe1);
+    level=5;
+    initColor();
+    ui->level1L->setPalette(red);
 }
 
 void selectlevel::on_level2B_pressed()
 {
-    ui->level2L->setPalette(pe2);
+    ui->level2L->setPalette(dyellow);
 }
-
-
-void selectlevel::on_level3B_pressed()
-{
-    ui->level3L->setPalette(pe2);
-}
-
-
-void selectlevel::on_DoneB_pressed()
-{
-    ui->DoneL->setPalette(pe2);
-}
-
 
 void selectlevel::on_level2B_released()
 {
-    ui->level2L->setPalette(pe1);
+    level=6;
+    initColor();
+    ui->level2L->setPalette(red);
 }
 
+void selectlevel::on_level3B_pressed()
+{
+    ui->level3L->setPalette(dyellow);
+}
 
 void selectlevel::on_level3B_released()
 {
-    ui->level3L->setPalette(pe1);
+    level=7;
+    initColor();
+    ui->level3L->setPalette(red);
 }
 
+void selectlevel::on_DoneB_pressed()
+{
+    ui->DoneL->setPalette(dyellow);
+}
 
 void selectlevel::on_DoneB_released()
 {
-    ui->DoneL->setPalette(pe1);
+    ui->DoneL->setPalette(yellow);
+    this->setVisible(false);
+    this->selectDone(level);
 }
-
-
 
 //点击done关闭难度选择界面
 void selectlevel::on_DoneB_clicked()
 {
-    this->setVisible(false);
+
+}
+
+void selectlevel::initColor()
+{
+    ui->level1L->setPalette(yellow);
+    ui->level2L->setPalette(yellow);
+    ui->level3L->setPalette(yellow);
+    ui->DoneL->setPalette(yellow);
 }
 

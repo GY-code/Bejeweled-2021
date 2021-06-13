@@ -43,6 +43,7 @@ class GameWidget : public QMainWindow
     Q_OBJECT
 
 public:
+    int DIFFICULITY=5;
     explicit GameWidget(QWidget *parent = nullptr);
     void setAdaptedImg(QString path,QLabel *label);
     void setupScene();
@@ -55,7 +56,6 @@ private:
     int FTime=0;
     int mousePosX=-1,mousePosY=-1;
 
-    int DIFFICULITY=4;
     int hintArrowTimes=6;
     int score=0;
     bool is_acting=false;

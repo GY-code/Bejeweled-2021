@@ -15,6 +15,7 @@
 #include<qmediaplayer.h>
 #include<qsoundeffect.h>
 #include"settingpage.h"
+#include "selectlevel.h"
 namespace Ui {
 class StartPage;
 }
@@ -26,7 +27,8 @@ class StartPage : public QWidget
 public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
-    GameWidget* gameWidget=new GameWidget;
+    GameWidget* gameWidget = new GameWidget;
+    selectlevel* select = new selectlevel;
 
     QPropertyAnimation *bkAnim;
     settingpage settingP;
