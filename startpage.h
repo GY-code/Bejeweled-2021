@@ -33,9 +33,10 @@ public:
     QPropertyAnimation *bkAnim;
     settingpage settingP;
     //volumeWidget volumeW;
-     QSoundEffect* sound;
+    QSoundEffect* sound;
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::StartPage *ui;
     HoverButton *startButton, *recordButton, *settingButton;
@@ -48,6 +49,8 @@ private:
     void setBkImg(QString path,QLabel *label);
     void setAdaptedImg(QString path,QLabel *label);
     void Sleep(int msec);
+
+
 
 };
 
