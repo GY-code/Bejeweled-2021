@@ -6,9 +6,6 @@ selectlevel::selectlevel(QWidget *parent) :
     ui(new Ui::selectlevel)
 {
     ui->setupUi(this);
-
-
-    QPixmap pixmap = QPixmap(":/picture/Settingpage/dialogbox_select.png").scaled(this->size());
     QPalette palette(this->palette());
     palette.setBrush(QPalette::Background, QBrush(pixmap));
     this->setPalette(palette);
@@ -29,9 +26,9 @@ selectlevel::selectlevel(QWidget *parent) :
     ui->level3L->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->DoneL->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-    yellow.setColor(QPalette::WindowText,Qt::yellow);
+    white.setColor(QPalette::WindowText,Qt::white);
     dyellow.setColor(QPalette::WindowText,Qt::darkYellow);
-    red.setColor(QPalette::WindowText,Qt::red);
+    purple.setColor(QPalette::WindowText,Qt::magenta);
 
     initColor();
 }
@@ -53,7 +50,7 @@ void selectlevel::on_level1B_released()
 {
     level=5;
     initColor();
-    ui->level1L->setPalette(red);
+    ui->level1L->setPalette(purple);
 }
 
 void selectlevel::on_level2B_pressed()
@@ -65,7 +62,7 @@ void selectlevel::on_level2B_released()
 {
     level=6;
     initColor();
-    ui->level2L->setPalette(red);
+    ui->level2L->setPalette(purple);
 }
 
 void selectlevel::on_level3B_pressed()
@@ -77,7 +74,7 @@ void selectlevel::on_level3B_released()
 {
     level=7;
     initColor();
-    ui->level3L->setPalette(red);
+    ui->level3L->setPalette(purple);
 }
 
 void selectlevel::on_DoneB_pressed()
@@ -87,7 +84,7 @@ void selectlevel::on_DoneB_pressed()
 
 void selectlevel::on_DoneB_released()
 {
-    ui->DoneL->setPalette(yellow);
+    ui->DoneL->setPalette(white);
     this->setVisible(false);
     this->selectDone(level);
 }
@@ -100,14 +97,14 @@ void selectlevel::on_DoneB_clicked()
 
 void selectlevel::initColor()
 {
-    ui->level1L->setPalette(yellow);
-    ui->level2L->setPalette(yellow);
-    ui->level3L->setPalette(yellow);
-    ui->DoneL->setPalette(yellow);
+    ui->level1L->setPalette(white);
+    ui->level2L->setPalette(white);
+    ui->level3L->setPalette(white);
+    ui->DoneL->setPalette(white);
 }
 
 void selectlevel::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.drawPixmap(0, 0, QPixmap(":/picture/Settingpage/dialogbox_select.png"));
+    p.drawPixmap(0, 0, pixmap);
 }

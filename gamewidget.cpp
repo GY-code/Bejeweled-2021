@@ -11,7 +11,7 @@ void GameWidget::setupScene(){
     score=0;
     
     scoreTextLbl=new QLabel(this);
-    scoreTextLbl->setGeometry(383,130,100,50);
+    scoreTextLbl->setGeometry(360,130,150,50);
     scoreTextLbl->setAlignment(Qt::AlignCenter);
     scoreTextLbl->setFont(QFont("Euclid",40,QFont::Normal));
     scoreTextLbl->setStyleSheet("QLabel{color:white;}");
@@ -375,7 +375,7 @@ void GameWidget::startGame(){
     connect(this,&GameWidget::myMouseMove,this,[=](QMouseEvent* event){
        mousePosX = event->x()-665;
        mousePosY = event->y()-44;
-       qDebug()<<mousePosX<<","<<mousePosY;
+       //qDebug()<<mousePosX<<","<<mousePosY;
     });
 
     QRandomGenerator::global()->fillRange(gemType[0], 64);
@@ -422,22 +422,10 @@ void GameWidget::startGame(){
         delete group;
     });
     connect(this,&GameWidget::finishCount,this,&GameWidget::finishAct);
-//    connect(this,&GameWidget::finishCount,[=](int tempHeight[][8]){
-//        if(FTime==2){
-//            //qDebug()<<"flagsss";
-//            //当前页面宝石掉落
-//            magicFall(tempHeight);
-
-//            //随机生成新宝石并掉落
-//            magicFill(tempHeight);
-//            FTime=0;
-//        }
-//    });
 }
 
 void GameWidget::finishAct(){
     if(FTime==2){
-        qDebug()<<"flagsss";
         //当前页面宝石掉落
         magicFall();
 
@@ -529,10 +517,10 @@ void GameWidget::act(Gem* gem){
 
             bombList.clear();
             int magicType1 = getBombsToMakeMagic(SX,SY,bombsToMakeMagic1,1);
-            qDebug()<<magicType1;
+
             generateMagic(SX,SY,magicType1,1);
             int magicType2 = getBombsToMakeMagic(gemX,gemY,bombsToMakeMagic2,2);
-            qDebug()<<magicType2;
+
             generateMagic(gemX,gemY,magicType2,2);
 
         }
@@ -851,11 +839,22 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
 
         connect(gather,&QParallelAnimationGroup::finished,[=]{
             delete gather;
-            Sleep(100);
 
             for(unsigned int i=0;i<(tempList.size());i++)
                 if(tempList[i])
                     tempList[i]->bomb();
+
+            //
+            unsigned int tty = gemType[cX][cY]*10+static_cast<unsigned int>(type);
+
+            if(tty%10==0){
+                gemType[cX][cY] = tty;
+                gems[cX][cY]->type = tty%10;
+                makeStopSpin(cX,cY);
+                makeSpin(cX,cY);
+            }
+
+            Sleep(100);
 
             fallNum=fallCount=0;
             FTime++;
