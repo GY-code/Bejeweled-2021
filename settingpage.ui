@@ -164,7 +164,7 @@ color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="label_settings">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -181,7 +181,7 @@ color: rgb(255, 255, 255);</string>
      <string>Settings</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
+   <widget class="QLabel" name="label_volume">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -198,7 +198,7 @@ color: rgb(255, 255, 255);</string>
      <string>Volume</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_9">
+   <widget class="QLabel" name="label_Bright">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -215,6 +215,39 @@ color: rgb(255, 255, 255);</string>
      <string>Brightness</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="LangB">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>260</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-image: url(:/picture/Settingpage/Toggle_1.png);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="LangL">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>270</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 12pt &quot;Elephant&quot;;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>English</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -222,7 +255,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
