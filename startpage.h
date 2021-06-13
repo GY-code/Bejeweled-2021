@@ -28,8 +28,7 @@ public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
     GameWidget* gameWidget = new GameWidget;
-    selectlevel* select = new selectlevel;
-
+    selectlevel* select=new selectlevel();
     QPropertyAnimation *bkAnim;
     settingpage settingP;
     //volumeWidget volumeW;
