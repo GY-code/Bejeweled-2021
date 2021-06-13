@@ -55,5 +55,6 @@
         <file>picture/time_out.png</file>
         <file>picture/button/Level.png</file>
         <file>picture/button/Level_back.png</file>
+        <file>picture/Settingpage/dialogbox_select.png</file>
     </qresource>
 </RCC>
