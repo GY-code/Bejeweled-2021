@@ -56,5 +56,7 @@
         <file>picture/button/Level.png</file>
         <file>picture/button/Level_back.png</file>
         <file>picture/Settingpage/dialogbox_select.png</file>
+        <file>picture/GameWidget/Gem/0000.gif</file>
+        <file>picture/GameWidget/Gem/fire.gif</file>
     </qresource>
 </RCC>

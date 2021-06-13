@@ -23,8 +23,11 @@ public:
     int oriX,oriY;
     explicit Gem(int type, int len, int x, int y, QWidget *parent = nullptr, int offset=0);
     void bomb();
-    QMovie* gif;
-    QLabel* gifLabel;
+    QMovie* spinGif;
+    QLabel* spinLabel;
+    QMovie* magicGif;
+    QLabel* magicLabel;
+    QLabel* normalLabel;
 
 private:
 

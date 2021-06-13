@@ -55,6 +55,7 @@ protected:
 private:
     int FTime=0;
     int mousePosX=-1,mousePosY=-1;
+    bool exitMagic=false;
 
     int hintArrowTimes=6;
     int score=0;
@@ -114,6 +115,7 @@ private:
     void generateMagic(int cX,int cY,int type,int time);
     void finishAct();
     int tHeight[8][8];
+    void magicCollect(int coType,int toX,int toY);
 
     Ui::GameWidget *ui;
 signals:

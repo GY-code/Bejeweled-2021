@@ -63,7 +63,7 @@ void MyProBar::paintEvent(QPaintEvent *e)
     if(percent>0.25)
         painter.fillPath(*draw_path,QColor(6, 118, 216));
     else
-        painter.fillPath(*draw_path,QColor(255, 11, 11));
+        painter.fillPath(*draw_path,QColor(205,38,38));
 }
 
 
