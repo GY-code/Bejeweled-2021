@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include<qpainter.h>
-
+#include"settingpage.h"
+#include"QLabel"
 namespace Ui {
 class selectlevel;
 }
@@ -15,6 +16,12 @@ class selectlevel : public QMainWindow
 public:
     explicit selectlevel(QWidget *parent = nullptr);
     ~selectlevel();
+    QLabel*level1L=new QLabel("Easy");
+    QLabel*level2L=new QLabel("Medium");
+    QLabel*level3L=new QLabel("Hard");
+    QLabel*levelL=new QLabel("Level");
+    QLabel*DoneL=new QLabel("Done");
+
 
 private slots:
     void on_level1B_pressed();
@@ -38,6 +45,7 @@ private slots:
     void initColor();
 private:
     Ui::selectlevel *ui;
+    settingpage settingP;
     QPixmap pixmap=QPixmap(":/picture/Settingpage/dialogbox_select.png").scaled(QSize(574,307));
     QPalette white;
     QPalette dyellow;
