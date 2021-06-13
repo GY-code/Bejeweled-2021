@@ -58,5 +58,7 @@
         <file>picture/Settingpage/dialogbox_select.png</file>
         <file>picture/GameWidget/Gem/0000.gif</file>
         <file>picture/GameWidget/Gem/fire.gif</file>
+        <file>picture/Settingpage/Toggle_1.png</file>
+        <file>picture/Settingpage/Toggle_2.png</file>
     </qresource>
 </RCC>
