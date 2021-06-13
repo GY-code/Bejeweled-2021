@@ -2,6 +2,7 @@
 #define SELECTLEVEL_H
 
 #include <QMainWindow>
+#include<qpainter.h>
 
 namespace Ui {
 class selectlevel;
@@ -41,6 +42,8 @@ private:
     QPalette dyellow;
     QPalette red;
     int level=5;
+    void paintEvent(QPaintEvent *);
+ //   StartPage* start=new StartPage();
 signals:
     void selectDone(int difficulty);
 };
