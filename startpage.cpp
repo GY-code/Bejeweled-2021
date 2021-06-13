@@ -94,15 +94,7 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
-//    documentButton->setCircle(this->width()/50, this->width()/30, this->height()/2+400, this->width(), this->height(),\
-//                              ":/picture/button/ball.png", "", this);
-//    gitButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
-//                         ":/picture/button/ball.png", "", this);
-//    bright->setCircle(this->width()/50, this->width()/10, this->height()/2+500, this->width(), this->height(),\
-//                      ":/picture/button/ball.png", "", this);
 
-//    volume->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
-//                      ":/picture/button/ball.png", "", this);
     connect(select,&selectlevel::selectDone,[=](int difficulty){
         this->hide();
         sound->stop();
@@ -173,4 +165,10 @@ void StartPage::Sleep(int msec)
     QTime dieTime = QTime::currentTime().addMSecs(msec);
     while( QTime::currentTime() < dieTime )
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
+//主窗口关闭则选择界面关闭
+void StartPage::closeEvent(QCloseEvent *event)
+{
+    select->close();
 }
