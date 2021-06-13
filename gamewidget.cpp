@@ -479,7 +479,9 @@ void GameWidget::act(Gem* gem){
         selectedLbl->setAttribute(Qt::WA_TransparentForMouseEvents);
         selectedLbl->show();
         //让选中宝石旋转
-        makeSpin(selectedX,selectedY);
+        if(gems[selectedX][selectedY]->type!=0){
+            makeSpin(selectedX,selectedY);
+        }
     }
     //如果有宝石选中，并点击了邻居宝石，则让宝石交换
     else if(  ( (selectedX==gemX)&&(abs(selectedY-gemY)==1)  )
@@ -488,8 +490,11 @@ void GameWidget::act(Gem* gem){
         int SY = selectedY;
         selectedX=-1;
         selectedY=-1;
-        makeStopSpin(SX,SY);
-
+        if(gems[SX][SY]->type!=0)
+            makeStopSpin(SX,SY);
+        else{
+            makeSpin(SX,SY);
+        }
         //去选框
         selectedLbl->clear();
 
@@ -546,7 +551,8 @@ void GameWidget::act(Gem* gem){
         //去选框
         selectedLbl->clear();
         //静止
-        makeStopSpin(selectedX,selectedY);
+        if(gems[selectedX][selectedY]->type!=0)
+            makeStopSpin(selectedX,selectedY);
 
         selectedX=-1;
         selectedY=-1;
@@ -554,7 +560,8 @@ void GameWidget::act(Gem* gem){
         //去选框
         selectedLbl->clear();
         //静止
-        makeStopSpin(selectedX,selectedY);
+        if(gems[selectedX][selectedY]->type!=0)
+            makeStopSpin(selectedX,selectedY);
         selectedX = gemX;
         selectedY = gemY;
         //加选框
@@ -862,9 +869,9 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
             //
             unsigned int tty = gemType[cX][cY]*10+static_cast<unsigned int>(type);
 
-            if(tty%10==0){
+            if(tty%10==3){
                 gemType[cX][cY] = tty;
-                gems[cX][cY]->type = tty%10;
+                gems[cX][cY]->type = 0;
                 makeStopSpin(cX,cY);
                 makeSpin(cX,cY);
             }

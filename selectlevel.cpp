@@ -48,7 +48,7 @@ void selectlevel::on_level1B_pressed()
 
 void selectlevel::on_level1B_released()
 {
-    level=5;
+    level=4;
     initColor();
     ui->level1L->setPalette(purple);
 }
