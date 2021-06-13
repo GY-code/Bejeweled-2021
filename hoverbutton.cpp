@@ -5,6 +5,7 @@ HoverButton::HoverButton(QWidget *parent) : QPushButton(parent)
 {
     //设置无边框
     setStyleSheet("QPushButton{border:0px;}");
+    label.setText("");
 }
 
 void HoverButton::setImage(QString pathNormal, QString pathHover, int width, int height,QLabel *label){
@@ -35,14 +36,14 @@ void HoverButton::setSound(QString pathHover, QString pathLeave, QString pathPre
 void HoverButton::setLabel(QString text,int size){
     //设置label
     textSize=size;
-
-    label = new QLabel(text, this);
-    label->setAttribute(Qt::WA_TransparentForMouseEvents);
-    label->setGeometry(0,0, w, h);
-    label->setAlignment(Qt::AlignCenter);
-    label->setFont(QFont("Microsoft YaHei", size, QFont::Normal));
-    label->setStyleSheet("QLabel{color:white;}");
-    label->setVisible(true);
+    label.setText(text);
+    label.setParent(this);
+    label.setAttribute(Qt::WA_TransparentForMouseEvents);
+    label.setGeometry(0,0, w, h);
+    label.setAlignment(Qt::AlignCenter);
+    label.setFont(QFont("Microsoft YaHei", size, QFont::Normal));
+    label.setStyleSheet("QLabel{color:white;}");
+    label.setVisible(true);
 
 
 }
@@ -77,8 +78,8 @@ bool HoverButton::event(QEvent *e) {
         setIcon(iconHover);
         if(soundHover)
             soundHover->play();
-        if(label)
-            label->setFont(QFont("Microsoft YaHei", (textSize*1.5), QFont::Bold));
+        if(label.text()!="")
+            label.setFont(QFont("Microsoft YaHei", (textSize*1.5), QFont::Bold));
         break;
     case QEvent::Leave:
         //设置鼠标-普通
@@ -86,24 +87,24 @@ bool HoverButton::event(QEvent *e) {
         setIcon(iconNormal);
         if(soundLeave)
             soundLeave->play();
-        if(label)
-            label->setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
+        if(label.text()!="")
+            label.setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
         break;
     case QEvent::MouseButtonPress:
         //设置鼠标-press
         setCursor(QCursor(QPixmap("://picture/mouse3.png")));
         if(soundPress)
             soundPress->play();
-        if(label)
-            label->setFont(QFont("Microsoft YaHei", textSize*1.5, QFont::Bold));
+        if(label.text()!="")
+            label.setFont(QFont("Microsoft YaHei", textSize*1.5, QFont::Bold));
         break;
     case QEvent::MouseButtonRelease:
         //设置鼠标-release
         setCursor(QCursor(QPixmap("://picture/mouse2.png")));
         if(soundRelease)
             soundRelease->play();
-        if(label)
-            label->setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
+        if(label.text()!="")
+            label.setFont(QFont("Microsoft YaHei", textSize, QFont::Normal));
         break;
     default:
         break;
