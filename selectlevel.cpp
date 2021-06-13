@@ -6,6 +6,14 @@ selectlevel::selectlevel(QWidget *parent) :
     ui(new Ui::selectlevel)
 {
     ui->setupUi(this);
+
+
+    QPixmap pixmap = QPixmap(":/picture/Settingpage/dialogbox_select.png").scaled(this->size());
+    QPalette palette(this->palette());
+    palette.setBrush(QPalette::Background, QBrush(pixmap));
+    this->setPalette(palette);
+
+
     //去窗口边框
     this->setWindowFlags(Qt::FramelessWindowHint | this->windowFlags());
     //把窗口背景设置为透明
@@ -19,7 +27,6 @@ selectlevel::selectlevel(QWidget *parent) :
     ui->level1L->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->level2L->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->level3L->setAttribute(Qt::WA_TransparentForMouseEvents);
-    ui->label->setAttribute(Qt::WA_TransparentForMouseEvents);
     ui->DoneL->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     yellow.setColor(QPalette::WindowText,Qt::yellow);
@@ -99,3 +106,8 @@ void selectlevel::initColor()
     ui->DoneL->setPalette(yellow);
 }
 
+void selectlevel::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.drawPixmap(0, 0, QPixmap(":/picture/Settingpage/dialogbox_select.png"));
+}
