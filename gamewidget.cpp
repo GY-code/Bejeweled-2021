@@ -150,8 +150,8 @@ void GameWidget::setupScene(){
         }
     });
     //设置超时标签
+    QLabel* outLabel=new QLabel(this);
     connect(timeoutTimer, &QTimer::timeout, [=](){
-        QLabel* outLabel=new QLabel(this);
         outLabel->setGeometry(837,388,600,300);
 
         outLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -176,6 +176,11 @@ void GameWidget::setupScene(){
                 //计时结束
                 if(!timeoutTimer->isActive()){
                     timeoutTimer->start();
+                }
+                if(redBorderTimer->isActive()){
+                    redBorderTimer->stop();
+                    redBorder->show();
+                    redBordershow=1;
                 }
             }
             else{
@@ -218,6 +223,16 @@ void GameWidget::setupScene(){
             delete pauseTXLbl;
         if(scoreTextLbl)
             delete scoreTextLbl;
+        if(timeoutTimer){
+            delete timeoutTimer;
+        }
+        if(outLabel)
+            delete outLabel;
+        if(redBorderTimer)
+            delete redBorderTimer;
+        if(redBorder)
+            delete redBorder;
+
 
         for(int i=0;i<8;i++){
             for(int j=0;j<8;j++){
