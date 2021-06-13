@@ -38,9 +38,10 @@ private slots:
     void initColor();
 private:
     Ui::selectlevel *ui;
-    QPalette yellow;
+    QPixmap pixmap=QPixmap(":/picture/Settingpage/dialogbox_select.png").scaled(QSize(574,307));
+    QPalette white;
     QPalette dyellow;
-    QPalette red;
+    QPalette purple;
     int level=5;
     void paintEvent(QPaintEvent *);
  //   StartPage* start=new StartPage();

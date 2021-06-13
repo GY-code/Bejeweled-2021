@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>502</width>
-    <height>423</height>
+    <width>574</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <widget class="QPushButton" name="DoneB">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>220</y>
+      <x>223</x>
+      <y>200</y>
       <width>121</width>
       <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/picture/button/Level.png);</string>
+     <string notr="true">border-image: url(:/picture/Settingpage/dialogbutton.png);</string>
     </property>
     <property name="text">
      <string/>
@@ -33,14 +33,14 @@
    <widget class="QPushButton" name="level2B">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>120</y>
-      <width>181</width>
+      <x>210</x>
+      <y>110</y>
+      <width>151</width>
       <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/picture/button/Level.png);</string>
+     <string notr="true">border-image: url(:/picture/Settingpage/dialogbutton.png);</string>
     </property>
     <property name="text">
      <string/>
@@ -49,8 +49,8 @@
    <widget class="QLabel" name="DoneL">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>239</y>
+      <x>260</x>
+      <y>213</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -66,9 +66,9 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QLabel" name="level2L">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>140</y>
-      <width>121</width>
+      <x>250</x>
+      <y>130</y>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
@@ -83,14 +83,14 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QPushButton" name="level3B">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>170</y>
-      <width>181</width>
+      <x>370</x>
+      <y>110</y>
+      <width>141</width>
       <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/picture/button/Level.png);</string>
+     <string notr="true">border-image: url(:/picture/Settingpage/dialogbutton.png);</string>
     </property>
     <property name="text">
      <string/>
@@ -99,14 +99,14 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QPushButton" name="level1B">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>70</y>
-      <width>181</width>
+      <x>60</x>
+      <y>110</y>
+      <width>141</width>
       <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/picture/button/Level.png);</string>
+     <string notr="true">border-image: url(:/picture/Settingpage/dialogbutton.png);</string>
     </property>
     <property name="text">
      <string/>
@@ -115,9 +115,9 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QLabel" name="level3L">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>190</y>
-      <width>121</width>
+      <x>420</x>
+      <y>130</y>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -132,9 +132,9 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QLabel" name="level1L">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>90</y>
-      <width>141</width>
+      <x>110</x>
+      <y>130</y>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -151,7 +151,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
      <rect>
       <x>170</x>
       <y>20</y>
-      <width>161</width>
+      <width>231</width>
       <height>51</height>
      </rect>
     </property>
@@ -165,7 +165,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>20</y>
       <width>91</width>
       <height>41</height>
@@ -185,7 +185,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>502</width>
+     <width>574</width>
      <height>23</height>
     </rect>
    </property>

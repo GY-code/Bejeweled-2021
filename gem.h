@@ -13,8 +13,8 @@ class Gem:public QPushButton
 {
     Q_OBJECT
 public:
-    QString path_stable[8];
-    QString path_dynamic[8];
+    QString path_stable[100];
+    QString path_dynamic[100];
     void initialPath();
     int type;
     int x, y;
