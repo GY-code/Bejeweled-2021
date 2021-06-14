@@ -33,8 +33,8 @@ void Gem::initialPath(){
     path_dynamic[6] = ":/picture/GameWidget/Gem/Silver.gif";
     path_dynamic[7] = ":/picture/GameWidget/Gem/Gold.gif";
 
-    path_dynamic[11] = ":/picture/GameWidget/Gem/0000.gif";
-    path_dynamic[12] = ":/picture/GameWidget/Gem/fire.gif";
+    path_dynamic[11] = ":/picture/GameWidget/Gem/waterSQ.gif";
+    path_dynamic[12] = ":/picture/GameWidget/Gem/goldSQ.gif";
 }
 void Gem::bomb(){
     delete this;

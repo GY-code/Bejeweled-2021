@@ -69,5 +69,7 @@
         <file>music/effect/Time_Up.wav</file>
         <file>music/effect/Welcome.wav</file>
         <file>music/effect/hit.wav</file>
+        <file>picture/GameWidget/Gem/goldSQ.gif</file>
+        <file>picture/GameWidget/Gem/waterSQ.gif</file>
     </qresource>
 </RCC>

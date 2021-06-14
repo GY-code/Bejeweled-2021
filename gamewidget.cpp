@@ -1007,6 +1007,12 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->type = static_cast<int>(tty);
                 int idx = tty%10+10;//12
 
+
+                //原图
+                gems[cX][cY]->normalLabel = new QLabel(gems[cX][cY]);
+                gems[cX][cY]->normalLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
+                setAdaptedImg(gems[cX][cY]->path_stable[(tty-tty%10)/10],gems[cX][cY]->normalLabel);
+                gems[cX][cY]->normalLabel->show();
                 //特效图
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
@@ -1014,18 +1020,19 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
-                gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+                //gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
                 gems[cX][cY]->magicLabel->show();
                 gems[cX][cY]->magicGif->start();
-                //原图
-                gems[cX][cY]->normalLabel = new QLabel(gems[cX][cY]);
-                gems[cX][cY]->normalLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                setAdaptedImg(gems[cX][cY]->path_stable[(tty-tty%10)/10],gems[cX][cY]->normalLabel);
-                gems[cX][cY]->normalLabel->show();
             }else if(tty%10==1){//十字消
                 gemType[cX][cY] = tty;
                 gems[cX][cY]->type = static_cast<int>(tty);
                 int idx = tty%10+10;//11
+
+                //原图
+                gems[cX][cY]->normalLabel = new QLabel(gems[cX][cY]);
+                gems[cX][cY]->normalLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
+                setAdaptedImg(gems[cX][cY]->path_stable[(tty-tty%10)/10],gems[cX][cY]->normalLabel);
+                gems[cX][cY]->normalLabel->show();
                 //特效图
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
@@ -1033,14 +1040,9 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
-                gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+                //gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
                 gems[cX][cY]->magicLabel->show();
                 gems[cX][cY]->magicGif->start();
-                //原图
-                gems[cX][cY]->normalLabel = new QLabel(gems[cX][cY]);
-                gems[cX][cY]->normalLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                setAdaptedImg(gems[cX][cY]->path_stable[(tty-tty%10)/10],gems[cX][cY]->normalLabel);
-                gems[cX][cY]->normalLabel->show();
             }
 
             Sleep(100);
