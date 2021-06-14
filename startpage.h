@@ -27,6 +27,7 @@ class StartPage : public QWidget
 public:
     explicit StartPage(QWidget *parent = nullptr);
     ~StartPage();
+    int ForGameL=1;
     GameWidget* gameWidget = new GameWidget;
     selectlevel* select=new selectlevel();
     QPropertyAnimation *bkAnim;
