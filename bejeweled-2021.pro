@@ -6,6 +6,7 @@
 
 QT       += core gui multimedia widgets
 QT       += axcontainer
+QT += network sql core
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = bejeweled_2021
