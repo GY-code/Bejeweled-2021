@@ -60,5 +60,10 @@
         <file>picture/GameWidget/Gem/fire.gif</file>
         <file>picture/Settingpage/Toggle_1.png</file>
         <file>picture/Settingpage/Toggle_2.png</file>
+        <file>music/effect/effect1.wav</file>
+        <file>music/effect/effect2.wav</file>
+        <file>music/effect/effect3.wav</file>
+        <file>music/effect/effect4.wav</file>
+        <file>music/effect/effect5.wav</file>
     </qresource>
 </RCC>

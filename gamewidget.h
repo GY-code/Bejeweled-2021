@@ -61,6 +61,8 @@ private:
     int score=0;
     bool is_acting=false;
     bool is_paused=false;
+    int eliminateTimes=0;
+    QSound *effect=nullptr;
 
     QLabel* scoreTextLbl=nullptr;
 
@@ -105,7 +107,7 @@ private:
     void Sleep(int msec);
     void act(Gem* gem);
     int selectedX=-1,selectedY=-1;
-
+    void playSound(int type);
     void forbidAll(bool forbid);
     std::vector<Gem*> bombsToMakeMagic1;
     std::vector<Gem*> bombsToMakeMagic2;

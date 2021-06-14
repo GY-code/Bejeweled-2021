@@ -50,7 +50,7 @@ private:
     QPalette white;
     QPalette dyellow;
     QPalette purple;
-    int level=5;
+    int level=4;
     void paintEvent(QPaintEvent *);
  //   StartPage* start=new StartPage();
 signals:

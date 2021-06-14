@@ -69,20 +69,20 @@ void GameWidget::setupScene(){
 
     //语言切换
     if(index==1){
-    menuButton->showContent("MENU",20);
-    menuButton->show();
-    hintButton->showContent("HINT",30);
-    hintButton->show();
-    pauseButton->showContent("PAUSE",20);
-    pauseButton->show();
+        menuButton->showContent("MENU",20);
+        menuButton->show();
+        hintButton->showContent("HINT",30);
+        hintButton->show();
+        pauseButton->showContent("PAUSE",20);
+        pauseButton->show();
     }
     if(index==0){
-    menuButton->showContent("菜单",20);
-    menuButton->show();
-    hintButton->showContent("提示",30);
-    hintButton->show();
-    pauseButton->showContent("暂停",20);
-    pauseButton->show();
+        menuButton->showContent("菜单",20);
+        menuButton->show();
+        hintButton->showContent("提示",30);
+        hintButton->show();
+        pauseButton->showContent("暂停",20);
+        pauseButton->show();
     }
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
@@ -413,7 +413,35 @@ void GameWidget::forbidAll(bool forbid){//true forbit ,false release
 int GameWidget::randomGem(){
     return QRandomGenerator::global()->bounded(1, DIFFICULITY+1);
 }
+void GameWidget::playSound(int type){
+    QString src=":/music/effect/effect";
+    switch(type){
+    case 0:
+        return;
+    case 1:
+        src.append("1.wav");
+        break;
+    case 2:
+        src.append("2.wav");
+        break;
 
+    case 3:
+        src.append("3.wav");
+        break;
+
+    case 4:
+        src.append("4.wav");
+        break;
+    default:
+        src.append("5.wav");
+        break;
+    }
+    if(effect)
+        delete effect;
+    effect=new QSound(src);
+    effect->play();
+    qDebug()<<type;
+}
 void GameWidget::startGame(){
     boardWidget = new QWidget(this);
 
@@ -440,6 +468,7 @@ void GameWidget::startGame(){
         }
     }
     group->start();
+    eliminateTimes=0;
 
     connect(group, &QParallelAnimationGroup::finished, [=] {
         scoreTextLbl->setText("0");
@@ -454,8 +483,13 @@ void GameWidget::startGame(){
                 forbidAll(true);//禁用
                 is_acting=true;
                 eliminateBoard();
+                eliminateTimes++;
                 exitMagic=false;
+            }else{
+                eliminateTimes=0;
             }
+            qDebug()<<"inner connect";
+            playSound(eliminateTimes);
         });
         forbidAll(false);
         is_acting=false;
@@ -467,7 +501,12 @@ void GameWidget::startGame(){
             is_acting=true;
             eliminateBoard();
             exitMagic=false;
+            eliminateTimes++;
+        }else{
+            eliminateTimes=0;
         }
+        qDebug()<<"outter connect";
+        playSound(eliminateTimes);
 
         delete group;
     });
@@ -624,7 +663,8 @@ void GameWidget::act(Gem* gem){
                 is_acting=true;
                 gems[gemX][gemY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
                 gems[SX][SY]->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-
+                eliminateTimes=1;
+                playSound(eliminateTimes);
                 if(exitMagic){
                     eliminateBoard();
                 }else{
@@ -976,7 +1016,7 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
                 gems[cX][cY]->magicLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                    gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
+                gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
                 gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -995,7 +1035,7 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
                 gems[cX][cY]->magicLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                    gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
+                gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
                 gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -1115,21 +1155,17 @@ int GameWidget::updateBombList() {
             while(sType==eType){
                 end++;
                 //if(end<=7){
-                    if(gemType[i][end]>10){
-                        eType=dC(gemType[i][end]);
-                    }else{
-                        eType=gemType[i][end];
-                    }
+                if(gemType[i][end]>10){
+                    eType=dC(gemType[i][end]);
+                }else{
+                    eType=gemType[i][end];
+                }
                 //}
             }
             end--;
             if(end-start>=2){
-                qDebug()<<"i:"<<i<<",s:"<<start<<",e:"<<end;
                 for(int j=start;j<=end;j++){
                     if(gemType[i][j]>10){
-                        qDebug()<<"i:"<<i<<",j:"<<j;
-                        qDebug()<<gemType[i][j];
-                        qDebug()<<dC(gemType[i][j]);
                         exitMagic=true;
                         if(gemType[i][j]%10==2){//爆炸
                             for(int m=-1;m<=1;m++){
@@ -1175,11 +1211,11 @@ int GameWidget::updateBombList() {
             while(sType==eType){
                 end++;
                 //if(end<=7){
-                    if(gemType[end][i]>10){
-                        eType=dC(gemType[end][i]);
-                    }else{
-                        eType=gemType[end][i];
-                    }
+                if(gemType[end][i]>10){
+                    eType=dC(gemType[end][i]);
+                }else{
+                    eType=gemType[end][i];
+                }
                 //}
             }
             end--;
