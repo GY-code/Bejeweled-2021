@@ -6,7 +6,6 @@
 
 QT       += core gui multimedia widgets
 QT       += axcontainer
-QT += network sql core
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = bejeweled_2021
@@ -28,8 +27,12 @@ CONFIG += c++11
 SOURCES += \
     CGammaRamp.cpp \
     PixmapSlider.cpp \
+    client.cpp \
+    loginpage.cpp \
     main.cpp \
     hoverbutton.cpp \
+    ranklistpage.cpp \
+    registerpage.cpp \
     selectlevel.cpp \
     settingpage.cpp \
     startpage.cpp \
@@ -40,7 +43,11 @@ SOURCES += \
 HEADERS += \
     CGammaRamp.h \
     PixmapSlider.h \
+    client.h \
     hoverbutton.h \
+    loginpage.h \
+    ranklistpage.h \
+    registerpage.h \
     selectlevel.h \
     settingpage.h \
     startpage.h \
@@ -49,6 +56,9 @@ HEADERS += \
     gem.h
 
 FORMS += \
+    loginpage.ui \
+    ranklistpage.ui \
+    registerpage.ui \
     selectlevel.ui \
     settingpage.ui \
     startpage.ui \
