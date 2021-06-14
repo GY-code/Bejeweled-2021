@@ -454,6 +454,7 @@ void GameWidget::startGame(){
                 forbidAll(true);//禁用
                 is_acting=true;
                 eliminateBoard();
+                exitMagic=false;
             }
         });
         forbidAll(false);
@@ -465,6 +466,7 @@ void GameWidget::startGame(){
             forbidAll(true);//禁用
             is_acting=true;
             eliminateBoard();
+            exitMagic=false;
         }
 
         delete group;
@@ -625,7 +627,6 @@ void GameWidget::act(Gem* gem){
 
                 if(exitMagic){
                     eliminateBoard();
-
                 }else{
                     bombList.clear();
                     int magicType1 = getBombsToMakeMagic(SX,SY,bombsToMakeMagic1,1);
@@ -638,7 +639,6 @@ void GameWidget::act(Gem* gem){
 
             }
             exitMagic=false;
-
         }
     }
     //如果点击了自己
@@ -742,7 +742,6 @@ void GameWidget::fillfallAnimation(Gem *gem, int h){
 }
 
 void GameWidget::fall(){
-
     for(int i = 0; i < 8; ++i)
         for(int j = 7; j >= 0; --j){
             if(fallHeight[i][j] != -1 && fallHeight[i][j] != 0 && gemType[i][j] != 100){
@@ -970,13 +969,14 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
             }
             else if(tty%10==2){//爆炸
                 gemType[cX][cY] = tty;
-                gems[cX][cY]->type = 8;
+                gems[cX][cY]->type = static_cast<int>(tty);
+                int idx = tty%10+10;//12
 
                 //特效图
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
                 gems[cX][cY]->magicLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[8], QByteArray(), gems[cX][cY]);
+                    gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
                 gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -987,15 +987,15 @@ void GameWidget::generateMagic(int cX,int cY,int type,int time){
                 gems[cX][cY]->normalLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
                 setAdaptedImg(gems[cX][cY]->path_stable[(tty-tty%10)/10],gems[cX][cY]->normalLabel);
                 gems[cX][cY]->normalLabel->show();
-            }else if(tty%10==1){
+            }else if(tty%10==1){//十字消
                 gemType[cX][cY] = tty;
-                gems[cX][cY]->type = 9;
-
+                gems[cX][cY]->type = static_cast<int>(tty);
+                int idx = tty%10+10;//11
                 //特效图
                 gems[cX][cY]->setStyleSheet(QString("QPushButton{background-color:transparent;border:0px;}"));
                 gems[cX][cY]->magicLabel = new QLabel(gems[cX][cY]);
                 gems[cX][cY]->magicLabel->setGeometry(0,0,gems[cX][cY]->width(), gems[cX][cY]->height());
-                gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[9], QByteArray(), gems[cX][cY]);
+                    gems[cX][cY]->magicGif = new QMovie(gems[cX][cY]->path_dynamic[idx], QByteArray(), gems[cX][cY]);
                 gems[cX][cY]->magicGif->setScaledSize(QSize(gems[cX][cY]->width(), gems[cX][cY]->height()));
                 gems[cX][cY]->magicLabel->setMovie(gems[cX][cY]->magicGif);
                 gems[cX][cY]->magicLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -1088,7 +1088,7 @@ int GameWidget::getBombsToMakeMagic(int cX, int cY,std::vector<Gem*> bombsToMake
     return magicType;
 }
 
-//downConvert 1,2,3
+//downConvert 1,2,3...7
 unsigned int dC(unsigned int t){
     return (t-t%10)/10;
 }
@@ -1114,18 +1114,24 @@ int GameWidget::updateBombList() {
             }
             while(sType==eType){
                 end++;
-                if(gemType[i][end]>10){
-                    eType=dC(gemType[i][end]);
-                }else{
-                    eType=gemType[i][end];
-                }
+                //if(end<=7){
+                    if(gemType[i][end]>10){
+                        eType=dC(gemType[i][end]);
+                    }else{
+                        eType=gemType[i][end];
+                    }
+                //}
             }
             end--;
             if(end-start>=2){
+                qDebug()<<"i:"<<i<<",s:"<<start<<",e:"<<end;
                 for(int j=start;j<=end;j++){
                     if(gemType[i][j]>10){
+                        qDebug()<<"i:"<<i<<",j:"<<j;
+                        qDebug()<<gemType[i][j];
+                        qDebug()<<dC(gemType[i][j]);
                         exitMagic=true;
-                        if(dC(gemType[i][j])==2){//爆炸
+                        if(gemType[i][j]%10==2){//爆炸
                             for(int m=-1;m<=1;m++){
                                 for(int n=-1;n<=1;n++){
                                     if(i+m>=0&&i+m<=7&&j+n>=0&&j+n<=7)
@@ -1133,7 +1139,7 @@ int GameWidget::updateBombList() {
                                 }
                             }
                         }
-                        if(dC(gemType[i][j])==1){//十字消
+                        if(gemType[i][j]%10==1){//十字消
                             for(int m=0;m<=7;m++){
                                 eliminating[m][j]=gemType[m][j];
                             }
@@ -1168,18 +1174,20 @@ int GameWidget::updateBombList() {
             }
             while(sType==eType){
                 end++;
-                if(gemType[end][i]>10){
-                    eType=dC(gemType[end][i]);
-                }else{
-                    eType=gemType[end][i];
-                }
+                //if(end<=7){
+                    if(gemType[end][i]>10){
+                        eType=dC(gemType[end][i]);
+                    }else{
+                        eType=gemType[end][i];
+                    }
+                //}
             }
             end--;
             if(end-start>=2){
                 for(int j=start;j<=end;j++){
                     if(gemType[j][i]>10){
                         exitMagic=true;
-                        if(dC(gemType[j][i])==2){//爆炸
+                        if(gemType[j][i]%10==2){//爆炸
                             for(int m=-1;m<=1;m++){
                                 for(int n=-1;n<=1;n++){
                                     if(j+m>=0&&j+m<=7&&i+n>=0&&i+n<=7)
@@ -1187,7 +1195,7 @@ int GameWidget::updateBombList() {
                                 }
                             }
                         }
-                        if(dC(gemType[j][i])==1){//十字消
+                        if(gemType[j][i]%10==1){//十字消
                             for(int m=0;m<=7;m++){
                                 eliminating[j][m]=gemType[j][m];
                             }
