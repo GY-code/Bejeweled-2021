@@ -65,5 +65,8 @@
         <file>music/effect/effect3.wav</file>
         <file>music/effect/effect4.wav</file>
         <file>music/effect/effect5.wav</file>
+        <file>music/effect/bad.wav</file>
+        <file>music/effect/Time_Up.wav</file>
+        <file>music/effect/Welcome.wav</file>
     </qresource>
 </RCC>

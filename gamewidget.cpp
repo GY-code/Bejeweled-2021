@@ -10,7 +10,8 @@ GameWidget::GameWidget(QWidget *parent) :
 void GameWidget::setupScene(int i){
     exitMagic=false;
     score=0;
-    
+    QSound* wel=new QSound(":/music/effect/Welcome.wav");
+    wel->play();
     scoreTextLbl=new QLabel(this);
     scoreTextLbl->setGeometry(360,130,150,50);
     scoreTextLbl->setAlignment(Qt::AlignCenter);
@@ -189,6 +190,10 @@ void GameWidget::setupScene(int i){
                     //计时结束
                     if(!timeoutTimer->isActive()){
                         timeoutTimer->start();
+                    if(effect)
+                        delete effect;
+                    effect=new QSound(":/music/effect/Time_Up.wav");
+                    effect->play();
                     }
                     if(redBorderTimer->isActive()){
                         redBorderTimer->stop();
@@ -626,6 +631,10 @@ void GameWidget::act(Gem* gem){
             int currentScore = updateBombList();//将这次的分数返回，如果是0就回退
             score+=currentScore;
             if(currentScore == 0) {
+                if(effect)
+                    delete effect;
+                effect=new QSound(":/music/effect/bad.wav");
+                effect->play();
                 std::swap(gemX,SX);
                 std::swap(gemY,SY);
 
