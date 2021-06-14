@@ -46,7 +46,7 @@ public:
     int DIFFICULITY=5;
     explicit GameWidget(QWidget *parent = nullptr);
     void setAdaptedImg(QString path,QLabel *label);
-    void setupScene(int);
+    void setupScene(int i);
     QSoundEffect* sound;
 
 protected:
@@ -62,7 +62,7 @@ private:
     bool is_acting=false;
     bool is_paused=false;
     int eliminateTimes=0;
-    QSound *effect=nullptr;
+    QSound *effect=nullptr   ;
 
     QLabel* scoreTextLbl=nullptr;
 
