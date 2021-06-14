@@ -182,23 +182,7 @@ void GameWidget::setupScene(int i){
         if(trans<=1)
             trans=trans+0.01;
 
-        //语言切换
-        connect(&settingP,&settingpage::selectLan,[=](int index){
-
-            if(index==0){
-                menuButton->showContent("菜单",40);
-                hintButton->showContent("提示",20);
-                pauseButton->showContent("暂停",20);
-            }
-
-            if(index==1){
-                menuButton->showContent("MENU",40);
-                hintButton->showContent("HINT",20);
-                pauseButton->showContent("PAUSE",20);
-            }
-        });
-    });
-
+        
     connect(progressTimer, &QTimer::timeout, [=](){
         if(!is_paused){
             if(progressBar->value() == 0){
@@ -316,7 +300,11 @@ void GameWidget::setupScene(int i){
         if(!is_acting){
             if(!is_paused)
             {
-                pauseButton->label.setText("CONTINUE");
+                if(i==1){
+                    pauseButton->label.setText("CONTINUE");
+                }else{
+                    pauseButton->label.setText("继续");
+                }
 
                 forbidAll(true);
                 pauseBKLbl = new QLabel(boardWidget);
@@ -341,7 +329,11 @@ void GameWidget::setupScene(int i){
 
                 is_paused=true;
             }else if(is_paused){
-                pauseButton->label.setText("PAUSE");
+                if(i==1){
+                    pauseButton->label.setText("PAUSE");
+                }else{
+                    pauseButton->label.setText("暂停");
+                }
 
                 pauseBKLbl->hide();
                 if(pauseBKgif){
