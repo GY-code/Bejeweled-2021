@@ -462,6 +462,8 @@ void GameWidget::startGame(){
     connect(group, &QParallelAnimationGroup::finished, [=] {
         scoreTextLbl->setText("0");
         connect(this, &GameWidget::eliminateFinished, [=] {
+            QSound *hit=new QSound(":/music/effect/hit.wav");
+            hit->play();
             scoreTextLbl->setText(QString::number(score));
             forbidAll(false);
             is_acting=false;

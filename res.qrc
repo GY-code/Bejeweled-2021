@@ -68,5 +68,6 @@
         <file>music/effect/bad.wav</file>
         <file>music/effect/Time_Up.wav</file>
         <file>music/effect/Welcome.wav</file>
+        <file>music/effect/hit.wav</file>
     </qresource>
 </RCC>
