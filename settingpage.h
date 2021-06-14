@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include"PixmapSlider.h"
 #include<QLabel>
-static int index=0;
+static int index=1;
 namespace Ui {
 class settingpage;
 }

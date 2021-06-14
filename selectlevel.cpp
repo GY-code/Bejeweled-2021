@@ -54,7 +54,7 @@ selectlevel::selectlevel(QWidget *parent) :
     purple.setColor(QPalette::WindowText,Qt::magenta);
 
     initColor();
-
+    level1L->setPalette(purple);
 }
 
 selectlevel::~selectlevel()

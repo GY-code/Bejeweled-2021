@@ -8,6 +8,7 @@ GameWidget::GameWidget(QWidget *parent) :
     ui->setupUi(this);
 }
 void GameWidget::setupScene(int i){
+    is_paused=false;
     exitMagic=false;
     score=0;
     QSound* wel=new QSound(":/music/effect/Welcome.wav");
@@ -113,8 +114,8 @@ void GameWidget::setupScene(int i){
     //进度条
     QPropertyAnimation* anim3 = new QPropertyAnimation(progressBar,"geometry");
     anim3->setDuration(500);
-    anim3->setStartValue(QRect(655+1055,1009,980,44));
-    anim3->setEndValue(QRect(655,1009,980,44));
+    anim3->setStartValue(QRect(653+1055,1010,982,47));
+    anim3->setEndValue(QRect(653,1010,982,47));
     anim3->setEasingCurve(QEasingCurve::OutQuad);
     //菜单栏
     QPropertyAnimation* anim4 = new QPropertyAnimation(menuButton,"geometry");
@@ -187,6 +188,7 @@ void GameWidget::setupScene(int i){
         connect(progressTimer, &QTimer::timeout, [=](){
             if(!is_paused){
                 if(progressBar->value() == 0){
+                    forbidAll(true);
                     //计时结束
                     if(!timeoutTimer->isActive()){
                         timeoutTimer->start();
@@ -216,40 +218,43 @@ void GameWidget::setupScene(int i){
 
 
 
-        connect(menuButton, &HoverButton::clicked, [=](){
-            sound->stop();
-            this->hide();
-            showStartPage();
-
-            if(menuButton)
-                delete menuButton;
-            if(hintButton)
-                delete hintButton;
-            if(pauseButton)
-                delete pauseButton;
-            if(progressTimer)
-                delete progressTimer;
-            if(progressBar)
-                delete progressBar;
-            if(selectedLbl)
-                delete selectedLbl;
-            if(pauseBKLbl)
-                delete pauseBKLbl;
-            if(pauseBKgif)
-                delete pauseBKgif;
-            if(pauseTXLbl)
-                delete pauseTXLbl;
-            if(scoreTextLbl)
-                delete scoreTextLbl;
-            if(timeoutTimer){
-                delete timeoutTimer;
-            }
-            if(outLabel)
-                delete outLabel;
-            if(redBorderTimer)
-                delete redBorderTimer;
-            if(redBorder)
-                delete redBorder;
+    connect(menuButton, &HoverButton::clicked, [=](){
+        if(is_acting)
+            return;
+        sound->stop();
+        this->hide();
+        showStartPage();
+        if(timeoutTimer){
+            delete timeoutTimer;
+        }
+        if(outLabel)
+            delete outLabel;
+        if(redBorderTimer)
+            delete redBorderTimer;
+        if(redBorder)
+            delete redBorder;
+        if(menuButton)
+            delete menuButton;
+        if(hintButton)
+            delete hintButton;
+        if(pauseBKLbl)
+            delete pauseBKLbl;
+        if(pauseBKgif){
+            pauseBKgif->stop();
+            delete pauseBKgif;
+        }
+        if(pauseTXLbl)
+            delete pauseTXLbl;
+        if(pauseButton)
+            delete pauseButton;
+        if(progressTimer)
+            delete progressTimer;
+        if(progressBar)
+            delete progressBar;
+        if(selectedLbl)
+            delete selectedLbl;
+        if(scoreTextLbl)
+            delete scoreTextLbl;
 
 
             for(int i=0;i<8;i++){
@@ -313,13 +318,11 @@ void GameWidget::setupScene(int i){
                     forbidAll(true);
                     pauseBKLbl = new QLabel(boardWidget);
                     pauseBKLbl->setGeometry(0,0,952, 952);
-                    //setAdaptedImg("://picture/starsBK.gif",pauseBKLbl);
                     pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
                     pauseBKgif->setScaledSize(QSize(952,952));
                     pauseBKLbl->setMovie(pauseBKgif);
                     pauseBKLbl->show();
                     pauseBKgif->start();
-
 
                     pauseTXLbl = new QLabel(boardWidget);
                     pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
@@ -328,9 +331,9 @@ void GameWidget::setupScene(int i){
                     pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
                     pauseTXLbl->setStyleSheet("QLabel{color:white;}");
                     pauseTXLbl->setVisible(true);
-
                     is_paused=true;
-                }else if(is_paused){
+                }
+                else if(is_paused){
                     if(i==1){
                         pauseButton->label.setText("PAUSE");
                     }else{
@@ -339,18 +342,18 @@ void GameWidget::setupScene(int i){
                     pauseBKLbl->hide();
                     if(pauseBKgif){
                         pauseBKgif->stop();
-                        delete pauseBKgif;
                     }
 
-                    if(pauseBKLbl)
-                        delete pauseBKLbl;
+                    if(pauseBKLbl){
+
+                    }
 
                     if(pauseTXLbl)
-                        delete pauseTXLbl;
+                        pauseTXLbl->setText("");
 
                     forbidAll(false);
                     is_paused=false;
-                }
+                    }
             }
         });
     }
@@ -429,7 +432,6 @@ void GameWidget::playSound(int type){
         delete effect;
     effect=new QSound(src);
     effect->play();
-    qDebug()<<type;
 }
 void GameWidget::startGame(){
     boardWidget = new QWidget(this);
@@ -479,7 +481,6 @@ void GameWidget::startGame(){
             }else{
                 eliminateTimes=0;
             }
-            qDebug()<<"inner connect";
             playSound(eliminateTimes);
         });
         forbidAll(false);
@@ -496,7 +497,6 @@ void GameWidget::startGame(){
         }else{
             eliminateTimes=0;
         }
-        qDebug()<<"outter connect";
         playSound(eliminateTimes);
 
         delete group;
@@ -1062,7 +1062,7 @@ int GameWidget::getBombsToMakeMagic(int cX, int cY,std::vector<Gem*> bombsToMake
     //检测以cXcY为起点，同行连着的有几个（除去自己
     //1.向右检测
     int start=cX,end=cX+1;
-    while(end<=8&&gemType[start][cY]==gemType[end][cY]){
+    while(end<=7&&gemType[start][cY]==gemType[end][cY]){
         bombsToMakeMagic.push_back(gems[end][cY]);
         end++;
     }
@@ -1084,7 +1084,7 @@ int GameWidget::getBombsToMakeMagic(int cX, int cY,std::vector<Gem*> bombsToMake
     //检测同列连着的有几个（除去自己
     //1.向下检测
     start=cY;end=cY+1;
-    while(end<=8&&gemType[cX][start]==gemType[cX][end]){
+    while(end<=7&&gemType[cX][start]==gemType[cX][end]){
         bombsToMakeMagic.push_back(gems[cX][end]);
         end++;
     }
@@ -1169,6 +1169,14 @@ int GameWidget::updateBombList() {
                                         eliminating[i+m][j+n]=gemType[i+m][j+n];
                                 }
                             }
+                            if(j-2>=0)
+                            eliminating[i][j-2]=gemType[i][j-2];
+                            if(j+2<=7)
+                            eliminating[i][j+2]=gemType[i][j+2];
+                            if(i-2>=0)
+                            eliminating[i-2][j]=gemType[i-2][j];
+                            if(i+2<=7)
+                            eliminating[i+2][j]=gemType[i+2][j];
                         }
                         if(gemType[i][j]%10==1){//十字消
                             for(int m=0;m<=7;m++){
@@ -1225,6 +1233,14 @@ int GameWidget::updateBombList() {
                                         eliminating[j+m][i+n]=gemType[j+m][i+n];
                                 }
                             }
+                            if(j-2>=0)
+                            eliminating[j-2][i]=gemType[j-2][i];
+                            if(j+2<=7)
+                            eliminating[j+2][i]=gemType[j+2][i];
+                            if(i-2>=0)
+                            eliminating[j][i-2]=gemType[j][i-2];
+                            if(i+2<=7)
+                            eliminating[j][i+2]=gemType[j][i+2];
                         }
                         if(gemType[j][i]%10==1){//十字消
                             for(int m=0;m<=7;m++){
