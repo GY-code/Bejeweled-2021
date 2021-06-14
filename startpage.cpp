@@ -96,14 +96,18 @@ void StartPage::SetButton(){
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
 
-    connect(select,&selectlevel::selectDone,[=](int difficulty){
+
+    //语言切换
+    connect(&settingP,&settingpage::selectLan,[=](int index){
+        this->ForGameL=index;
+    });
+     connect(select,&selectlevel::selectDone,[=](int difficulty){
         this->hide();
         sound->stop();
         gameWidget->DIFFICULITY=difficulty;
-        gameWidget->setupScene();
+        gameWidget->setupScene(this->ForGameL);
         gameWidget->show();
     });
-
 
     //语言切换
     connect(&settingP,&settingpage::selectLan,[=](int index){
