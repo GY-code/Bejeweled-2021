@@ -4,6 +4,7 @@
 #include "startpage.h"
 #include "ui_startpage.h"
 #include "CGammaRamp.h"
+#include "qmessagebox.h"
 
 StartPage::StartPage(QWidget *parent) :
     QWidget(parent),
@@ -22,6 +23,9 @@ StartPage::StartPage(QWidget *parent) :
     startButton=new HoverButton();
     recordButton=new HoverButton();
     settingButton=new HoverButton();
+    loginButton = new HoverButton();
+    registerButton = new HoverButton();
+    logoutButton = new HoverButton();
 
     
     startButton->setSound(":/music/button/button_mouseover.wav", ":/music/button/button_mouseleave.wav", ":/music/button/button_press.wav", ":/music/button/button_release.wav"); //默认音效
@@ -45,10 +49,16 @@ StartPage::StartPage(QWidget *parent) :
     startButton->showContent("Start",40);
     recordButton->showContent("Record",20);
     settingButton->showContent("Setting",20);
+    loginButton->showContent("login",10);
+    registerButton->showContent("register",10);
+    logoutButton->showContent("logout",10);
 
     group->addAnimation(startButton->textAnim);
     group->addAnimation(recordButton->textAnim);
     group->addAnimation(settingButton->textAnim);
+    group->addAnimation(loginButton->textAnim);
+    group->addAnimation(registerButton->textAnim);
+    group->addAnimation(logoutButton->textAnim);
 
     group->addAnimation(ShowTitle());
     Sleep(200);
@@ -95,7 +105,12 @@ void StartPage::SetButton(){
                             ":/picture/button/ball.png", "", this);
     settingButton->setCircle(this->width()/100*5, this->width()/6*5, this->height()/2+100, this->width(), this->height(),\
                              ":/picture/button/ball.png", "", this);
-
+    loginButton->setCircle(this->width()/50, this->width()/10, this->height()/2+500, this->width(), this->height(),\
+                      ":/picture/button/ball.png", "", this);
+    registerButton->setCircle(this->width()/50, this->width()/30, this->height()/2+500, this->width(), this->height(),\
+                      ":/picture/button/ball.png", "", this);
+    logoutButton->setCircle(this->width()/50, this->width()/10, this->height()/2+400, this->width(), this->height(),\
+                      ":/picture/button/ball.png", "", this);
 
     //语言切换
     connect(&settingP,&settingpage::selectLan,[=](int index){
@@ -166,7 +181,62 @@ void StartPage::SetButton(){
         }
     });
 
+    connect(recordButton, &HoverButton::clicked, [=](){
+      this->hide();
+      sound->stop();
+      client->getProfile();
+      client->getRankList();
+      QString s = client->ranklist;
+      QString s1 = client->userlist;
+      ranklist->setRankList(s);
+      ranklist->setUserRankList(s1);
+      ranklist->show();
 
+    }) ;
+
+    connect(loginButton, &HoverButton::clicked, [=](){
+      this->hide();
+      sound->stop();
+      login->show();
+
+    }) ;
+
+    connect(registerButton, &HoverButton::clicked, [=](){
+      this->hide();
+      sound->stop();
+      regist->show();
+
+    }) ;
+
+    connect(logoutButton, &HoverButton::clicked, [=](){
+      QMessageBox msgBox;   // 生成对象
+      if(client->verifyFlag) {
+        client->verifyFlag = false;
+        msgBox.setText("The user log out");    // 设置文本
+      } else {
+        msgBox.setText("No user log in");
+      }
+
+      msgBox.exec();
+    }) ;
+
+    connect(ranklist, &rankListPage::showStartPage, [=](){
+      this->show();
+      sound->setLoopCount(QSoundEffect::Infinite);
+      sound->play();
+    }) ;
+
+    connect(login, &loginPage::showStartPage, [=](){
+      this->show();
+      sound->setLoopCount(QSoundEffect::Infinite);
+      sound->play();
+    }) ;
+
+    connect(regist, &registerPage::showStartPage, [=](){
+      this->show();
+      sound->setLoopCount(QSoundEffect::Infinite);
+      sound->play();
+    }) ;
 
 
 }
