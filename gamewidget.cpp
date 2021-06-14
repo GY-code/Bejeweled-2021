@@ -7,7 +7,7 @@ GameWidget::GameWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-void GameWidget::setupScene(){
+void GameWidget::setupScene(int i){
     exitMagic=false;
     score=0;
     
@@ -68,7 +68,7 @@ void GameWidget::setupScene(){
     pauseButton->setImage(":/picture/3balls/ball3.png",nullptr,ui->pauseLbl->width(),ui->pauseLbl->height(),ui->pauseLbl);
 
     //语言切换
-    if(index==1){
+    if(i==1){
         menuButton->showContent("MENU",20);
         menuButton->show();
         hintButton->showContent("HINT",30);
@@ -76,7 +76,7 @@ void GameWidget::setupScene(){
         pauseButton->showContent("PAUSE",20);
         pauseButton->show();
     }
-    if(index==0){
+    if(i==0){
         menuButton->showContent("菜单",20);
         menuButton->show();
         hintButton->showContent("提示",30);
