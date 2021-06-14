@@ -182,183 +182,175 @@ void GameWidget::setupScene(int i){
         if(trans<=1)
             trans=trans+0.01;
 
-        
-    connect(progressTimer, &QTimer::timeout, [=](){
-        if(!is_paused){
-            if(progressBar->value() == 0){
-                //计时结束
-                if(!timeoutTimer->isActive()){
-                    timeoutTimer->start();
+    });
+        connect(progressTimer, &QTimer::timeout, [=](){
+            if(!is_paused){
+                if(progressBar->value() == 0){
+                    //计时结束
+                    if(!timeoutTimer->isActive()){
+                        timeoutTimer->start();
+                    }
+                    if(redBorderTimer->isActive()){
+                        redBorderTimer->stop();
+                        redBorder->show();
+                        redBordershow=1;
+                    }
                 }
-                if(redBorderTimer->isActive()){
-                    redBorderTimer->stop();
-                    redBorder->show();
-                    redBordershow=1;
+                else{
+                    progressBar->setValue(progressBar->value()-1);
+                    if(progressBar->value()/10000.0<=0.25){
+                        if(!redBorderTimer->isActive()){
+                            redBorderTimer->start();
+                        }
+
+                    }
                 }
             }
-            else{
-                progressBar->setValue(progressBar->value()-1);
-                if(progressBar->value()/10000.0<=0.25){
-                    if(!redBorderTimer->isActive()){
-                        redBorderTimer->start();
+
+        });
+
+
+
+        connect(menuButton, &HoverButton::clicked, [=](){
+            sound->stop();
+            this->hide();
+            showStartPage();
+
+            if(menuButton)
+                delete menuButton;
+            if(hintButton)
+                delete hintButton;
+            if(pauseButton)
+                delete pauseButton;
+            if(progressTimer)
+                delete progressTimer;
+            if(progressBar)
+                delete progressBar;
+            if(selectedLbl)
+                delete selectedLbl;
+            if(pauseBKLbl)
+                delete pauseBKLbl;
+            if(pauseBKgif)
+                delete pauseBKgif;
+            if(pauseTXLbl)
+                delete pauseTXLbl;
+            if(scoreTextLbl)
+                delete scoreTextLbl;
+            if(timeoutTimer){
+                delete timeoutTimer;
+            }
+            if(outLabel)
+                delete outLabel;
+            if(redBorderTimer)
+                delete redBorderTimer;
+            if(redBorder)
+                delete redBorder;
+
+
+            for(int i=0;i<8;i++){
+                for(int j=0;j<8;j++){
+                    delete gems[i][j];
+                }
+            }
+            delete boardWidget;
+        }) ;
+        connect(hintButton,&HoverButton::clicked,[=](){
+            if(!is_acting&&hintArrowTimes>=6){
+                hintArrowTimes=0;
+                Point p=tipsdetect();
+                QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
+                QLabel *hintLabel=new QLabel(this);
+                hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
+                hintLabel->show();
+                setAdaptedImg(":/picture/arrow.png",hintLabel);
+                QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
+                anim->setDuration(300);
+                anim->setStartValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+                anim->setEndValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+                anim->setEasingCurve(QEasingCurve::OutQuad);
+                anim->start();
+
+                QPropertyAnimation* danim = new QPropertyAnimation(hintLabel,"geometry");
+                connect(anim,&QPropertyAnimation::finished,[=]{
+                    danim->setDuration(300);
+                    danim->setEndValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+                    danim->setStartValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+                    danim->setEasingCurve(QEasingCurve::InQuad);
+                    danim->start();
+                });
+
+                connect(danim,&QPropertyAnimation::finished,[=]{
+                    hintArrowTimes=hintArrowTimes+1;
+                    if(hintArrowTimes>=6){
+                        if(anim)
+                            delete anim;
+                        if(danim)
+                            delete danim;
+                        if(hintLabel)
+                            delete hintLabel;
+                    }else{
+                        anim->start();
+                    }
+                });
+
+            }
+        });
+
+        connect(pauseButton,&HoverButton::clicked,[=]{
+            if(!is_acting){
+                if(!is_paused)
+                {
+                    if(i==1){
+                        pauseButton->label.setText("CONTINUE");
+                    }else{
+                        pauseButton->label.setText("继续");
+                    }
+                    forbidAll(true);
+                    pauseBKLbl = new QLabel(boardWidget);
+                    pauseBKLbl->setGeometry(0,0,952, 952);
+                    //setAdaptedImg("://picture/starsBK.gif",pauseBKLbl);
+                    pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
+                    pauseBKgif->setScaledSize(QSize(952,952));
+                    pauseBKLbl->setMovie(pauseBKgif);
+                    pauseBKLbl->show();
+                    pauseBKgif->start();
+
+
+                    pauseTXLbl = new QLabel(boardWidget);
+                    pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
+                    pauseTXLbl->setText("The Game Has Been Paused.");
+                    pauseTXLbl->setAlignment(Qt::AlignCenter);
+                    pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
+                    pauseTXLbl->setStyleSheet("QLabel{color:white;}");
+                    pauseTXLbl->setVisible(true);
+
+                    is_paused=true;
+                }else if(is_paused){
+                    if(i==1){
+                        pauseButton->label.setText("PAUSE");
+                    }else{
+                        pauseButton->label.setText("暂停");
+                    }
+                    pauseBKLbl->hide();
+                    if(pauseBKgif){
+                        pauseBKgif->stop();
+                        delete pauseBKgif;
                     }
 
+                    if(pauseBKLbl)
+                        delete pauseBKLbl;
+
+                    if(pauseTXLbl)
+                        delete pauseTXLbl;
+
+                    forbidAll(false);
+                    is_paused=false;
                 }
             }
-        }
-
-    });
-
+        });
+    }
 
 
-    connect(menuButton, &HoverButton::clicked, [=](){
-        sound->stop();
-        this->hide();
-        showStartPage();
-
-        if(menuButton)
-            delete menuButton;
-        if(hintButton)
-            delete hintButton;
-        if(pauseButton)
-            delete pauseButton;
-        if(progressTimer)
-            delete progressTimer;
-        if(progressBar)
-            delete progressBar;
-        if(selectedLbl)
-            delete selectedLbl;
-        if(pauseBKLbl)
-            delete pauseBKLbl;
-        if(pauseBKgif)
-            delete pauseBKgif;
-        if(pauseTXLbl)
-            delete pauseTXLbl;
-        if(scoreTextLbl)
-            delete scoreTextLbl;
-        if(timeoutTimer){
-            delete timeoutTimer;
-        }
-        if(outLabel)
-            delete outLabel;
-        if(redBorderTimer)
-            delete redBorderTimer;
-        if(redBorder)
-            delete redBorder;
-
-
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                delete gems[i][j];
-            }
-        }
-        delete boardWidget;
-    }) ;
-    connect(hintButton,&HoverButton::clicked,[=](){
-        if(!is_acting&&hintArrowTimes>=6){
-            hintArrowTimes=0;
-            Point p=tipsdetect();
-            QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
-            QLabel *hintLabel=new QLabel(this);
-            hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
-            hintLabel->show();
-            setAdaptedImg(":/picture/arrow.png",hintLabel);
-            QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
-            anim->setDuration(300);
-            anim->setStartValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
-            anim->setEndValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
-            anim->setEasingCurve(QEasingCurve::OutQuad);
-            anim->start();
-
-            QPropertyAnimation* danim = new QPropertyAnimation(hintLabel,"geometry");
-            connect(anim,&QPropertyAnimation::finished,[=]{
-                danim->setDuration(300);
-                danim->setEndValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
-                danim->setStartValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
-                danim->setEasingCurve(QEasingCurve::InQuad);
-                danim->start();
-            });
-
-            connect(danim,&QPropertyAnimation::finished,[=]{
-                hintArrowTimes=hintArrowTimes+1;
-                if(hintArrowTimes>=6){
-                    if(anim)
-                        delete anim;
-                    if(danim)
-                        delete danim;
-                    if(hintLabel)
-                        delete hintLabel;
-                }else{
-                    anim->start();
-                }
-            });
-
-        }
-    });
-
-    connect(pauseButton,&HoverButton::clicked,[=]{
-        if(!is_acting){
-            if(!is_paused)
-            {
-                if(i==1){
-                    pauseButton->label.setText("CONTINUE");
-                }else{
-                    pauseButton->label.setText("继续");
-                }
-
-                forbidAll(true);
-                pauseBKLbl = new QLabel(boardWidget);
-                pauseBKLbl->setGeometry(0,0,952, 952);
-                //setAdaptedImg("://picture/starsBK.gif",pauseBKLbl);
-                pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
-                pauseBKgif->setScaledSize(QSize(952,952));
-                pauseBKLbl->setMovie(pauseBKgif);
-                pauseBKLbl->show();
-                pauseBKgif->start();
-
-
-
-
-                pauseTXLbl = new QLabel(boardWidget);
-                pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
-                pauseTXLbl->setText("The Game Has Been Paused.");
-                pauseTXLbl->setAlignment(Qt::AlignCenter);
-                pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
-                pauseTXLbl->setStyleSheet("QLabel{color:white;}");
-                pauseTXLbl->setVisible(true);
-
-                is_paused=true;
-            }else if(is_paused){
-                if(i==1){
-                    pauseButton->label.setText("PAUSE");
-                }else{
-                    pauseButton->label.setText("暂停");
-                }
-
-                pauseBKLbl->hide();
-                if(pauseBKgif){
-                    pauseBKgif->stop();
-                    delete pauseBKgif;
-                }
-
-                if(pauseBKLbl)
-                    delete pauseBKLbl;
-
-                if(pauseTXLbl)
-                    delete pauseTXLbl;
-
-                forbidAll(false);
-                is_paused=false;
-            }
-        }
-    });
-
-    //语言切换
-
-
-
-
-}
 //将path的图片放置到label上，自适应label大小
 void GameWidget::setAdaptedImg(QString path,QLabel *label)
 {
