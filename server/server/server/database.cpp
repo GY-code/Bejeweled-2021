@@ -2,7 +2,6 @@
 
 dataBase::dataBase()
 {
-  loginFlag = false;
 
   QSqlDatabase database;
   database = QSqlDatabase::addDatabase("QSQLITE");
@@ -158,7 +157,6 @@ int dataBase::readFromUsers(QString tempId, QString tempPwd) {
             this->setUser(u);
             //          cout << "mimazhengque" << endl;
 
-            loginFlag = true;
             break;
 
           }
@@ -223,9 +221,6 @@ int dataBase::readFromPlayers(QString tempId) {
 }
 
 int dataBase::loginFunc(QString tempId, QString tempPwd) {
-  if(loginFlag) {
-    return 4;
-  }
 
   int flag = readFromUsers(tempId,tempPwd);
   if(flag == 2) {
@@ -239,7 +234,6 @@ int dataBase::loginFunc(QString tempId, QString tempPwd) {
     b.score = 0;
     b.rank = 0;
     setPlayer(b);
-    loginFlag = true;
   }
 
   return flag;
@@ -382,10 +376,6 @@ QString dataBase::showRankList(){
 }
 
 QString dataBase::showUserRankList(){
-  if (!loginFlag) {
-    QString s = "No user login";
-    return s;
-  }
 
   users.clear();
   players.clear();

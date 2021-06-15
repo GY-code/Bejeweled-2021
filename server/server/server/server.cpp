@@ -28,6 +28,7 @@ void server::readData() {
         content.append("REG_RESULT");
         content.append('&');
         content.append(QString::number(information));
+        
         clientSocket->write(content);
     }
     if (instruction[0] == "VERIFY"){
@@ -36,6 +37,7 @@ void server::readData() {
         content.append("VER_RESULT");
         content.append('&');
         content.append(QString::number(information));
+        qDebug() << "send: "<< content << "\n";
         clientSocket->write(content);
     }
     if (instruction[0] == "PROFILE"){
@@ -44,6 +46,7 @@ void server::readData() {
         content.append("PRO_RESULT");
         content.append('&');
         content.append(list);
+        qDebug() << "send: "<< content << "\n";
         clientSocket->write(content);
     }
     if (instruction[0] == "RANKLIST"){
@@ -52,6 +55,7 @@ void server::readData() {
         content.append("RAN_RESULT");
         content.append('&');
         content.append(list);
+        qDebug() << "send: "<< content << "\n";
         clientSocket->write(content);
     }
     if (instruction[0] == "UPDATE"){
@@ -60,6 +64,6 @@ void server::readData() {
 }
 
 void server::disconnect() {
-    delete clientSocket;
+  qDebug() << "Disconnected" << "\n";
 }
 

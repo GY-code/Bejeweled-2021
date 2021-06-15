@@ -216,8 +216,8 @@ void StartPage::SetButton(){
 
     connect(logoutButton, &HoverButton::clicked, [=](){
       QMessageBox msgBox;   // 生成对象
-      if(client->verifyFlag) {
-        client->verifyFlag = false;
+      if(client->logined == true) {
+        client->logined = false;
         msgBox.setText("The user log out");    // 设置文本
       } else {
         msgBox.setText("No user log in");
@@ -243,8 +243,6 @@ void StartPage::SetButton(){
       sound->setLoopCount(QSoundEffect::Infinite);
       sound->play();
     }) ;
-
-
 }
 //将path的图片放置到label上，自适应label大小
 void StartPage::setAdaptedImg(QString path,QLabel *label)

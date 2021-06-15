@@ -37,7 +37,6 @@ public:
   player getPlayer();
   void setPlayer(player a);
   void setUser(user a);
-  bool loginFlag;
 
 private:
   vector<user> users;
