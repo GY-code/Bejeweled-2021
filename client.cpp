@@ -73,11 +73,11 @@ void Client::readDataSlot() {
   }
 }
 
-void Client::update(QString userName, int score) {
+void Client::update(int score) {
   QByteArray content;
   content.append("UPDATE");
   content.append('&');
-  content.append(userName.toLocal8Bit());
+  content.append(username.toLocal8Bit());
   content.append('&');
   content.append(QString::number(score).toLocal8Bit());
   socket->write(content);

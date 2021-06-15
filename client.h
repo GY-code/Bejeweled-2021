@@ -12,7 +12,7 @@ public:
   bool verifyUser(QString userName, QString password);
   void getProfile();
   void getRankList();
-  void update(QString userName, int score);
+  void update(int score);
   QString ranklist;
   QString userlist;
   int verifyFlag;
