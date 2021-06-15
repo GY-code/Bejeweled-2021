@@ -12,15 +12,17 @@ public:
   bool verifyUser(QString userName, QString password);
   void getProfile();
   void getRankList();
-  void update(int score);
+  void update(QString userName, int score);
   QString ranklist;
   QString userlist;
   int verifyFlag;
   int registerFlag;
+  bool logined;
 private:
   QTcpSocket * socket;
   QString username;
   QString password;
+
 private slots:
   void readDataSlot();
 };
