@@ -4,7 +4,7 @@ Client::Client()
 {
   socket = new QTcpSocket();
   QObject::connect(socket,&QTcpSocket::readyRead,this,&Client::readDataSlot);
-
+  logined = false;
   socket->connectToHost("127.0.0.1",8888);
 }
 
@@ -25,15 +25,17 @@ bool Client::registerNewUser(QString userName, QString password){
 }
 
 bool Client::verifyUser(QString userName, QString password){
-    this->username = userName;
-    this->password = password;
-    QByteArray content;
-    content.append("VERIFY");
-    content.append('&');
-    content.append(userName.toLocal8Bit());
-    content.append('&');
-    content.append(password.toLocal8Bit());
-    socket->write(content);
+  this->username = userName;
+  this->password = password;
+  QByteArray content;
+  content.append("VERIFY");
+  content.append('&');
+  content.append(userName.toLocal8Bit());
+  content.append('&');
+  content.append(password.toLocal8Bit());
+  socket->write(content);
+  if(socket->waitForReadyRead(1000)==false){
+  }
 }
 void Client::getProfile(){
   QByteArray content;
@@ -49,7 +51,6 @@ void Client::getRankList() {
   socket->write(content);
   if(socket->waitForReadyRead(1000)==false){
   }
-
 }
 
 void Client::readDataSlot() {
@@ -72,13 +73,11 @@ void Client::readDataSlot() {
   }
 }
 
-void Client::update(int score) {
-    if(username=="")
-        return;
+void Client::update(QString userName, int score) {
   QByteArray content;
   content.append("UPDATE");
   content.append('&');
-  content.append(username.toLocal8Bit());
+  content.append(userName.toLocal8Bit());
   content.append('&');
   content.append(QString::number(score).toLocal8Bit());
   socket->write(content);
