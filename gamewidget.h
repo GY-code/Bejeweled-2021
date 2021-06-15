@@ -56,6 +56,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *ev)override;
 
 private:
+    bool gameOver=false;
     int FTime=0;
     int mousePosX=-1,mousePosY=-1;
     bool exitMagic=false;
@@ -90,6 +91,11 @@ private:
     MyProBar* progressBar=nullptr;
     QTimer *progressTimer=nullptr;
     QLabel* selectedLbl=nullptr;
+    QTimer* timeoutTimer=nullptr;
+    QLabel* outLabel=nullptr;
+    QTimer* redBorderTimer=nullptr;
+    QLabel* redBorder=nullptr;
+
     int redBordershow=0;
     double trans=0;
 

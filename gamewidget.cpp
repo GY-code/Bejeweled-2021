@@ -8,9 +8,11 @@ GameWidget::GameWidget(QWidget *parent) :
     ui->setupUi(this);
 }
 void GameWidget::setupScene(int i){
+    gameOver=false;
     is_paused=false;
     exitMagic=false;
     score=0;
+    trans=0;
     QSound* wel=new QSound(":/music/effect/Welcome.wav");
     wel->play();
     scoreTextLbl=new QLabel(this);
@@ -48,7 +50,7 @@ void GameWidget::setupScene(int i){
     setAdaptedImg(":/picture/frame.png",ui->borderLbl);
     setAdaptedImg(":/picture/scorepod.png",ui->scoreLbl);
     //设置变红的四周提示灯标签
-    QLabel* redBorder=new QLabel(this);
+    redBorder=new QLabel(this);
     redBorder->setGeometry(610, 2, 1055, 1073);
     setAdaptedImg(":/picture/frame_red.png",redBorder);
     redBorder->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -99,9 +101,10 @@ void GameWidget::setupScene(int i){
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
 
     //进度条
+    int totalTime=1000;
     progressBar = new MyProBar(this);
-    progressBar->setRange(0,10000);
-    progressBar->setValue(10000);
+    progressBar->setRange(0,totalTime);
+    progressBar->setValue(totalTime);
     progressBar->setTextVisible(false);
     progressBar->show();
 
@@ -165,11 +168,11 @@ void GameWidget::setupScene(int i){
     progressTimer = new QTimer(this);
     progressTimer->setInterval(15);
     progressTimer->start();
-    QTimer *redBorderTimer=new QTimer(this);
+    redBorderTimer=new QTimer(this);
     redBorderTimer->setInterval(500);
-    QTimer *timeoutTimer=new QTimer(this);
+    timeoutTimer=new QTimer(this);
     timeoutTimer->setInterval(30);
-    //    timeoutTimer->start();
+    //timeoutTimer->start();
     connect(redBorderTimer, &QTimer::timeout, [=](){
         if(redBordershow==0){
             redBorder->show();
@@ -180,8 +183,14 @@ void GameWidget::setupScene(int i){
         }
     });
     //设置超时标签
-    QLabel* outLabel=new QLabel(this);
+    outLabel=new QLabel(this);
     connect(timeoutTimer, &QTimer::timeout, [=](){
+        if(trans<=1)
+            trans=trans+0.01;
+        else {
+            is_acting=false;
+            return;
+        }
         outLabel->setGeometry(837,388,600,300);
 
         outLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -196,15 +205,16 @@ void GameWidget::setupScene(int i){
         outLabel->setPixmap(output);
         outLabel->show();
         outLabel->setParent(this);
-        if(trans<=1)
-            trans=trans+0.01;
 
     });
+
     connect(progressTimer, &QTimer::timeout, [=](){
         if(!is_paused){
             if(progressBar->value() == 0){
+                gameOver=true;
                 forbidAll(true);
-                allFallOut();
+                //allFallOut();
+
                 //计时结束
                 if(!timeoutTimer->isActive()){
                     timeoutTimer->start();
@@ -212,17 +222,19 @@ void GameWidget::setupScene(int i){
                         delete effect;
                     effect=new QSound(":/music/effect/Time_Up.wav");
                     effect->play();
-                    client->update(score);
+                    //client->update(score);
                 }
                 if(redBorderTimer->isActive()){
                     redBorderTimer->stop();
                     redBorder->show();
                     redBordershow=1;
                 }
+
+
             }
             else{
                 progressBar->setValue(progressBar->value()-1);
-                if(progressBar->value()/10000.0<=0.25){
+                if(progressBar->value()/static_cast<double>(totalTime)<=0.25){
                     if(!redBorderTimer->isActive()){
                         redBorderTimer->start();
                     }
@@ -234,7 +246,7 @@ void GameWidget::setupScene(int i){
     });
 
     connect(reSetButton,&HoverButton::clicked,[=]{
-       if(is_acting)
+       if(is_acting||gameOver)
            return;
        reSetBoard();
     });
@@ -243,23 +255,25 @@ void GameWidget::setupScene(int i){
 
         if(is_acting)
             return;
-        client->update(score);
+        //client->update(score);
         sound->stop();
         this->hide();
         showStartPage();
-        if(timeoutTimer){
+
+        if(timeoutTimer)
             delete timeoutTimer;
-        }
         if(outLabel)
             delete outLabel;
         if(redBorderTimer)
             delete redBorderTimer;
         if(redBorder)
             delete redBorder;
+
         if(reSetButton)
             delete reSetButton;
         if(menuButton)
             delete menuButton;
+
         if(hintButton)
             delete hintButton;
         if(pauseBKLbl)
@@ -281,7 +295,6 @@ void GameWidget::setupScene(int i){
         if(scoreTextLbl)
             delete scoreTextLbl;
 
-
         for(int i=0;i<8;i++){
             for(int j=0;j<8;j++){
                 delete gems[i][j];
@@ -290,6 +303,8 @@ void GameWidget::setupScene(int i){
         delete boardWidget;
     }) ;
     connect(hintButton,&HoverButton::clicked,[=](){
+        if(gameOver)
+            return;
         if(!is_acting&&hintArrowTimes>=6){
             hintArrowTimes=0;
             Point p=tipsdetect();
@@ -332,6 +347,8 @@ void GameWidget::setupScene(int i){
     });
 
     connect(pauseButton,&HoverButton::clicked,[=]{
+        if(gameOver)
+            return;
         if(!is_acting){
             if(!is_paused)
             {
@@ -505,12 +522,6 @@ void GameWidget::startGame(){
     boardWidget->show();
     boardWidget->setGeometry(665, 44, 952, 952);
 
-    connect(this,&GameWidget::myMouseMove,this,[=](QMouseEvent* event){
-        mousePosX = event->x()-665;
-        mousePosY = event->y()-44;
-        //qDebug()<<mousePosX<<","<<mousePosY;
-    });
-
     QRandomGenerator::global()->fillRange(gemType[0], 64);
 
     //掉落动画
@@ -530,6 +541,8 @@ void GameWidget::startGame(){
     connect(group, &QParallelAnimationGroup::finished, [=] {
         scoreTextLbl->setText("0");
         connect(this, &GameWidget::eliminateFinished, [=] {
+            if(gameOver)
+                return;
             Point p=tipsdetect();
             if(p.x==-1&&p.y==-1){
                 Sleep(200);
@@ -581,7 +594,7 @@ void GameWidget::allFallOut(){
     for(int j = 7; j >=0; --j){
         QParallelAnimationGroup* gruop = new QParallelAnimationGroup;
         for(int i = 0; i <8 ; ++i){
-            QPropertyAnimation* anim = new QPropertyAnimation(gems[i][j],"geometry",this);
+            QPropertyAnimation* anim = new QPropertyAnimation(gems[i][j],"geometry",boardWidget);
             anim->setDuration(700);
             anim->setStartValue(gems[i][j]->geometry());
             anim->setEndValue(QRect(gems[i][j]->geometry().x(),gems[i][j]->geometry().y()+1000,LEN,LEN));
@@ -1227,6 +1240,8 @@ unsigned int dC(unsigned int t){
 }
 
 int GameWidget::updateBombList() {
+    if(gameOver)
+        return 0;
     int score = 0;//消除一个加10分
     unsigned int eliminating[8][8];//要消除的坐标
     memset(eliminating, 0, sizeof(eliminating));
@@ -1449,6 +1464,8 @@ Point GameWidget::tipsdetect(){
 }
 
 void GameWidget::eliminateBoard(){
+    if(gameOver)
+        return;
     is_acting=true;
     if(bombList.size()==0)
         return;

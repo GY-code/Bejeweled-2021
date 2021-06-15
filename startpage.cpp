@@ -143,8 +143,6 @@ void StartPage::SetButton(){
         }
     });
 
-
-
     connect(startButton, &HoverButton::clicked, [=](){
         select->setParent(this);
         select->setGeometry(700,400,800,555);
