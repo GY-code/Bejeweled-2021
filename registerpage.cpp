@@ -10,6 +10,7 @@ registerPage::registerPage(QWidget *parent) :
                                               QWidget(parent),
                                               ui(new Ui::registerPage)
 {
+    this->hide();
   ui->setupUi(this);
   ui->setupUi(this);
   returnButton = new HoverButton();

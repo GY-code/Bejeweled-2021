@@ -15,6 +15,7 @@ rankListPage::rankListPage(QWidget *parent) :
                                               QWidget(parent),
                                               ui(new Ui::rankListPage)
 {
+    this->hide();
   ui->setupUi(this);
   returnButton = new HoverButton();
 

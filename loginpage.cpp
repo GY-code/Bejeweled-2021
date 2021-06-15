@@ -11,6 +11,7 @@ loginPage::loginPage(QWidget *parent) :
                                         QWidget(parent),
                                         ui(new Ui::loginPage)
 {
+    this->hide();
   ui->setupUi(this);
   returnButton = new HoverButton();
   confirmButton = new HoverButton();

@@ -185,42 +185,44 @@ void GameWidget::setupScene(int i){
             trans=trans+0.01;
 
     });
-        connect(progressTimer, &QTimer::timeout, [=](){
-            if(!is_paused){
-                if(progressBar->value() == 0){
-                    forbidAll(true);
-                    //计时结束
-                    if(!timeoutTimer->isActive()){
-                        timeoutTimer->start();
+    connect(progressTimer, &QTimer::timeout, [=](){
+        if(!is_paused){
+            if(progressBar->value() == 0){
+                forbidAll(true);
+                //计时结束
+                if(!timeoutTimer->isActive()){
+                    timeoutTimer->start();
                     if(effect)
                         delete effect;
                     effect=new QSound(":/music/effect/Time_Up.wav");
                     effect->play();
-                    }
-                    if(redBorderTimer->isActive()){
-                        redBorderTimer->stop();
-                        redBorder->show();
-                        redBordershow=1;
-                    }
+                    client->update(score);
                 }
-                else{
-                    progressBar->setValue(progressBar->value()-1);
-                    if(progressBar->value()/10000.0<=0.25){
-                        if(!redBorderTimer->isActive()){
-                            redBorderTimer->start();
-                        }
-
-                    }
+                if(redBorderTimer->isActive()){
+                    redBorderTimer->stop();
+                    redBorder->show();
+                    redBordershow=1;
                 }
             }
+            else{
+                progressBar->setValue(progressBar->value()-1);
+                if(progressBar->value()/10000.0<=0.25){
+                    if(!redBorderTimer->isActive()){
+                        redBorderTimer->start();
+                    }
 
-        });
+                }
+            }
+        }
+
+    });
 
 
 
     connect(menuButton, &HoverButton::clicked, [=](){
         if(is_acting)
             return;
+        client->update(score);
         sound->stop();
         this->hide();
         showStartPage();
@@ -257,106 +259,106 @@ void GameWidget::setupScene(int i){
             delete scoreTextLbl;
 
 
-            for(int i=0;i<8;i++){
-                for(int j=0;j<8;j++){
-                    delete gems[i][j];
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                delete gems[i][j];
+            }
+        }
+        delete boardWidget;
+    }) ;
+    connect(hintButton,&HoverButton::clicked,[=](){
+        if(!is_acting&&hintArrowTimes>=6){
+            hintArrowTimes=0;
+            Point p=tipsdetect();
+            QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
+            QLabel *hintLabel=new QLabel(this);
+            hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
+            hintLabel->show();
+            setAdaptedImg(":/picture/arrow.png",hintLabel);
+            QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
+            anim->setDuration(300);
+            anim->setStartValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+            anim->setEndValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+            anim->setEasingCurve(QEasingCurve::OutQuad);
+            anim->start();
+
+            QPropertyAnimation* danim = new QPropertyAnimation(hintLabel,"geometry");
+            connect(anim,&QPropertyAnimation::finished,[=]{
+                danim->setDuration(300);
+                danim->setEndValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
+                danim->setStartValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
+                danim->setEasingCurve(QEasingCurve::InQuad);
+                danim->start();
+            });
+
+            connect(danim,&QPropertyAnimation::finished,[=]{
+                hintArrowTimes=hintArrowTimes+1;
+                if(hintArrowTimes>=6){
+                    if(anim)
+                        delete anim;
+                    if(danim)
+                        delete danim;
+                    if(hintLabel)
+                        delete hintLabel;
+                }else{
+                    anim->start();
                 }
-            }
-            delete boardWidget;
-        }) ;
-        connect(hintButton,&HoverButton::clicked,[=](){
-            if(!is_acting&&hintArrowTimes>=6){
-                hintArrowTimes=0;
-                Point p=tipsdetect();
-                QString msg=QTime::currentTime().toString()+" ("+QString::number(p.x)+","+QString::number(p.y)+")";
-                QLabel *hintLabel=new QLabel(this);
-                hintLabel->setGeometry(665+p.x*118+39,44+p.y*118+118,40,60);
-                hintLabel->show();
-                setAdaptedImg(":/picture/arrow.png",hintLabel);
-                QPropertyAnimation* anim = new QPropertyAnimation(hintLabel,"geometry");
-                anim->setDuration(300);
-                anim->setStartValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
-                anim->setEndValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
-                anim->setEasingCurve(QEasingCurve::OutQuad);
-                anim->start();
+            });
 
-                QPropertyAnimation* danim = new QPropertyAnimation(hintLabel,"geometry");
-                connect(anim,&QPropertyAnimation::finished,[=]{
-                    danim->setDuration(300);
-                    danim->setEndValue(QRect(hintLabel->x(),hintLabel->y()+50,hintLabel->width(),hintLabel->height()));
-                    danim->setStartValue(QRect(hintLabel->x(),hintLabel->y(),hintLabel->width(),hintLabel->height()));
-                    danim->setEasingCurve(QEasingCurve::InQuad);
-                    danim->start();
-                });
+        }
+    });
 
-                connect(danim,&QPropertyAnimation::finished,[=]{
-                    hintArrowTimes=hintArrowTimes+1;
-                    if(hintArrowTimes>=6){
-                        if(anim)
-                            delete anim;
-                        if(danim)
-                            delete danim;
-                        if(hintLabel)
-                            delete hintLabel;
-                    }else{
-                        anim->start();
-                    }
-                });
-
-            }
-        });
-
-        connect(pauseButton,&HoverButton::clicked,[=]{
-            if(!is_acting){
-                if(!is_paused)
-                {
-                    if(i==1){
-                        pauseButton->label.setText("CONTINUE");
-                    }else{
-                        pauseButton->label.setText("继续");
-                    }
-                    forbidAll(true);
-                    pauseBKLbl = new QLabel(boardWidget);
-                    pauseBKLbl->setGeometry(0,0,952, 952);
-                    pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
-                    pauseBKgif->setScaledSize(QSize(952,952));
-                    pauseBKLbl->setMovie(pauseBKgif);
-                    pauseBKLbl->show();
-                    pauseBKgif->start();
-
-                    pauseTXLbl = new QLabel(boardWidget);
-                    pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
-                    pauseTXLbl->setText("The Game Has Been Paused.");
-                    pauseTXLbl->setAlignment(Qt::AlignCenter);
-                    pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
-                    pauseTXLbl->setStyleSheet("QLabel{color:white;}");
-                    pauseTXLbl->setVisible(true);
-                    is_paused=true;
+    connect(pauseButton,&HoverButton::clicked,[=]{
+        if(!is_acting){
+            if(!is_paused)
+            {
+                if(i==1){
+                    pauseButton->label.setText("CONTINUE");
+                }else{
+                    pauseButton->label.setText("继续");
                 }
-                else if(is_paused){
-                    if(i==1){
-                        pauseButton->label.setText("PAUSE");
-                    }else{
-                        pauseButton->label.setText("暂停");
-                    }
-                    pauseBKLbl->hide();
-                    if(pauseBKgif){
-                        pauseBKgif->stop();
-                    }
+                forbidAll(true);
+                pauseBKLbl = new QLabel(boardWidget);
+                pauseBKLbl->setGeometry(0,0,952, 952);
+                pauseBKgif = new QMovie("://picture/starsBK.gif",QByteArray(),boardWidget);
+                pauseBKgif->setScaledSize(QSize(952,952));
+                pauseBKLbl->setMovie(pauseBKgif);
+                pauseBKLbl->show();
+                pauseBKgif->start();
 
-                    if(pauseBKLbl){
-
-                    }
-
-                    if(pauseTXLbl)
-                        pauseTXLbl->setText("");
-
-                    forbidAll(false);
-                    is_paused=false;
-                    }
+                pauseTXLbl = new QLabel(boardWidget);
+                pauseTXLbl->setGeometry(250,boardWidget->height()/2,440,30);
+                pauseTXLbl->setText("The Game Has Been Paused.");
+                pauseTXLbl->setAlignment(Qt::AlignCenter);
+                pauseTXLbl->setFont(QFont("BoDoni MT",25, QFont::Normal));
+                pauseTXLbl->setStyleSheet("QLabel{color:white;}");
+                pauseTXLbl->setVisible(true);
+                is_paused=true;
             }
-        });
-    }
+            else if(is_paused){
+                if(i==1){
+                    pauseButton->label.setText("PAUSE");
+                }else{
+                    pauseButton->label.setText("暂停");
+                }
+                pauseBKLbl->hide();
+                if(pauseBKgif){
+                    pauseBKgif->stop();
+                }
+
+                if(pauseBKLbl){
+
+                }
+
+                if(pauseTXLbl)
+                    pauseTXLbl->setText("");
+
+                forbidAll(false);
+                is_paused=false;
+            }
+        }
+    });
+}
 
 
 //将path的图片放置到label上，自适应label大小
@@ -1172,13 +1174,13 @@ int GameWidget::updateBombList() {
                                 }
                             }
                             if(j-2>=0)
-                            eliminating[i][j-2]=gemType[i][j-2];
+                                eliminating[i][j-2]=gemType[i][j-2];
                             if(j+2<=7)
-                            eliminating[i][j+2]=gemType[i][j+2];
+                                eliminating[i][j+2]=gemType[i][j+2];
                             if(i-2>=0)
-                            eliminating[i-2][j]=gemType[i-2][j];
+                                eliminating[i-2][j]=gemType[i-2][j];
                             if(i+2<=7)
-                            eliminating[i+2][j]=gemType[i+2][j];
+                                eliminating[i+2][j]=gemType[i+2][j];
                         }
                         if(gemType[i][j]%10==1){//十字消
                             for(int m=0;m<=7;m++){
@@ -1236,13 +1238,13 @@ int GameWidget::updateBombList() {
                                 }
                             }
                             if(j-2>=0)
-                            eliminating[j-2][i]=gemType[j-2][i];
+                                eliminating[j-2][i]=gemType[j-2][i];
                             if(j+2<=7)
-                            eliminating[j+2][i]=gemType[j+2][i];
+                                eliminating[j+2][i]=gemType[j+2][i];
                             if(i-2>=0)
-                            eliminating[j][i-2]=gemType[j][i-2];
+                                eliminating[j][i-2]=gemType[j][i-2];
                             if(i+2<=7)
-                            eliminating[j][i+2]=gemType[j][i+2];
+                                eliminating[j][i+2]=gemType[j][i+2];
                         }
                         if(gemType[j][i]%10==1){//十字消
                             for(int m=0;m<=7;m++){

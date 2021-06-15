@@ -25,15 +25,15 @@ bool Client::registerNewUser(QString userName, QString password){
 }
 
 bool Client::verifyUser(QString userName, QString password){
-  QByteArray content;
-  content.append("VERIFY");
-  content.append('&');
-  content.append(userName.toLocal8Bit());
-  content.append('&');
-  content.append(password.toLocal8Bit());
-  socket->write(content);
-  if(socket->waitForReadyRead(1000)==false){
-  }
+    this->username = userName;
+    this->password = password;
+    QByteArray content;
+    content.append("VERIFY");
+    content.append('&');
+    content.append(userName.toLocal8Bit());
+    content.append('&');
+    content.append(password.toLocal8Bit());
+    socket->write(content);
 }
 void Client::getProfile(){
   QByteArray content;
@@ -72,11 +72,13 @@ void Client::readDataSlot() {
   }
 }
 
-void Client::update(QString userName, int score) {
+void Client::update(int score) {
+    if(username=="")
+        return;
   QByteArray content;
   content.append("UPDATE");
   content.append('&');
-  content.append(userName.toLocal8Bit());
+  content.append(username.toLocal8Bit());
   content.append('&');
   content.append(QString::number(score).toLocal8Bit());
   socket->write(content);

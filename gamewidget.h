@@ -22,7 +22,10 @@
 #include<QTemporaryDir>
 #include <QFont>
 #include"settingpage.h"
+#include "client.h"
 #define TO_BOMB 100
+
+extern Client *client;
 class Point{
 public:
     int x;
