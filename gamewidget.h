@@ -122,6 +122,7 @@ private:
     int tHeight[8][8];
     void magicCollect(int coType,int toX,int toY);
     settingpage settingP;
+    void allFallOut();
 
     Ui::GameWidget *ui;
 signals:

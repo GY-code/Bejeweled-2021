@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< Updated upstream
 <!-- Written by QtCreator 4.8.0, 2021-06-15T10:09:13. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
   <value type="QByteArray">{cb3aadca-0ed5-484e-bff6-42dd07e1e897}</value>
+=======
+<!-- Written by QtCreator 4.8.0, 2021-06-15T10:08:45. -->
+<qtcreator>
+ <data>
+  <variable>EnvironmentId</variable>
+  <value type="QByteArray">{6363ef91-954b-4119-9443-3edcef8b0a7e}</value>
+>>>>>>> Stashed changes
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -71,7 +79,11 @@
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
+<<<<<<< Updated upstream
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">D:/SSE/Code-Repository/GitKraken/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Debug</value>
+=======
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/Lucas.Jay/Desktop/DsPraFinal/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Debug</value>
+>>>>>>> Stashed changes
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -127,7 +139,11 @@
     <value type="bool" key="Qt4ProjectManager.Qt4BuildConfiguration.UseShadowBuild">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
+<<<<<<< Updated upstream
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">D:/SSE/Code-Repository/GitKraken/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Release</value>
+=======
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/Lucas.Jay/Desktop/DsPraFinal/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Release</value>
+>>>>>>> Stashed changes
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -183,7 +199,11 @@
     <value type="bool" key="Qt4ProjectManager.Qt4BuildConfiguration.UseShadowBuild">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.2">
+<<<<<<< Updated upstream
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">D:/SSE/Code-Repository/GitKraken/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Profile</value>
+=======
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:/Users/Lucas.Jay/Desktop/DsPraFinal/bejeweled-2021/server/server/build-server-Desktop_Qt_5_12_0_MinGW_64_bit-Profile</value>
+>>>>>>> Stashed changes
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
