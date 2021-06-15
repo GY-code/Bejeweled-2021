@@ -103,6 +103,22 @@
     <string>pause</string>
    </property>
   </widget>
+  <widget class="QLabel" name="reSetBtn">
+   <property name="geometry">
+    <rect>
+     <x>374</x>
+     <y>410</y>
+     <width>121</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/picture/Settingpage/dialogbutton.png);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

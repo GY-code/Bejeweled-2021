@@ -56,6 +56,7 @@ void GameWidget::setupScene(int i){
     ui->menuLbl->setVisible(false);
     ui->hintLbl->setVisible(false);
     ui->pauseLbl->setVisible(false);
+    ui->reSetBtn->setVisible(false);
 
     menuButton = new HoverButton(this);
     menuButton->setGeometry(ui->menuLbl->geometry());
@@ -69,6 +70,10 @@ void GameWidget::setupScene(int i){
     pauseButton->setGeometry(ui->pauseLbl->geometry());
     pauseButton->setImage(":/picture/3balls/ball3.png",nullptr,ui->pauseLbl->width(),ui->pauseLbl->height(),ui->pauseLbl);
 
+    reSetButton = new HoverButton(this);
+    reSetButton->setGeometry(ui->reSetBtn->geometry());
+    reSetButton->setImage(":/picture/Settingpage/dialogbutton.png",nullptr,ui->reSetBtn->width(),ui->reSetBtn->height(),ui->reSetBtn);
+
     //语言切换
     if(i==1){
         menuButton->showContent("MENU",20);
@@ -77,6 +82,8 @@ void GameWidget::setupScene(int i){
         hintButton->show();
         pauseButton->showContent("PAUSE",20);
         pauseButton->show();
+        reSetButton->showContent("RESET",15);
+        reSetButton->show();
     }
     if(i==0){
         menuButton->showContent("菜单",20);
@@ -85,14 +92,16 @@ void GameWidget::setupScene(int i){
         hintButton->show();
         pauseButton->showContent("暂停",20);
         pauseButton->show();
+        reSetButton->showContent("重置",15);
+        reSetButton->show();
     }
     //设置鼠标-普通
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
 
     //进度条
     progressBar = new MyProBar(this);
-    progressBar->setRange(0,2500);
-    progressBar->setValue(2500);
+    progressBar->setRange(0,10000);
+    progressBar->setValue(10000);
     progressBar->setTextVisible(false);
     progressBar->show();
 
@@ -133,6 +142,11 @@ void GameWidget::setupScene(int i){
     anim6->setStartValue(QRect(pauseButton->x(),pauseButton->y()+1000,pauseButton->width(),pauseButton->height()));
     anim6->setEndValue(QRect(pauseButton->x(),pauseButton->y(),pauseButton->width(),pauseButton->height()));
     anim6->setEasingCurve((QEasingCurve::OutQuad));
+    QPropertyAnimation* anim7 = new QPropertyAnimation(reSetButton,"geometry");
+    anim7->setDuration(500);
+    anim7->setStartValue(QRect(reSetButton->x(),reSetButton->y()+1000,reSetButton->width(),reSetButton->height()));
+    anim7->setEndValue(QRect(reSetButton->x(),reSetButton->y(),reSetButton->width(),reSetButton->height()));
+    anim6->setEasingCurve((QEasingCurve::OutQuad));
 
     QParallelAnimationGroup *group = new QParallelAnimationGroup;
     group->addAnimation(anim1);
@@ -141,6 +155,7 @@ void GameWidget::setupScene(int i){
     group->addAnimation(anim4);
     group->addAnimation(anim5);
     group->addAnimation(anim6);
+    group->addAnimation(anim7);
     group->start(QAbstractAnimation::DeleteWhenStopped);
 
     Sleep(600);
@@ -218,7 +233,11 @@ void GameWidget::setupScene(int i){
 
     });
 
-
+    connect(reSetButton,&HoverButton::clicked,[=]{
+       if(is_acting)
+           return;
+       reSetBoard();
+    });
 
     connect(menuButton, &HoverButton::clicked, [=](){
 
@@ -237,6 +256,8 @@ void GameWidget::setupScene(int i){
             delete redBorderTimer;
         if(redBorder)
             delete redBorder;
+        if(reSetButton)
+            delete reSetButton;
         if(menuButton)
             delete menuButton;
         if(hintButton)
@@ -509,6 +530,12 @@ void GameWidget::startGame(){
     connect(group, &QParallelAnimationGroup::finished, [=] {
         scoreTextLbl->setText("0");
         connect(this, &GameWidget::eliminateFinished, [=] {
+            Point p=tipsdetect();
+            if(p.x==-1&&p.y==-1){
+                Sleep(200);
+                reSetBoard();
+                return;
+            }
             QSound *hit=new QSound(":/music/effect/hit.wav");
             hit->play();
             scoreTextLbl->setText(QString::number(score));

@@ -83,6 +83,7 @@ private:
     int updateBombList();
 
     QWidget* boardWidget=nullptr;
+    HoverButton *reSetButton=nullptr;
     HoverButton *menuButton=nullptr;
     HoverButton *hintButton=nullptr;
     HoverButton *pauseButton=nullptr;
