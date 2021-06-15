@@ -123,6 +123,7 @@ private:
     void magicCollect(int coType,int toX,int toY);
     settingpage settingP;
     void allFallOut();
+    void reSetBoard();
 
     Ui::GameWidget *ui;
 signals:

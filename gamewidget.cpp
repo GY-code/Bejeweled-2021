@@ -91,8 +91,8 @@ void GameWidget::setupScene(int i){
 
     //进度条
     progressBar = new MyProBar(this);
-    progressBar->setRange(0,10000);
-    progressBar->setValue(10000);
+    progressBar->setRange(0,2500);
+    progressBar->setValue(2500);
     progressBar->setTextVisible(false);
     progressBar->show();
 
@@ -189,6 +189,7 @@ void GameWidget::setupScene(int i){
         if(!is_paused){
             if(progressBar->value() == 0){
                 forbidAll(true);
+                allFallOut();
                 //计时结束
                 if(!timeoutTimer->isActive()){
                     timeoutTimer->start();
@@ -220,44 +221,7 @@ void GameWidget::setupScene(int i){
 
 
     connect(menuButton, &HoverButton::clicked, [=](){
-        allFallOut();
-        QRandomGenerator::global()->fillRange(gemType[0], 64);
 
-        //掉落动画
-        QParallelAnimationGroup *group=new QParallelAnimationGroup;
-        for(int j = 7; j >=0; --j){
-            for(int i = 0; i <8 ; ++i){
-                gemType[i][j] = gemType[i][j] % static_cast<unsigned int>(DIFFICULITY) + 1;
-                gems[i][j] = new Gem(static_cast<int>(gemType[i][j]), 118, i, j , boardWidget);
-                gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-                group->addAnimation(startfallAnimation(gems[i][j],j+1));
-                connect(gems[i][j], &Gem::mouseClickedGem, this, &GameWidget::act);
-            }
-        }
-        group->start();
-        eliminateTimes=0;
-        connect(group, &QParallelAnimationGroup::finished, [=] {
-
-            forbidAll(false);
-            is_acting=false;
-            int s = updateBombList();
-            score+=s;
-            if(s!=0){
-                Sleep(100);
-                forbidAll(true);//禁用
-                is_acting=true;
-                eliminateBoard();
-                exitMagic=false;
-                eliminateTimes++;
-            }else{
-                eliminateTimes=0;
-            }
-            playSound(eliminateTimes);
-
-            delete group;
-        });
-
-        return;
         if(is_acting)
             return;
         client->update(score);
@@ -398,6 +362,46 @@ void GameWidget::setupScene(int i){
     });
 }
 
+void GameWidget::reSetBoard(){
+    allFallOut();
+    QRandomGenerator::global()->fillRange(gemType[0], 64);
+
+    //掉落动画
+    QParallelAnimationGroup *group=new QParallelAnimationGroup;
+    for(int j = 7; j >=0; --j){
+        for(int i = 0; i <8 ; ++i){
+            gemType[i][j] = gemType[i][j] % static_cast<unsigned int>(DIFFICULITY) + 1;
+            gems[i][j] = new Gem(static_cast<int>(gemType[i][j]), 118, i, j , boardWidget);
+            gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+            group->addAnimation(startfallAnimation(gems[i][j],j+1));
+            connect(gems[i][j], &Gem::mouseClickedGem, this, &GameWidget::act);
+        }
+    }
+    group->start();
+    eliminateTimes=0;
+    connect(group, &QParallelAnimationGroup::finished, [=] {
+
+        forbidAll(false);
+        is_acting=false;
+        int s = updateBombList();
+        score+=s;
+        if(s!=0){
+            Sleep(100);
+            forbidAll(true);//禁用
+            is_acting=true;
+            eliminateBoard();
+            exitMagic=false;
+            eliminateTimes++;
+        }else{
+            eliminateTimes=0;
+        }
+        playSound(eliminateTimes);
+
+        delete group;
+    });
+
+    return;
+}
 
 //将path的图片放置到label上，自适应label大小
 void GameWidget::setAdaptedImg(QString path,QLabel *label)
@@ -436,7 +440,8 @@ void GameWidget::Sleep(int msec)
 void GameWidget::forbidAll(bool forbid){//true forbit ,false release
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
-            gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents, forbid);
+            if(gems[i][j])
+                gems[i][j]->setAttribute(Qt::WA_TransparentForMouseEvents, forbid);
         }
     }
 }
@@ -550,16 +555,16 @@ void GameWidget::allFallOut(){
         QParallelAnimationGroup* gruop = new QParallelAnimationGroup;
         for(int i = 0; i <8 ; ++i){
             QPropertyAnimation* anim = new QPropertyAnimation(gems[i][j],"geometry",this);
-            anim->setDuration(300);
+            anim->setDuration(700);
             anim->setStartValue(gems[i][j]->geometry());
             anim->setEndValue(QRect(gems[i][j]->geometry().x(),gems[i][j]->geometry().y()+1000,LEN,LEN));
-            anim->setEndValue(QEasingCurve::Linear);
+            anim->setEasingCurve(QEasingCurve::InQuad);
             gruop->addAnimation(anim);
         }
         gruop->start(QAbstractAnimation::DeleteWhenStopped);
-        Sleep(100);
+        Sleep(90);
     }
-    Sleep(400);
+    Sleep(600);
 //    for(int j = 7; j >=0; --j){
 //        for(int i = 0; i <8 ; ++i){
 //           gems[i][j]->bomb();
