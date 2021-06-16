@@ -71,5 +71,6 @@
         <file>music/effect/hit.wav</file>
         <file>picture/GameWidget/Gem/goldSQ.gif</file>
         <file>picture/GameWidget/Gem/waterSQ.gif</file>
+        <file>picture/splash.jpg</file>
     </qresource>
 </RCC>
