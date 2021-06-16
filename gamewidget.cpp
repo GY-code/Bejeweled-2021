@@ -10,7 +10,8 @@ GameWidget::GameWidget(QWidget *parent) :
 void GameWidget::setupScene(int i){
     gameOver=false;
     is_paused=false;
-    exitMagic=false;
+    exitMagic=true;
+
     score=0;
     trans=0;
     QSound* wel=new QSound(":/music/effect/Welcome.wav");
@@ -33,7 +34,6 @@ void GameWidget::setupScene(int i){
     sound->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath()+"/music/background/music-2.wav"));
     sound->setLoopCount(QSoundEffect::Infinite);
     sound->play();
-
 
     //窗口基本设置
     setWindowFlag(Qt::Window);  //设置为独立窗口
@@ -101,7 +101,7 @@ void GameWidget::setupScene(int i){
     setCursor(QCursor(QPixmap("://picture/mouse1.png")));
 
     //进度条
-    int totalTime=1000;
+    int totalTime=8000;
     progressBar = new MyProBar(this);
     progressBar->setRange(0,totalTime);
     progressBar->setValue(totalTime);
@@ -255,7 +255,7 @@ void GameWidget::setupScene(int i){
 
         if(is_acting)
             return;
-        //client->update(score);
+        client->update(score);
         sound->stop();
         this->hide();
         showStartPage();
@@ -627,8 +627,8 @@ void GameWidget::finishAct(){
 QPropertyAnimation* GameWidget::startfallAnimation(Gem *gem, int h){
     //每一行的掉落动画
     QPropertyAnimation* animation = new QPropertyAnimation(gem, "geometry", boardWidget);
-    animation->setDuration(static_cast<int>((sqrt((8-h)*300+1050)*20)));//
-    animation->setStartValue(QRect(gem->oriX, gem->oriY-118*h-(8-h)*80, LEN, LEN));//
+    animation->setDuration(static_cast<int>((sqrt((8-h)*300+1050)*20)));//时间由高度决定
+    animation->setStartValue(QRect(gem->oriX, gem->oriY-118*h-(8-h)*80, LEN, LEN));//高度由行数决定
     animation->setEndValue(QRect(gem->oriX, gem->oriY, LEN, LEN));
     animation->setEasingCurve(QEasingCurve::Linear);
     return animation;
@@ -640,7 +640,7 @@ void GameWidget::magicCollect(int coType,int toX,int toY){
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
             if(gemType[i][j]==static_cast<unsigned int>(coType)){
-                list.push_back(gems[i][j]);
+                list.push_back(gems[i][j]);//同类型加入list
             }
         }
     }
@@ -957,10 +957,10 @@ void GameWidget::fill(){
 
         for(int i = 0; i < 8; ++i){
             for(int j = 0; j < 8; ++j)
-                if(fallHeight[i][j] == -1)
+                if(fallHeight[i][j] == -1)//这一列全消的情况
                     lack[i]++;
                 else if(fallHeight[i][j] != 0){
-                    lack[i] += fallHeight[i][j];
+                    lack[i] += fallHeight[i][j];//这一列不是全消的情况，直接利用fallHeight即可
                     break;
                 }
         }
@@ -979,6 +979,7 @@ void GameWidget::fill(){
                     fallNum++;
                 }
             }
+
         for(int i = 0; i < 8; ++i)
             fallNum+=lack[i];
 
@@ -1214,7 +1215,7 @@ int GameWidget::getBombsToMakeMagic(int cX, int cY,std::vector<Gem*> bombsToMake
         bombsToMakeMagic.pop_back();
     }
 
-    int magicType=-1;//-1无 0普通三消 1 爆炸 2 行消/列消 3魔方
+    int magicType=-1;//-1无 0普通三消 1 爆炸 2 十字消 3魔方
     if(bombsToMakeMagic.size()>=3){
         if(cNum==4||rNum==4)
             magicType=3;
@@ -1264,7 +1265,7 @@ int GameWidget::updateBombList() {
                 end++;
                 //if(end<=7){
                 if(gemType[i][end]>10){
-                    eType=dC(gemType[i][end]);
+                    eType=dC(gemType[i][end]);//type 62 和 type 6 被当做相同宝石检测
                 }else{
                     eType=gemType[i][end];
                 }
@@ -1275,7 +1276,7 @@ int GameWidget::updateBombList() {
                 for(int j=start;j<=end;j++){
                     if(gemType[i][j]>10){
                         exitMagic=true;
-                        if(gemType[i][j]%10==2){//爆炸
+                        if(gemType[i][j]%10==2){//magicType=2 爆炸-菱形区域
                             for(int m=-1;m<=1;m++){
                                 for(int n=-1;n<=1;n++){
                                     if(i+m>=0&&i+m<=7&&j+n>=0&&j+n<=7)
@@ -1291,7 +1292,7 @@ int GameWidget::updateBombList() {
                             if(i+2<=7)
                                 eliminating[i+2][j]=gemType[i+2][j];
                         }
-                        if(gemType[i][j]%10==1){//十字消
+                        if(gemType[i][j]%10==1){//magicType=1 十字消-十字区域
                             for(int m=0;m<=7;m++){
                                 eliminating[m][j]=gemType[m][j];
                             }

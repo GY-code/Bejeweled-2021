@@ -25,7 +25,7 @@ void MyProBar::paintEvent(QPaintEvent *e)
     draw_path->arcTo(QRect(width()-radius*2,0,radius*2,radius*2),0,90);
     draw_path->lineTo(radius,0);
 
-    painter.fillPath(*draw_path,QColor(0, 0, 109));
+    painter.fillPath(*draw_path,QColor(0, 0, 109));//背景色
 
     draw_path = new QPainterPath;
     double x_move=(percent*width());
@@ -61,9 +61,9 @@ void MyProBar::paintEvent(QPaintEvent *e)
 
 
     if(percent>0.25)
-        painter.fillPath(*draw_path,QColor(6, 118, 216));
+        painter.fillPath(*draw_path,QColor(6, 118, 216));//前景色
     else
-        painter.fillPath(*draw_path,QColor(205,38,38));
+        painter.fillPath(*draw_path,QColor(205,38,38));//时间剩余不足时改为红色
 }
 
 

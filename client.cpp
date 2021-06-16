@@ -5,10 +5,11 @@ Client::Client()
   socket = new QTcpSocket();
   QObject::connect(socket,&QTcpSocket::readyRead,this,&Client::readDataSlot);
   logined = false;
-  socket->connectToHost("127.0.0.1",8888);
+
 }
 
 bool Client::registerNewUser(QString userName, QString password){
+    socket->connectToHost("127.0.0.1",8888);
   this->username = userName;
   this->password = password;
   QByteArray content;
@@ -25,6 +26,7 @@ bool Client::registerNewUser(QString userName, QString password){
 }
 
 bool Client::verifyUser(QString userName, QString password){
+    socket->connectToHost("127.0.0.1",8888);
   this->username = userName;
   this->password = password;
   QByteArray content;
@@ -38,6 +40,7 @@ bool Client::verifyUser(QString userName, QString password){
   }
 }
 void Client::getProfile(){
+    socket->connectToHost("127.0.0.1",8888);
   QByteArray content;
   content.append("PROFILE");
   socket->write(content);
@@ -46,6 +49,7 @@ void Client::getProfile(){
 }
 
 void Client::getRankList() {
+    socket->connectToHost("127.0.0.1",8888);
   QByteArray content;
   content.append("RANKLIST");
   socket->write(content);
@@ -71,14 +75,20 @@ void Client::readDataSlot() {
   if (instruction[0] == "RAN_RESULT"){
     ranklist = instruction[1];
   }
+  if (instruction[0] == "UPD_RESULT"){
+
+  }
+  socket->abort();
 }
 
 void Client::update(int score) {
+  socket->connectToHost("127.0.0.1",8888);
   QByteArray content;
   content.append("UPDATE");
   content.append('&');
   content.append(username.toLocal8Bit());
   content.append('&');
   content.append(QString::number(score).toLocal8Bit());
+  qDebug() << content << "\n";
   socket->write(content);
 }
